@@ -29,8 +29,8 @@ const TOOLS = [
   },
   {
     id: "next-tool",
-    name: "Next tool (pending)",
-    description: "Future applications.",
+    name: "AI powered pre-op risk stratifier  (pending)",
+    description: "Easy to use pre-op risk stratifier that can be copied and pasted to your EHR.",
     link: "#feedback",
     isPlaceholder: true,
   },
@@ -228,7 +228,7 @@ const handleSupportSubmit = async (e: React.FormEvent) => {
                       href={tool.link}
                       className="inline-flex items-center gap-1 text-xs font-semibold text-gray-600 hover:text-gray-800"
                     >
-                      Suggest something
+                      Suggest something else
                       <ChevronRight className="w-3 h-3" />
                     </a>
                   ) : (
