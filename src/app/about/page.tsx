@@ -23,7 +23,7 @@ export default function AboutPage() {
           About NotoMed.dev and its creator
         </h1>
         <p className="mt-2 text-base text-gray-600">
-          A small, physician-built collection of inpatient tools meant to reduce cognitive load,
+          A collection of physician-built tools meant to reduce cognitive load,
           standardize workflows, and make on-service life a little easier.
         </p>
       </header>
@@ -35,27 +35,44 @@ export default function AboutPage() {
           <h2 className="text-sm font-semibold tracking-tight text-gray-800">
             Hi, I’m Yasmine! 👋
           </h2>
+
           <p className="text-sm leading-relaxed text-gray-700">
-          Like most physicians, I spend a lot of time on a computer — charting, documenting, reviewing. 
-          I also found myself manually re-doing the same clinical calculations. 
-          Out of frustration, I started building tiny web apps (with help from AI/LLMs) to make those repetitive pieces easier.
+            I’m a third-year Internal Medicine resident at Cedars-Sinai. I recognized that much of my
+            daily work involved recurring, cognitively heavy tasks (e.g. hyponatremia workups, insulin
+            management, opioid conversions), yet there were few streamlined, web-based solutions to
+            reduce that load.
           </p>
-          
-          <p className="text-sm leading-relaxed text-gray-700">
-          I’m NOT a software engineer. Just a very determined physician who is interested in making medicine less burdenson for clinicians. So, I started notomed.dev.
-          </p> 
 
           <p className="text-sm leading-relaxed text-gray-700">
-          Here I’ll post small, evidence-informed tools that make inpatient medicine smoother: guided calculators, regimen builders, and “don’t make me think” flows for common problems. 
-          Everything is built after hours, mostly in React/Next.js, with AI assisting.
-          </p> 
+            When I couldn’t find what I needed, I started building my own web applications and sharing
+            them — which led to the creation of <span className="font-semibold">notomed.dev</span>.
+          </p>
 
           <p className="text-sm leading-relaxed text-gray-700">
-          The goal isn’t to replace clinical judgment. It’s to speed up the predictable, non-creative parts so we can spend more time on the part that matters: taking care of patients.
+            The goal here is simple: create clinical support tools that make inpatient medicine
+            ~10% easier. These tools are meant to be intuitive, evidence-based, and aimed at the common,
+            predictable problems that slow us down.
+          </p>
+
+          <p className="text-sm leading-relaxed text-gray-700">
+            These apps are built for the setting I practice in — adult, hospitalized patients — so they
+            may not fit every clinical environment.
+          </p>
+
+          <p className="text-sm leading-relaxed text-gray-700">
+            <span className="font-semibold">A note on the tech side:</span> I’m not a software engineer.
+            I did a year of CS in college, and the rest I’ve pieced together with determination and help
+            from LLMs (Claude, Gemini, Codex). Each tool took real time to build, so if you find one
+            useful, please share it or tell me how to make it better.
+          </p>
+
+          <p className="text-sm leading-relaxed text-gray-700">
+            <span className="font-semibold">Important:</span> These tools are not and should not meant to replace clinical judgement. 
+            They are meant to offload the repeatable parts so we can spend more time on the part that
+            matters: patient care.
           </p>
 
           <div className="flex gap-3 flex-wrap">
-            {/* resume link – put your PDF in /public */}
             <Link
               href="/Yasmine-Abbey-Resume.pdf"
               target="_blank"
@@ -75,7 +92,6 @@ export default function AboutPage() {
 
         {/* right: photo / card */}
         <div className="bg-white border border-gray-200 rounded-lg p-4 flex flex-col items-center gap-4">
-          {/* put your photo in /public/me.jpg and change the src below */}
           <div className="w-40 h-40 rounded-full overflow-hidden bg-gray-100">
             <Image
               src="/picture/yasmine.jpg"
