@@ -67,7 +67,7 @@ export default function AboutPage() {
           </p>
 
           <p className="text-sm leading-relaxed text-gray-700">
-            <span className="font-semibold">Important:</span> These tools are not and should not meant to replace clinical judgement. 
+            <span className="font-semibold">Important:</span> These tools are not meant to, and should not, replace clinical judgement. 
             They are meant to offload the repeatable parts so we can spend more time on the part that
             matters: patient care.
           </p>
