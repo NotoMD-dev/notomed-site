@@ -170,8 +170,7 @@ const handleSupportSubmit = async (e: React.FormEvent) => {
                   Physician-made clinical tools.
                 </h1>
                 <p className="text-sm md:text-base leading-relaxed mb-6 max-w-2xl">
-                  Creating web applications that simplify workflow and decrease cognitive load. All
-                  tools created with the assistance of AI.
+                  Creating web applications that simplify workflow and decrease cognitive load.
                 </p>
                 <p className="text-xs text-gray-500">All tools built by {CONFIG.creatorName}</p>
               </div>
