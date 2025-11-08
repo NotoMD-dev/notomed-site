@@ -2,12 +2,21 @@
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-if (!stripeSecretKey) {
-  throw new Error("STRIPE_SECRET_KEY is not set in env");
-}
+let stripe: Stripe | null = null;
 
-const stripe = new Stripe(stripeSecretKey); 
+function getStripeClient() {
+  const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+
+  if (!stripeSecretKey) {
+    throw new Error("STRIPE_SECRET_KEY is not set in env");
+  }
+
+  if (!stripe) {
+    stripe = new Stripe(stripeSecretKey);
+  }
+
+  return stripe;
+}
 
 export async function POST(req: Request) {
   try {
@@ -22,7 +31,9 @@ export async function POST(req: Request) {
 
     const origin = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
-    const session = await stripe.checkout.sessions.create({
+    const stripeClient = getStripeClient();
+
+    const session = await stripeClient.checkout.sessions.create({
       mode: "payment",
       line_items: [
         {
