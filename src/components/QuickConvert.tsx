@@ -32,22 +32,28 @@ export function QuickConvert() {
   const [crossTol, setCrossTol] = useState<number>(0);
 
   // allowed routes
-  const allowedFromRoutes = ALLOWED_ROUTES[fromDrug] || ["oral"];
-  const allowedToRoutes = ALLOWED_ROUTES[toDrug] || ["oral"];
+  const allowedFromRoutes = useMemo(
+    () => ALLOWED_ROUTES[fromDrug] || ["oral"],
+    [fromDrug]
+  );
+  const allowedToRoutes = useMemo(
+    () => ALLOWED_ROUTES[toDrug] || ["oral"],
+    [toDrug]
+  );
 
   // keep fromRoute sane
   React.useEffect(() => {
     if (!allowedFromRoutes.includes(fromRoute)) {
       setFromRoute(allowedFromRoutes[0]);
     }
-  }, [fromDrug, fromRoute, allowedFromRoutes]);
+  }, [fromRoute, allowedFromRoutes]);
 
   // keep toRoute sane
   React.useEffect(() => {
     if (!allowedToRoutes.includes(toRoute)) {
       setToRoute(allowedToRoutes[0]);
     }
-  }, [toDrug, toRoute, allowedToRoutes]);
+  }, [toRoute, allowedToRoutes]);
 
   const result = useMemo(() => {
     if (!fromDose || fromDose <= 0) return null;

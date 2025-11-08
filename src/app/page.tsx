@@ -90,12 +90,17 @@ const handleSupportSubmit = async (e: React.FormEvent) => {
       body: JSON.stringify({ amount: amountNum }),
     });
 
-    let data: any = null;
+    let data: { url?: string; error?: string } | null = null;
     const text = await res.text();
 
     // try to parse JSON, but don't die if it's HTML
     try {
-      data = JSON.parse(text);
+      const parsed = JSON.parse(text) as unknown;
+      if (parsed && typeof parsed === "object") {
+        data = parsed as { url?: string; error?: string };
+      } else {
+        data = null;
+      }
     } catch {
       data = null;
     }

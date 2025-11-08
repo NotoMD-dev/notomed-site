@@ -7,13 +7,13 @@ import {
   type PatientInputs,
   type AIPlan,
 } from "@/lib/planEngine";
-import type { StructuredData } from "@/lib/getAIPlan";
+import type { StructuredData, Hx } from "@/lib/getAIPlan";
 
 /* ---------------- Rate limit ---------------- */
 const limiter = new RateLimiterMemory({ points: 20, duration: 60 });
 
 /* ---------------- PHI scrubber (basic) ---------------- */
-function scrub(obj: any) {
+function scrub<T>(obj: T): T {
   const banned = new Set([
     "name",
     "fullName",
@@ -29,7 +29,7 @@ function scrub(obj: any) {
   ]);
   return JSON.parse(
     JSON.stringify(obj, (k, v) => (banned.has(k) ? undefined : v))
-  );
+  ) as T;
 }
 
 /* ---------------- House style (no one-liner) ---------------- */
@@ -56,7 +56,7 @@ Rules:
 
 /* ---------------- StructuredData -> PatientInputs ---------------- */
 function toPatientInputs(d: StructuredData): PatientInputs {
-  const hx: any = (d as any).hx ?? {};
+  const hx: Partial<Hx> = d.hx ?? {};
   return {
     serumNa: d.measuredNa,
     serumOsm: d.serumOsm ?? null,
@@ -69,12 +69,12 @@ function toPatientInputs(d: StructuredData): PatientInputs {
         : d.severity === "moderate"
         ? "Moderate"
         : "Mild",
-    volumeStatus: (d.volumeStatus as any) ?? "uncertain",
+    volumeStatus: d.volumeStatus ?? "uncertain",
     dx: {
-      hf: Boolean((d as any).heartFailureHx ?? hx.chf),
+      hf: Boolean(d.heartFailureHx ?? hx.chf),
       ef: null,
-      cirrhosis: Boolean((d as any).cirrhosisHx ?? hx.cirrhosisPortalHTN),
-      ckd: Boolean((d as any).ckdHx ?? hx.ckd),
+      cirrhosis: Boolean(d.cirrhosisHx ?? hx.cirrhosisPortalHTN),
+      ckd: Boolean(d.ckdHx ?? hx.ckd),
       siadhLikely:
         d.volumeStatus === "euvolemic" &&
         (d.urineOsm ?? 0) >= 100 &&
@@ -86,13 +86,18 @@ function toPatientInputs(d: StructuredData): PatientInputs {
 }
 
 /* ---------------- Build historyTags from your hx keys ---------------- */
-function buildHistoryTags(d: any): string[] {
+function buildHistoryTags(
+  d: StructuredData & { historyTags?: unknown }
+): string[] {
   // If client already sends an array of tags, use it.
-  if (Array.isArray(d?.historyTags) && d.historyTags.every((x: any) => typeof x === "string")) {
+  if (
+    Array.isArray(d?.historyTags) &&
+    d.historyTags.every((x): x is string => typeof x === "string")
+  ) {
     return d.historyTags;
   }
 
-  const hx = (d && d.hx) ? d.hx : {};
+  const hx: Partial<Hx> = d.hx ?? {};
   const map: Record<string, string> = {
     chf: "congestive heart failure",
     cirrhosisPortalHTN: "cirrhosis with portal hypertension",
@@ -114,7 +119,7 @@ function buildHistoryTags(d: any): string[] {
 
   const out = new Set<string>();
   for (const [key, label] of Object.entries(map)) {
-    if (hx?.[key]) out.add(label);
+    if (hx?.[key as keyof Hx]) out.add(label);
   }
 
   // Also include legacy flat flags if present.
@@ -126,7 +131,11 @@ function buildHistoryTags(d: any): string[] {
 }
 
 /* ---------------- Build facts sent to LLM ---------------- */
-function buildFactsForLLM(p: PatientInputs, engineOut: AIPlan, historyTags: string[]) {
+function buildFactsForLLM(
+  p: PatientInputs,
+  engineOut: AIPlan,
+  historyTags: string[]
+) {
   return {
     inputs: {
       serumNa: p.serumNa,
@@ -146,8 +155,16 @@ function buildFactsForLLM(p: PatientInputs, engineOut: AIPlan, historyTags: stri
   };
 }
 
+type APFacts = ReturnType<typeof buildFactsForLLM>;
+
 /* ---------------- OpenAI call ---------------- */
-async function callOpenAI_AP({ facts, style }: { facts: any; style: string }) {
+async function callOpenAI_AP({
+  facts,
+  style,
+}: {
+  facts: APFacts;
+  style: string;
+}) {
   const system =
     "You are a meticulous internal medicine physician. Generate an evidence-based Assessment & Plan strictly from the provided facts. Do not invent data.";
   const user = `
@@ -197,7 +214,7 @@ export async function POST(req: NextRequest) {
   }
 
   // read + scrub
-  let body: any;
+  let body: unknown;
   try {
     body = scrub(await req.json());
   } catch {
@@ -205,21 +222,34 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    if (!isStructuredDataPayload(body)) {
+      return NextResponse.json({ error: "Invalid payload" }, { status: 400 });
+    }
+
     const historyTags = buildHistoryTags(body);
-    const p = toPatientInputs(body as StructuredData);
+    const p = toPatientInputs(body);
     const engineOut = await getAIPlanFromPatientInputs(p);
     const facts = buildFactsForLLM(p, engineOut, historyTags);
     const fullText = await callOpenAI_AP({ facts, style: HOUSE_STYLE });
 
     return NextResponse.json({ fullText, computed: engineOut.computed });
-  } catch (e: any) {
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "LLM error.";
     // Safe fallback to deterministic text
     return NextResponse.json(
       {
-        fullText: "Assessment & Plan\n\n" + (e?.message || "LLM error."),
+        fullText: "Assessment & Plan\n\n" + message,
         computed: null,
       },
       { status: 200 }
     );
   }
+}
+
+function isStructuredDataPayload(
+  value: unknown
+): value is StructuredData & { historyTags?: unknown } {
+  if (typeof value !== "object" || value === null) return false;
+  const candidate = value as { measuredNa?: unknown };
+  return typeof candidate.measuredNa === "number" && Number.isFinite(candidate.measuredNa);
 }

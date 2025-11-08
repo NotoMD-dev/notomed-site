@@ -496,7 +496,7 @@ function ChipToggle({
   checked: boolean;
   onChange: (next: boolean) => void;
   children: React.ReactNode;
-  style?: "default" | "severe" | "moderate" | "mild";
+  style?: "default" | Exclude<Severity, undefined>;
 }) {
   const styles = {
     default: {
@@ -570,49 +570,78 @@ function HyponatremiaAppContent() {
   const [severity, setSeverity] = useState<Severity>(undefined);
   const [hx, setHx] = useState<History>({ ...INITIAL_HX });
 
-  const s: Sanitized = {
-    serumNa: sanitize("serumNa", serumNa),
-    serumOsm: sanitize("serumOsm", serumOsm),
-    urineNa: sanitize("urineNa", urineNa),
-    urineOsm: sanitize("urineOsm", urineOsm),
-    serumGlucose: sanitize("serumGlucose", serumGlucose),
-    bun: sanitize("bun", bun),
-    cr: sanitize("cr", cr),
-    urineCr: sanitize("urineCr", urineCr),
-    urineUrea: sanitize("urineUrea", urineUrea),
-  };
+  const sanitized = useMemo<Sanitized>(
+    () => ({
+      serumNa: sanitize("serumNa", serumNa),
+      serumOsm: sanitize("serumOsm", serumOsm),
+      urineNa: sanitize("urineNa", urineNa),
+      urineOsm: sanitize("urineOsm", urineOsm),
+      serumGlucose: sanitize("serumGlucose", serumGlucose),
+      bun: sanitize("bun", bun),
+      cr: sanitize("cr", cr),
+      urineCr: sanitize("urineCr", urineCr),
+      urineUrea: sanitize("urineUrea", urineUrea),
+    }),
+    [
+      serumNa,
+      serumOsm,
+      urineNa,
+      urineOsm,
+      serumGlucose,
+      bun,
+      cr,
+      urineCr,
+      urineUrea,
+    ]
+  );
 
   const inputsReady =
-    [s.serumNa, s.serumOsm, s.urineNa, s.urineOsm].every((v) => v != null) &&
+    [sanitized.serumNa, sanitized.serumOsm, sanitized.urineNa, sanitized.urineOsm].every((v) => v != null) &&
     volumeStatus != null &&
     severity != null;
 
   const glucoseCorrectedNa = useMemo(
-    () => computeGlucoseCorrectedNa(s.serumNa, s.serumGlucose),
-    [s.serumNa, s.serumGlucose]
+    () => computeGlucoseCorrectedNa(sanitized.serumNa, sanitized.serumGlucose),
+    [sanitized.serumNa, sanitized.serumGlucose]
   );
 
   const fena = useMemo(
-    () => computeFENa(s.urineNa, s.serumNa, s.urineCr, s.cr),
-    [s.urineNa, s.serumNa, s.urineCr, s.cr]
+    () => computeFENa(sanitized.urineNa, sanitized.serumNa, sanitized.urineCr, sanitized.cr),
+    [sanitized.urineNa, sanitized.serumNa, sanitized.urineCr, sanitized.cr]
   );
 
   const feurea = useMemo(
-    () => computeFEUrea(s.urineUrea, s.bun, s.urineCr, s.cr, hx.chronicDiuretics),
-    [s.urineUrea, s.bun, s.urineCr, s.cr, hx.chronicDiuretics]
+    () =>
+      computeFEUrea(
+        sanitized.urineUrea,
+        sanitized.bun,
+        sanitized.urineCr,
+        sanitized.cr,
+        hx.chronicDiuretics
+      ),
+    [sanitized.urineUrea, sanitized.bun, sanitized.urineCr, sanitized.cr, hx.chronicDiuretics]
   );
 
-  const algoDisabled = s.serumNa != null && (s.serumNa as number) > HYPONATREMIA_CUTOFF;
+  const algoDisabled =
+    sanitized.serumNa != null && (sanitized.serumNa as number) > HYPONATREMIA_CUTOFF;
 
   const assessment = useMemo(
     () =>
-      computeAssessment(s, hx, volumeStatus, {
+      computeAssessment(sanitized, hx, volumeStatus, {
         glucoseCorrectedNa,
         fena,
         feurea,
         severity,
       }),
-    [s, hx, volumeStatus, severity, glucoseCorrectedNa, fena, feurea]
+    [
+      sanitized,
+      hx,
+      volumeStatus,
+      severity,
+      glucoseCorrectedNa,
+      fena,
+      feurea,
+    ]
   );
 
   const resetAll = () => {
@@ -631,15 +660,15 @@ function HyponatremiaAppContent() {
   };
 
   const structuredData: StructuredData = {
-    measuredNa: typeof s.serumNa === "number" ? s.serumNa : NaN,
+    measuredNa: typeof sanitized.serumNa === "number" ? sanitized.serumNa : NaN,
     correctedNa: glucoseCorrectedNa,
-    serumOsm: s.serumOsm,
-    glucose: s.serumGlucose,
-    bun: s.bun,
-    creatinine: s.cr,
-    urineOsm: s.urineOsm,
-    urineNa: s.urineNa,
-    volumeStatus: volumeStatus as any,
+    serumOsm: sanitized.serumOsm,
+    glucose: sanitized.serumGlucose,
+    bun: sanitized.bun,
+    creatinine: sanitized.cr,
+    urineOsm: sanitized.urineOsm,
+    urineNa: sanitized.urineNa,
+    volumeStatus: volumeStatus ?? undefined,
     diuretics: !!hx.chronicDiuretics,
     heartFailureHx: !!hx.chf,
     cirrhosisHx: !!hx.cirrhosisPortalHTN,
@@ -757,7 +786,7 @@ function HyponatremiaAppContent() {
                   key={v}
                   checked={severity === v}
                   onChange={(val) => setSeverity(val ? v : undefined)}
-                  style={v as any}
+                  style={v}
                 >
                   {v === "severe"
                     ? "Severe (seizure/coma/AMS)"

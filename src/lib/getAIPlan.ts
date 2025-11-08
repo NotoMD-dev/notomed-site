@@ -75,6 +75,8 @@ function buildFactsForLLM(p: PatientInputs, engineOut: AIPlan) {
   };
 }
 
+type FactsForLLM = ReturnType<typeof buildFactsForLLM>;
+
 /* ---------------- House style (your format) ---------------- */
 const HOUSE_STYLE_V1 = `
 Write a chart-ready Assessment & Plan using this exact format:
@@ -99,13 +101,13 @@ Guidelines:
 `.trim();
 
 /* ---------------- OpenAI writer ---------------- */
-export type LLMWriter = (args: { facts: any; style: string }) => Promise<string>;
+export type LLMWriter = (args: { facts: FactsForLLM; style: string }) => Promise<string>;
 
 export async function writeAPWithOpenAI({
   facts,
   style,
 }: {
-  facts: any;
+  facts: FactsForLLM;
   style: string;
 }): Promise<string> {
   const system = `You are an expert internal medicine physician writing evidence-based, concise Assessment & Plans. Follow the style and safety rules strictly.`;
@@ -162,7 +164,7 @@ function toPatientInputs(data: StructuredData): PatientInputs {
         : data.severity === "moderate"
         ? "Moderate"
         : "Mild",
-    volumeStatus: (data.volumeStatus as any) ?? "uncertain",
+    volumeStatus: data.volumeStatus ?? "uncertain",
     dx: {
       hf: !!data.heartFailureHx,
       ef: null,
@@ -193,8 +195,8 @@ export async function getAIPlan(
     const facts = buildFactsForLLM(p, engineOut);
     try {
       fullText = await opts.llmWriter({ facts, style: HOUSE_STYLE_V1 });
-    } catch (e) {
-      console.warn("LLM writer failed; fallback to deterministic:", e);
+    } catch (error) {
+      console.warn("LLM writer failed; fallback to deterministic:", error);
     }
   }
 
