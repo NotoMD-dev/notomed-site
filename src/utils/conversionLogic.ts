@@ -25,7 +25,6 @@ import {
   FRAIL_LOW_FACTOR,
   FRAIL_HIGH_FACTOR,
   IS_COMBO,
-  APAP_MAX_MG,
   APAP_CAUTION_MG,
   COMBO_TABLES,
 } from "./constants";
@@ -34,10 +33,12 @@ import {
  * small utilities
  * ----------------------------------------------------------- */
 
-export function generateUniqueId() {
-  return typeof crypto !== "undefined" && (crypto as any).randomUUID
-    ? (crypto as any).randomUUID()
-    : String(Date.now() + Math.random());
+export function generateUniqueId(): string {
+  const cryptoObj = typeof globalThis !== "undefined" ? globalThis.crypto : undefined;
+  if (cryptoObj && typeof cryptoObj.randomUUID === "function") {
+    return cryptoObj.randomUUID();
+  }
+  return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 }
 
 export function roundToTenth(mg: number) {

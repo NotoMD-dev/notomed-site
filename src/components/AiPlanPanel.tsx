@@ -55,8 +55,9 @@ export default function AiPlanPanel({
       const json = await resp.json();
       if (!resp.ok) throw new Error(json?.error || "LLM error");
       setText(json.fullText || "");
-    } catch (e: any) {
-      setError(e?.message || "Failed to generate plan");
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Failed to generate plan";
+      setError(message);
     } finally {
       setLoading(false);
     }

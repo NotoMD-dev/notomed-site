@@ -1,11 +1,10 @@
 // src/components/HomeRegimenInput.tsx
 
 "use client";
-import React, { useMemo } from "react";
+import React from "react";
 import { useRegimenContext } from "../context/RegimenContext";
 import { HomeMedRow, Opioid, Route } from "../types";
 import { OPIOID_LABELS, ALLOWED_ROUTES, ROUTE_LABELS } from "../utils/constants";
-import { fmtDose } from "../utils/conversionLogic";
 import { MMEEquivCompactTable } from "./ui/MMEEquivCompactTable";
 
 export function HomeRegimenInput() {

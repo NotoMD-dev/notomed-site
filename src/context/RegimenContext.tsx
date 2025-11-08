@@ -6,7 +6,6 @@ import React, {
   useState,
   useMemo,
   useCallback,
-  useEffect,
 } from "react";
 import {
   HomeMedRow,
@@ -33,7 +32,7 @@ export const useRegimenContext = () => {
 };
 
 export function RegimenProvider({ children }: { children: React.ReactNode }) {
-  const [opioidNaive, setOpioidNaive] = useState(false);
+  const [opioidNaive, setOpioidNaiveState] = useState(false);
   const [homeRows, setHomeRows] = useState<HomeMedRow[]>([
     { id: generateUniqueId(), isPRN: false },
   ]);
@@ -54,6 +53,25 @@ export function RegimenProvider({ children }: { children: React.ReactNode }) {
     );
   }, []);
 
+  const setOpioidNaive = useCallback(
+    (value: boolean | ((prev: boolean) => boolean)) => {
+      setOpioidNaiveState((prev) => {
+        const next = typeof value === "function" ? (value as (prev: boolean) => boolean)(prev) : value;
+        setHomeRows((current) => {
+          if (next) {
+            return [];
+          }
+          if (current.length === 0) {
+            return [{ id: generateUniqueId(), isPRN: false }];
+          }
+          return current;
+        });
+        return next;
+      });
+    },
+    []
+  );
+
   const addHomeRow = useCallback(() => {
     if (opioidNaive) return;
     setHomeRows((prev) => [...prev, { id: generateUniqueId(), isPRN: false }]);
@@ -62,14 +80,6 @@ export function RegimenProvider({ children }: { children: React.ReactNode }) {
   const removeHomeRow = useCallback((id: string) => {
     setHomeRows((prev) => prev.filter((r) => r.id !== id));
   }, []);
-
-  useEffect(() => {
-    if (opioidNaive) {
-      setHomeRows([]);
-    } else if (!opioidNaive && homeRows.length === 0) {
-      setHomeRows([{ id: generateUniqueId(), isPRN: false }]);
-    }
-  }, [opioidNaive]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const { ome, details, apapDailyMg } = useMemo(
     () => totalHomeOME(homeRows),
@@ -124,6 +134,7 @@ export function RegimenProvider({ children }: { children: React.ReactNode }) {
       details,
       apapDailyMg,
       opioidNaive,
+      setOpioidNaive,
       homeRows,
       updateHomeRow,
       addHomeRow,

@@ -1,12 +1,10 @@
 // src/components/RegimenSummary.tsx
 
 "use client";
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo, useState } from "react";
 import { useRegimenContext } from "../context/RegimenContext";
-import { Opioid } from "../types";
 import { OPIOID_LABELS, ROUTE_LABELS } from "../utils/constants";
-import { fmtDose, copyToClipboard } from "../utils/conversionLogic";
-import { Switch } from "./ui/Switch"; // Kept for general use, but not for PRN visibility
+import { copyToClipboard } from "../utils/conversionLogic";
 
 export function RegimenSummary() { // Removed showPrnArea and setShowPrnArea from props
   const {
@@ -19,15 +17,8 @@ export function RegimenSummary() { // Removed showPrnArea and setShowPrnArea fro
     needGeneral,
   } = useRegimenContext();
 
-  // --- HYDRATION FIX: Use state to track if the component has mounted on the client ---
-  const [isMounted, setIsMounted] = useState(false);
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
-  // ---------------------------------------------------------------------------------
+  const isMounted = typeof window !== "undefined";
 
-  const [includePrn, setIncludePrn] = useState(true); // Now this state is about showing PRN details, not visibility of the whole section
-  // FIX: Removed hideText state and its toggle
   const [copied, setCopied] = useState(false);
 
   // find actual ER/LA rows
@@ -70,7 +61,7 @@ export function RegimenSummary() { // Removed showPrnArea and setShowPrnArea fro
       }
     }
 
-    // 2. PRN section - Always included, but controlled by 'includePrn' toggle
+    // 2. PRN section
     lines.push("2. PRN pain regimen:");
     lines.push(
       `> Mod: ${prnRows.moderate?.text ? prnRows.moderate.text : "—"}`
@@ -108,10 +99,9 @@ export function RegimenSummary() { // Removed showPrnArea and setShowPrnArea fro
   }, [
     erStrings,
     continueER,
-    includePrn, // This state is still used to control PRN section details
-    prnRows.moderate?.text,
-    prnRows.severe?.text,
-    prnRows.breakthrough?.text,
+    prnRows.moderate,
+    prnRows.severe,
+    prnRows.breakthrough,
     needGeneral,
     needNeuropathic,
     needSpasm,

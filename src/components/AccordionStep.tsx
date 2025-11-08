@@ -1,7 +1,7 @@
 // src/components/AccordionStep.tsx
 
 import React from "react";
-import { ChevronDown, Check, X } from "lucide-react";
+import { ChevronDown, Check } from "lucide-react";
 
 interface AccordionStepProps {
   step: number;

@@ -57,7 +57,7 @@ function AppContent() {
       {!isStep1Complete && (
         <div className="p-6 bg-gray-100 rounded-xl text-gray-500 flex items-center gap-2">
           <ChevronRight size={18} />
-          <span>Step 2 Locked: Complete Step 1 or check "Opioid-naïve" to continue.</span>
+          <span>Step 2 Locked: Complete Step 1 or check &quot;Opioid-naïve&quot; to continue.</span>
         </div>
       )}
 
