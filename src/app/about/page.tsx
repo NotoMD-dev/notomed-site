@@ -1,8 +1,10 @@
 // src/app/about/page.tsx
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
+import type { Metadata } from "next";
+import { aboutMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = aboutMetadata;
 
 export default function AboutPage() {
   return (
