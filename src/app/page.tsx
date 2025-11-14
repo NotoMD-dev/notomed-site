@@ -12,9 +12,18 @@ const CONFIG = {
   contactEmail: "yasmineabbey@gmail.com",
   opioidToolPath: "/tools/opioid-calc",
   hyponatremiaToolPath: "/tools/hypona-calc",
+  preopToolPath: "/tools/preop-note",
 };
 
-const TOOLS = [
+type ToolCard = {
+  id: string;
+  name: string;
+  description: string;
+  link: string;
+  isPlaceholder?: boolean;
+};
+
+const TOOLS: ToolCard[] = [
   {
     id: "opioid-tool",
     name: "Inpatient Opioid Regimen Builder",
@@ -29,10 +38,9 @@ const TOOLS = [
   },
   {
     id: "next-tool",
-    name: "AI powered pre-op risk stratifier  (pending)",
+    name: "AI powered pre-op risk stratifier",
     description: "Easy to use pre-op risk stratifier that can be copied and pasted to your EHR.",
-    link: "#feedback",
-    isPlaceholder: true,
+    link: CONFIG.preopToolPath,
   },
 ];
 
