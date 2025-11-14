@@ -11,6 +11,19 @@ import { QuickConvert } from "@/components/QuickConvert";
 import { Switch } from "@/components/ui/Switch";
 import { AccordionStep } from "@/components/AccordionStep";
 import { ChevronRight } from "lucide-react";
+import { createToolMetadata } from "@/lib/seo";
+
+export const metadata = createToolMetadata({
+  slug: "opioid-calc",
+  title: "Opioid Regimen Calculator",
+  description:
+    "Comprehensive opioid conversion calculator that helps clinicians build safe inpatient regimens with PRN, multimodal, and tapering guidance.",
+  keywords: [
+    "opioid conversion calculator",
+    "oral morphine equivalent",
+    "inpatient pain management tool",
+  ],
+});
 
 // =========================================================
 // Opioid Regimen Builder - v5.0.0 (UX Rework)

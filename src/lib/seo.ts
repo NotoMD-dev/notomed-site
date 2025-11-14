@@ -112,3 +112,64 @@ export const aboutMetadata: Metadata = {
 export function absoluteUrl(path: string) {
   return new URL(path, siteConfig.url).toString();
 }
+
+type ToolMetadataConfig = {
+  slug: string;
+  title: string;
+  description: string;
+  keywords?: string[];
+};
+
+export function createToolMetadata({
+  slug,
+  title,
+  description,
+  keywords = [],
+}: ToolMetadataConfig): Metadata {
+  const canonicalPath = `/tools/${slug}`;
+  const absoluteCanonical = absoluteUrl(canonicalPath);
+
+  const keywordSet = new Set<string>([
+    ...siteConfig.keywords,
+    title,
+    `${title} tool`,
+    `${title} calculator`,
+    ...keywords,
+  ]);
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: absoluteCanonical,
+    },
+    keywords: Array.from(keywordSet),
+    openGraph: {
+      type: "website",
+      url: absoluteCanonical,
+      title,
+      description,
+      siteName: siteConfig.name,
+      images: [
+        {
+          url: siteConfig.socialImage,
+          width: 1200,
+          height: 630,
+          alt: `${siteConfig.name} social card`,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      creator: siteConfig.founder.twitter,
+      site: siteConfig.founder.twitter,
+      images: [siteConfig.socialImage],
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
