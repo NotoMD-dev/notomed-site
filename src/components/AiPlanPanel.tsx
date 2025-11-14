@@ -1,4 +1,3 @@
-"use client";
 
 import { useEffect, useMemo, useState } from "react";
 import type { StructuredData } from "@/lib/getAIPlan";
@@ -9,8 +8,10 @@ const SECURE_CTX =
 
 export default function AiPlanPanel({
   getData,
+  onText,
 }: {
   getData: () => StructuredData;
+  onText?: (text: string) => void;
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,21 +48,46 @@ export default function AiPlanPanel({
     setError(null);
     setLoading(true);
     try {
+      const data = getData(); // payload from the pre-op tool
+  
       const resp = await fetch("/api/ai-plan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      const json = await resp.json();
-      if (!resp.ok) throw new Error(json?.error || "LLM error");
-      setText(json.fullText || "");
+  
+      // Read raw text first so we can handle non-JSON responses gracefully
+      const raw = await resp.text();
+  
+      let json: any = null;
+      if (raw) {
+        try {
+          json = JSON.parse(raw);
+        } catch (parseErr) {
+          console.error("Failed to parse /api/ai-plan JSON:", parseErr, raw);
+          throw new Error(
+            raw || "Non-JSON response from /api/ai-plan (see console)."
+          );
+        }
+      }
+  
+      if (!resp.ok) {
+        const messageFromServer = json?.error || raw || `LLM error (${resp.status})`;
+        throw new Error(messageFromServer);
+      }
+  
+      const full = json?.fullText || "";
+      setText(full);
+      if (onText) onText(full);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Failed to generate plan";
+      const message =
+        error instanceof Error ? error.message : "Failed to generate plan";
       setError(message);
     } finally {
       setLoading(false);
     }
-  }
+  }  
+  
 
   return (
     <div className="rounded-2xl border p-4 shadow-sm bg-white">
