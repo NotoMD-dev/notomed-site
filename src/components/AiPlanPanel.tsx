@@ -1,24 +1,54 @@
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import type { StructuredData } from "@/lib/getAIPlan";
+import type { PreopAIRequest } from "@/types/preop";
 
 const SECURE_CTX =
   typeof window !== "undefined" &&
   (window.isSecureContext || window.location.hostname === "localhost");
 
+type AiPlanPayload = StructuredData | PreopAIRequest;
+
+interface AiPlanPanelProps {
+  getData: () => AiPlanPayload;
+  onText?: (text: string) => void;
+}
+
+interface AiPlanErrorResponse {
+  error: string;
+}
+
+interface AiPlanSuccessResponse {
+  fullText?: string;
+  computed?: unknown;
+}
+
+function isAiPlanErrorResponse(value: unknown): value is AiPlanErrorResponse {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    typeof (value as { error?: unknown }).error === "string"
+  );
+}
+
+function isAiPlanSuccessResponse(
+  value: unknown
+): value is AiPlanSuccessResponse {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    ("fullText" in value || "computed" in value)
+  );
+}
+
 export default function AiPlanPanel({
   getData,
   onText,
-}: {
-  getData: () => StructuredData;
-  onText?: (text: string) => void;
-}) {
+}: AiPlanPanelProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [text, setText] = useState<string>("");
   const [copied, setCopied] = useState(false);
-
-  const data = useMemo(() => getData(), [getData]);
 
   useEffect(() => setCopied(false), [text]);
 
@@ -59,10 +89,10 @@ export default function AiPlanPanel({
       // Read raw text first so we can handle non-JSON responses gracefully
       const raw = await resp.text();
   
-      let json: any = null;
+      let json: unknown = null;
       if (raw) {
         try {
-          json = JSON.parse(raw);
+          json = JSON.parse(raw) as unknown;
         } catch (parseErr) {
           console.error("Failed to parse /api/ai-plan JSON:", parseErr, raw);
           throw new Error(
@@ -70,13 +100,17 @@ export default function AiPlanPanel({
           );
         }
       }
-  
+
       if (!resp.ok) {
-        const messageFromServer = json?.error || raw || `LLM error (${resp.status})`;
+        const messageFromServer = isAiPlanErrorResponse(json)
+          ? json.error
+          : raw || `LLM error (${resp.status})`;
         throw new Error(messageFromServer);
       }
-  
-      const full = json?.fullText || "";
+
+      const full = isAiPlanSuccessResponse(json) && typeof json.fullText === "string"
+        ? json.fullText
+        : "";
       setText(full);
       if (onText) onText(full);
     } catch (error) {

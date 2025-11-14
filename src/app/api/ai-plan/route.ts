@@ -9,6 +9,7 @@ import {
   type AIPlan,
 } from "@/lib/planEngine";
 import type { StructuredData, Hx } from "@/lib/getAIPlan";
+import type { PreopAIRequest } from "@/types/preop";
 
 /* ---------------- Rate limit ---------------- */
 const limiter = new RateLimiterMemory({ points: 20, duration: 60 });
@@ -207,9 +208,9 @@ function buildHistoryTags(
   }
 
   // legacy flat flags
-  if ((d as any)?.heartFailureHx) out.add("congestive heart failure");
-  if ((d as any)?.cirrhosisHx) out.add("cirrhosis with portal hypertension");
-  if ((d as any)?.ckdHx) out.add("chronic kidney disease");
+  if (d.heartFailureHx) out.add("congestive heart failure");
+  if (d.cirrhosisHx) out.add("cirrhosis with portal hypertension");
+  if (d.ckdHx) out.add("chronic kidney disease");
 
   return Array.from(out);
 }
@@ -246,31 +247,31 @@ function buildFactsForLLM(
 /**
  * Shape: whatever you send from the pre-op tool.
  */
-function buildPreopFacts(body: any) {
-  const extras = body?.extras ?? {};
+function buildPreopFacts(body: PreopAIRequest) {
+  const extras = body.extras;
   return {
-    baseNote: body?.draft ?? "",
-    meta: body?.meta ?? {},
-    activeConditions: body?.activeConditions ?? {},
-    meds: body?.meds ?? {},
-    functional: body?.functional ?? {},
+    baseNote: body.draft,
+    meta: body.meta,
+    activeConditions: body.activeConditions,
+    meds: body.meds,
+    functional: body.functional,
     flags: {
-      bleedingRisk: !!extras.bleedingRisk,
-      infectiousRisk: !!extras.infectiousRisk,
-      cirrhosis: !!extras.cirrhosis,
-      alcoholUse: !!extras.alcoholUse,
-      opioidUse: !!extras.opioidUse,
-      onChronicSteroids: !!extras.onChronicSteroids,
+      bleedingRisk: Boolean(extras.bleedingRisk),
+      infectiousRisk: Boolean(extras.infectiousRisk),
+      cirrhosis: Boolean(extras.cirrhosis),
+      alcoholUse: Boolean(extras.alcoholUse),
+      opioidUse: Boolean(extras.opioidUse),
+      onChronicSteroids: Boolean(extras.onChronicSteroids),
     },
     extras: {
       vocalPennPct:
         typeof extras.vocalPennPct === "number" ? extras.vocalPennPct : null,
-      infectiousDx: extras.infectiousDx || "",
-      additionalNotes: extras.additionalNotes || "",
+      infectiousDx: extras.infectiousDx ?? "",
+      additionalNotes: extras.additionalNotes ?? "",
     },
     freeText: {
-      infectiousDx: extras.infectiousDx || "",
-      additionalNotes: extras.additionalNotes || "",
+      infectiousDx: extras.infectiousDx ?? "",
+      additionalNotes: extras.additionalNotes ?? "",
     },
   };
 }
@@ -283,7 +284,7 @@ async function callOpenAI_AP({
   facts,
   style,
 }: {
-  facts: any;
+  facts: unknown;
   style: string;
 }) {
   const system =
@@ -317,8 +318,12 @@ Produce the final Assessment & Plan now, fully expanded, following STYLE exactly
   });
 
   if (!resp.ok) throw new Error(await resp.text());
-  const json = await resp.json();
-  const text = json?.choices?.[0]?.message?.content?.trim();
+  const json = (await resp.json()) as {
+    choices?: Array<{
+      message?: { content?: string | null } | null;
+    }>;
+  };
+  const text = json.choices?.[0]?.message?.content?.trim();
   if (!text) throw new Error("No content from model.");
   return text;
 }
@@ -338,7 +343,7 @@ export async function POST(req: NextRequest) {
   }
 
   // read + scrub
-  let body: any;
+  let body: unknown;
   try {
     body = scrub(await req.json());
   } catch {
@@ -346,7 +351,7 @@ export async function POST(req: NextRequest) {
   }
 
   /* ---------- PRE-OP LANE (context === "preop") ---------- */
-  if (body && typeof body === "object" && body.context === "preop") {
+  if (isPreopRequest(body)) {
     try {
       const facts = buildPreopFacts(body);
       const fullText = await callOpenAI_AP({
@@ -400,5 +405,36 @@ function isStructuredDataPayload(
   return (
     typeof candidate.measuredNa === "number" &&
     Number.isFinite(candidate.measuredNa)
+  );
+}
+
+function isPreopRequest(value: unknown): value is PreopAIRequest {
+  if (typeof value !== "object" || value === null) return false;
+  const candidate = value as {
+    context?: unknown;
+    meta?: unknown;
+    activeConditions?: unknown;
+    meds?: unknown;
+    functional?: unknown;
+    extras?: unknown;
+    draft?: unknown;
+  };
+
+  const hasValidMeta = typeof candidate.meta === "object" && candidate.meta !== null;
+  const hasValidActiveConditions =
+    typeof candidate.activeConditions === "object" && candidate.activeConditions !== null;
+  const hasValidMeds = typeof candidate.meds === "object" && candidate.meds !== null;
+  const hasValidFunctional =
+    typeof candidate.functional === "object" && candidate.functional !== null;
+  const hasValidExtras = typeof candidate.extras === "object" && candidate.extras !== null;
+
+  return (
+    candidate.context === "preop" &&
+    typeof candidate.draft === "string" &&
+    hasValidMeta &&
+    hasValidActiveConditions &&
+    hasValidMeds &&
+    hasValidFunctional &&
+    hasValidExtras
   );
 }
