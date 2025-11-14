@@ -1,75 +1,18 @@
 "use client";
 
 import React, { useEffect, useMemo, useState, useCallback } from "react";
+import Link from "next/link";
 import AiPlanPanel from "@/components/AiPlanPanel";
+import type {
+  Antiplatelet,
+  Anticoagulant,
+  PreopAIRequest,
+  PreopInputState as InputState,
+  ProcedureRisk,
+  Urgency,
+} from "@/types/preop";
 
 // Pre-Op QuickNote — v2.6 (Guided Flow + risk extras + AI)
-
-// ===== Types =====
-type ProcedureRisk = "Low" | "Intermediate" | "High";
-type Urgency = "Elective" | "Time-sensitive" | "Emergency";
-
-type Anticoagulant =
-  | "none"
-  | "warfarin"
-  | "apixaban"
-  | "rivaroxaban"
-  | "dabigatran"
-  | "edoxaban";
-
-type Antiplatelet = "aspirin" | "clopidogrel" | "prasugrel" | "ticagrelor";
-
-interface InputState {
-  procedureRisk: ProcedureRisk;
-  urgency: Urgency;
-  activeConditions: {
-    unstableAnginaACS: boolean;
-    recentMI: boolean;
-    decompHF: boolean;
-    significantArrhythmia: boolean;
-    advancedAVBlock: boolean;
-    severeValve: boolean;
-  };
-  rcri: {
-    highRiskSurgery: boolean;
-    ischemicHD: boolean;
-    heartFailure: boolean;
-    cerebrovascular: boolean;
-    insulinDM: boolean;
-    creatGt2: boolean;
-  };
-  functional: {
-    daisScore?: number;
-    canClimbTwoFlights?: boolean;
-  };
-  meds: {
-    betaBlocker: boolean;
-    statin: boolean;
-    sglt2: boolean;
-    anticoagulant: Anticoagulant;
-    antiplatelets: Record<Antiplatelet, boolean>;
-  };
-  priorRevasc: { pciDate?: string; cabgDate?: string };
-  labs: {
-    creatinine?: string;
-    hgba1c?: string;
-    ecgDate?: string;
-    troponin?: string;
-    bnp?: string;
-  };
-  nsqipCpt?: string;
-  extras: {
-    bleedingRisk: boolean;
-    infectiousRisk: boolean;
-    infectiousDx?: string;
-    onChronicSteroids: boolean;
-    cirrhosis: boolean;
-    alcoholUse: boolean;
-    opioidUse: boolean;
-    additionalNotes?: string;
-    vocalPennPct?: number;
-  };
-}
 
 // ===== Helpers & Logic =====
 const rcriRiskTable = (rcri: number): string => {
@@ -112,6 +55,38 @@ function antiplateletList(
 ): Antiplatelet[] {
   return (Object.keys(aps) as Antiplatelet[]).filter((k) => aps[k]);
 }
+
+const ACTIVE_CONDITION_OPTIONS = [
+  ["Unstable angina / ACS", "unstableAnginaACS"],
+  ["Recent MI", "recentMI"],
+  ["Decompensated HF", "decompHF"],
+  ["Significant arrhythmia", "significantArrhythmia"],
+  ["Advanced AV block", "advancedAVBlock"],
+  ["Severe valve disease (AS/MS)", "severeValve"],
+] as const satisfies ReadonlyArray<
+  readonly [string, keyof InputState["activeConditions"]]
+>;
+
+const RCRI_OPTIONS = [
+  ["High-risk surgery", "highRiskSurgery"],
+  ["Ischemic heart disease", "ischemicHD"],
+  ["Heart failure", "heartFailure"],
+  ["Cerebrovascular disease", "cerebrovascular"],
+  ["Insulin-treated diabetes", "insulinDM"],
+  ["Creatinine greater than 2 mg/dL", "creatGt2"],
+] as const satisfies ReadonlyArray<
+  readonly [string, keyof InputState["rcri"]]
+>;
+
+const EXTRA_FLAG_OPTIONS = [
+  ["Bleeding disorder / bleeding risk", "bleedingRisk"],
+  ["Infectious risk / immunosuppression", "infectiousRisk"],
+  ["Cirrhosis / chronic liver disease", "cirrhosis"],
+  ["Alcohol use disorder / risk for withdrawal", "alcoholUse"],
+  ["Opioid use disorder / chronic opioids", "opioidUse"],
+] as const satisfies ReadonlyArray<
+  readonly [string, keyof InputState["extras"]]
+>;
 
 function evaluate(inputs: InputState) {
   const rcriScore = computeRCRI(inputs.rcri);
@@ -499,8 +474,8 @@ export default function PreOpQuickNoteDemo() {
     }
   };
 
-  const getAIData = useCallback(() => {
-    return {
+  const getAIData = useCallback<() => PreopAIRequest>(
+    () => ({
       context: "preop",
       meta: {
         procedureRisk: state.procedureRisk,
@@ -514,8 +489,9 @@ export default function PreOpQuickNoteDemo() {
       functional: state.functional,
       extras: state.extras,
       draft: note,
-    } as any;
-  }, [state, rcriScore, note]);
+    }),
+    [state, rcriScore, note]
+  );
 
   // Sanity check
   useEffect(() => {
@@ -638,26 +614,17 @@ export default function PreOpQuickNoteDemo() {
           hint="Any yes ⇒ stabilize before surgery."
         />
         <div className="flex flex-wrap gap-2">
-          {(
-            [
-              ["Unstable angina / ACS", "unstableAnginaACS"],
-              ["Recent MI", "recentMI"],
-              ["Decompensated HF", "decompHF"],
-              ["Significant arrhythmia", "significantArrhythmia"],
-              ["Advanced AV block", "advancedAVBlock"],
-              ["Severe valve disease (AS/MS)", "severeValve"],
-            ] as const
-          ).map(([label, key]) => (
+          {ACTIVE_CONDITION_OPTIONS.map(([label, key]) => (
             <Chip
               key={key}
-              active={(state.activeConditions as any)[key]}
+              active={state.activeConditions[key]}
               onClick={() =>
                 setState((s) => ({
                   ...s,
                   activeConditions: {
                     ...s.activeConditions,
-                    [key]: !(s.activeConditions as any)[key],
-                  } as any,
+                    [key]: !s.activeConditions[key],
+                  },
                 }))
               }
             >
@@ -714,19 +681,10 @@ export default function PreOpQuickNoteDemo() {
           hint="Check the factors that apply. High-risk surgery is controlled by Step 1."
         />
         <div className="flex flex-wrap gap-2">
-          {(
-            [
-              ["High-risk surgery", "highRiskSurgery"],
-              ["Ischemic heart disease", "ischemicHD"],
-              ["Heart failure", "heartFailure"],
-              ["Cerebrovascular disease", "cerebrovascular"],
-              ["Insulin-treated diabetes", "insulinDM"],
-              ["Creatinine greater than 2 mg/dL", "creatGt2"],
-            ] as const
-          ).map(([label, key]) => (
+          {RCRI_OPTIONS.map(([label, key]) => (
             <Chip
               key={key}
-              active={(state.rcri as any)[key]}
+              active={state.rcri[key]}
               disabled={
                 key === "highRiskSurgery" &&
                 state.procedureRisk !== "High"
@@ -736,8 +694,8 @@ export default function PreOpQuickNoteDemo() {
                   ...s,
                   rcri: {
                     ...s.rcri,
-                    [key]: !(s.rcri as any)[key],
-                  } as any,
+                    [key]: !s.rcri[key],
+                  },
                 }))
               }
             >
@@ -1005,28 +963,17 @@ export default function PreOpQuickNoteDemo() {
         hint="Only check what applies — note sections auto-populate."
       />
       <div className="flex flex-wrap gap-2 mb-3">
-        {(
-          [
-            ["Bleeding disorder / bleeding risk", "bleedingRisk"],
-            ["Infectious risk / immunosuppression", "infectiousRisk"],
-            ["Cirrhosis / chronic liver disease", "cirrhosis"],
-            [
-              "Alcohol use disorder / risk for withdrawal",
-              "alcoholUse",
-            ],
-            ["Opioid use disorder / chronic opioids", "opioidUse"],
-          ] as const
-        ).map(([label, key]) => (
+        {EXTRA_FLAG_OPTIONS.map(([label, key]) => (
           <Chip
             key={key}
-            active={(state.extras as any)[key]}
+            active={state.extras[key]}
             onClick={() =>
               setState((s) => ({
                 ...s,
                 extras: {
                   ...s.extras,
-                  [key]: !(s.extras as any)[key],
-                } as any,
+                  [key]: !s.extras[key],
+                },
               }))
             }
           >
@@ -1224,23 +1171,17 @@ export default function PreOpQuickNoteDemo() {
 
   // Sticky summary dock
   const SummaryDock = (
-    <div className="fixed left-0 right-0 bottom-0 z-10">
-      <div className="mx-auto max-w-3xl px-4 pb-4">
-        <div className="rounded-2xl border bg-white shadow-md px-4 py-2 flex items-center justify-between">
+    <div className="fixed left-0 right-0 bottom-0 z-30 pb-4">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
+        <div className="rounded-2xl border border-gray-200 bg-white/95 shadow-lg backdrop-blur-sm px-4 py-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div className="text-xs text-gray-700">
-            <span className="font-semibold mr-2">
-              RCRI {rcriScore}
-            </span>
-            <span className="mr-2">
-              ({rcriRiskTable(rcriScore)})
-            </span>
-            <span className="text-gray-500">
-              Decision: {decision.decision}
-            </span>
+            <span className="font-semibold mr-2">RCRI {rcriScore}</span>
+            <span className="mr-2">({rcriRiskTable(rcriScore)})</span>
+            <span className="text-gray-500">Decision: {decision.decision}</span>
           </div>
           <button
             onClick={() => setCurrent(TOTAL_STEPS)}
-            className="text-xs underline"
+            className="text-xs font-medium text-indigo-700 hover:text-indigo-900"
           >
             Jump to note
           </button>
@@ -1250,18 +1191,30 @@ export default function PreOpQuickNoteDemo() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white text-gray-900">
-      <div className="max-w-3xl mx-auto px-4 py-6">
-        <header className="mb-4">
-          <h1 className="text-2xl md:text-3xl font-extrabold tracking-tight">
-            Pre-Op QuickNote - Guided
-          </h1>
-          <p className="text-sm text-gray-600 mt-1">
-            One step at a time. Minimal clicks. Guideline-gated output.
-          </p>
-        </header>
+    <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 border border-gray-300 bg-white/80 px-4 py-2 text-sm font-medium tracking-tight hover:bg-gray-100 transition"
+        >
+          ← Back to NotoMed.dev
+        </Link>
+      </div>
 
-        <div className="space-y-4 pb-24">
+      <header className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 mb-8">
+        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+          Pre-Op QuickNote &amp; Risk Stratifier
+        </h1>
+        <p className="mt-2 text-base text-gray-600">
+          A guided workflow for perioperative risk assessment with copy-ready documentation.
+        </p>
+        <p className="text-xs text-gray-800 italic mt-2">
+          This tool is a clinical aid and does not replace clinical judgement. Verify all recommendations with patient-specific factors.
+        </p>
+      </header>
+
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-32">
+        <div className="space-y-4">
           {current === 1 && Step1}
           {current === 2 && Step2}
           {current === 3 && Step3}
@@ -1270,7 +1223,7 @@ export default function PreOpQuickNoteDemo() {
           {current === 6 && Step6}
           {current === 7 && Step7}
         </div>
-      </div>
+      </main>
 
       {current >= 3 && SummaryDock}
     </div>
