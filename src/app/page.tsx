@@ -15,7 +15,15 @@ const CONFIG = {
   preopToolPath: "/tools/preop-note",
 };
 
-const TOOLS = [
+type ToolCard = {
+  id: string;
+  name: string;
+  description: string;
+  link: string;
+  isPlaceholder?: boolean;
+};
+
+const TOOLS: ToolCard[] = [
   {
     id: "opioid-tool",
     name: "Inpatient Opioid Regimen Builder",
