@@ -28,7 +28,7 @@ const TOOLS: Tool[] = [
     description: "Build a custom inpatient opiate regimen with safety checks.",
     path: CONFIG.opioidToolPath,
     category: "Analgesia",
-    createdAt: "2024-06-01",
+    createdAt: "2023-08-15",
     lastUpdated: "2025-11-10",
   },
   {
@@ -37,18 +37,17 @@ const TOOLS: Tool[] = [
     description: "Guided thinking for low sodium with safety in mind.",
     path: CONFIG.hyponatremiaToolPath,
     category: "Electrolytes",
-    createdAt: "2024-08-15",
+    createdAt: "2023-06-01",
     lastUpdated: "2025-11-05",
   },
   {
     id: "preop-tool",
     name: "AI-powered Pre-op Risk Stratifier",
     description: "Simple pre-op risk write-up you can paste into the EHR.",
-    path: "#feedback",
+    path: CONFIG.preopToolPath,
     category: "Peri-op",
-    isPlaceholder: true,
     isNew: true,
-    createdAt: "2025-01-20",
+    createdAt: "2024-02-01",
     lastUpdated: "2025-11-14",
   },
   {
@@ -59,7 +58,7 @@ const TOOLS: Tool[] = [
     category: "Endocrine",
     isPlaceholder: true,
     isNew: true,
-    createdAt: "2025-02-10",
+    createdAt: "2024-05-01",
     lastUpdated: "2025-11-01",
   },
 ];
@@ -103,9 +102,23 @@ function sortTools(tools: Tool[], sortKey: SortKey): Tool[] {
         (a, b) => +new Date(b.lastUpdated) - +new Date(a.lastUpdated),
       );
     case "created":
-      return cloned.sort(
-        (a, b) => +new Date(b.createdAt) - +new Date(a.createdAt),
-      );
+      return cloned.sort((a, b) => {
+        const aTime = new Date(a.createdAt).getTime();
+        const bTime = new Date(b.createdAt).getTime();
+
+        const aInvalid = Number.isNaN(aTime);
+        const bInvalid = Number.isNaN(bTime);
+
+        if (aInvalid && bInvalid) return 0;
+        if (aInvalid) return 1;
+        if (bInvalid) return -1;
+
+        if (aTime === bTime) {
+          return a.name.localeCompare(b.name);
+        }
+
+        return aTime - bTime;
+      });
     case "alphabetical":
     default:
       return cloned.sort((a, b) => a.name.localeCompare(b.name));
@@ -148,10 +161,9 @@ export default function ToolsPage() {
         <div className="mb-4 text-xs">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white/80 px-4 py-2 text-sm font-medium tracking-tight text-gray-700 transition hover:bg-gray-100"
+            className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-white px-4 py-2 text-sm font-semibold text-indigo-700 tracking-tight shadow-sm transition hover:border-indigo-300 hover:bg-indigo-50"
           >
-            <span aria-hidden>←</span>
-            Back to notomed.dev
+            ← Back to NotoMed.dev
           </Link>
         </div>
 
