@@ -585,7 +585,7 @@ export default function PreOpQuickNoteDemo() {
         ))}
       </div>
 
-      <div className="mb-2 text-xs text-gray-600">Urgency</div>
+      <div className="mb-2 text-xs text-indigo-700">Urgency</div>
       <div className="flex flex-wrap gap-2">
         {["Elective", "Time-sensitive", "Emergency"].map((x) => (
           <Chip
@@ -799,7 +799,7 @@ export default function PreOpQuickNoteDemo() {
         </Chip>
       </div>
       <label className="block mt-2">
-        <div className="text-xs text-gray-600 mb-1">
+        <div className="text-xs text-indigo-700 mb-1">
           DASI score (optional)
         </div>
         <input
@@ -883,7 +883,7 @@ export default function PreOpQuickNoteDemo() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
         <label className="block">
-          <div className="text-xs text-gray-600 mb-1">
+          <div className="text-xs text-indigo-700 mb-1">
             Anticoagulant
           </div>
           <select
@@ -914,7 +914,7 @@ export default function PreOpQuickNoteDemo() {
           </select>
         </label>
         <div>
-          <div className="text-xs text-gray-600 mb-1">
+          <div className="text-xs text-indigo-700 mb-1">
             Antiplatelets
           </div>
           <div className="flex flex-wrap gap-2">
@@ -998,7 +998,7 @@ export default function PreOpQuickNoteDemo() {
         {/* Show VOCAL-Penn only if cirrhosis is checked */}
         {state.extras.cirrhosis && (
           <label className="block">
-            <div className="text-xs text-gray-600 mb-1">
+            <div className="text-xs text-indigo-700 mb-1">
               VOCAL-Penn (30-day mortality, %)
             </div>
             <input
@@ -1046,7 +1046,7 @@ export default function PreOpQuickNoteDemo() {
 
       {/* Infectious free-text */}
       <label className="block mt-3">
-        <div className="text-xs text-gray-600 mb-1">
+        <div className="text-xs text-indigo-700 mb-1">
           Infectious disease Dx / concern (optional)
         </div>
         <input
@@ -1068,7 +1068,7 @@ export default function PreOpQuickNoteDemo() {
 
       {/* Additional free-notes */}
       <label className="block mt-3">
-        <div className="text-xs text-gray-600 mb-1">
+        <div className="text-xs text-indigo-700 mb-1">
           Additional notes to include (optional)
         </div>
         <textarea
@@ -1208,7 +1208,7 @@ export default function PreOpQuickNoteDemo() {
       <div className="max-w-6xl mx-auto mb-4">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 border border-gray-300 bg-white/80 px-4 py-2 text-sm font-medium tracking-tight hover:bg-gray-100 transition"
+          className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-white/80 px-4 py-2 text-sm font-semibold text-indigo-700 tracking-tight shadow-sm transition hover:bg-indigo-50 hover:border-indigo-300"
         >
           ← Back to NotoMed.dev
         </Link>
