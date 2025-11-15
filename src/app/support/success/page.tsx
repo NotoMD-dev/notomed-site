@@ -11,7 +11,7 @@ export default function SupportSuccessPage() {
         </p>
         <Link
           href="/"
-          className="inline-flex items-center gap-2 border border-gray-300 bg-white px-4 py-2 text-sm hover:bg-gray-100"
+          className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-white px-4 py-2 text-sm font-semibold tracking-tight text-indigo-700 shadow-sm transition hover:border-indigo-300 hover:bg-indigo-50"
         >
           ← Back to NotoMed.dev
         </Link>

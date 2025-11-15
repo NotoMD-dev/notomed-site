@@ -106,12 +106,12 @@ export default function OpioidConversionPage() {
     <RegimenProvider>
       <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8 font-sans text-gray-800">
         {/* BACK BUTTON (top-left, like About) */}
-        <div className="max-w-6xl mx-auto mb-4">
+        <div className="mx-auto mb-4 max-w-6xl">
           <Link
-            href="/"
-            className="inline-flex items-center gap-2 border border-gray-300 bg-white/80 px-4 py-2 text-sm font-medium tracking-tight hover:bg-gray-100 transition"
+            href="/tools"
+            className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-white px-4 py-2 text-sm font-semibold tracking-tight text-indigo-700 shadow-sm transition hover:border-indigo-300 hover:bg-indigo-50"
           >
-            ← Back to NotoMed.dev
+            ← Back to Tools
           </Link>
         </div>
 
