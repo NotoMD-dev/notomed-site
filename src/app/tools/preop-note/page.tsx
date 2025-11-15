@@ -332,7 +332,7 @@ function StepHeader({
 }) {
   return (
     <div className="mb-4">
-      <div className="mb-3 flex items-center justify-between">
+      <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="text-[11px] font-semibold uppercase tracking-wide text-indigo-400">
           Step {step} of {total}
         </div>
@@ -380,7 +380,7 @@ function Chip({
 
 function Box({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-indigo-100/70 bg-white shadow-[0_18px_45px_-32px_rgba(79,70,229,0.25)] p-6">
+    <div className="rounded-2xl border border-indigo-100/70 bg-white shadow-[0_18px_45px_-32px_rgba(79,70,229,0.25)] p-4 sm:p-6">
       {children}
     </div>
   );
@@ -396,9 +396,9 @@ function BinaryChipGroup({
   onChange: (v: boolean) => void;
 }) {
   return (
-    <div className="mb-2 flex items-center gap-2">
-      <div className="w-48 shrink-0 text-sm font-medium text-gray-800">{label}</div>
-      <div className="flex gap-2">
+    <div className="mb-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-2">
+      <div className="text-sm font-medium text-gray-800 sm:w-48 sm:shrink-0">{label}</div>
+      <div className="flex flex-wrap gap-2">
         <Chip active={value} onClick={() => onChange(true)}>
           Taking
         </Chip>
@@ -601,7 +601,7 @@ export default function PreOpQuickNoteDemo() {
         ))}
       </div>
 
-      <div className="mt-6 flex justify-end">
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-end">
         <button
           onClick={next}
           className={primaryButtonClass}
@@ -661,7 +661,7 @@ export default function PreOpQuickNoteDemo() {
             None
           </Chip>
         </div>
-        <div className="mt-6 flex justify-between">
+        <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
           <button
             onClick={back}
             className={secondaryButtonClass}
@@ -739,7 +739,7 @@ export default function PreOpQuickNoteDemo() {
           </span>{" "}
           ({rcriRiskTable(rcriScore)})
         </div>
-        <div className="mt-6 flex justify-between">
+        <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
           <button
             onClick={back}
             className={secondaryButtonClass}
@@ -824,7 +824,7 @@ export default function PreOpQuickNoteDemo() {
           placeholder="e.g., 36"
         />
       </label>
-      <div className="mt-6 flex justify-between">
+      <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
         <button
           onClick={back}
           className={secondaryButtonClass}
@@ -948,7 +948,7 @@ export default function PreOpQuickNoteDemo() {
           </div>
         </div>
       </div>
-      <div className="mt-6 flex justify-between">
+      <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
         <button
           onClick={back}
           className={secondaryButtonClass}
@@ -1088,7 +1088,7 @@ export default function PreOpQuickNoteDemo() {
         />
       </label>
 
-      <div className="mt-6 flex justify-between">
+      <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
         <button
           onClick={back}
           className={secondaryButtonClass}
@@ -1143,14 +1143,14 @@ export default function PreOpQuickNoteDemo() {
         <AiPlanPanel getData={getAIData} onText={setAiText} />
       </div>
 
-      <div className="mt-6 flex justify-between">
+      <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
         <button
           onClick={back}
           className={secondaryButtonClass}
         >
           Back
         </button>
-        <div className="space-x-2">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:space-x-2">
           <button
             onClick={() => {
               setCurrent(1);
@@ -1187,7 +1187,7 @@ export default function PreOpQuickNoteDemo() {
     <div className="fixed left-0 right-0 bottom-0 z-30 pb-4">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="rounded-2xl border border-indigo-100/70 bg-indigo-50/70 shadow-lg backdrop-blur-sm px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <div className="text-xs text-gray-800">
+          <div className="text-xs text-gray-800 text-pretty">
             <span className="mr-2 font-semibold text-indigo-500">RCRI {rcriScore}</span>
             <span className="mr-2 text-gray-700">({rcriRiskTable(rcriScore)})</span>
             <span className="text-gray-700">Decision: {decision.decision}</span>
@@ -1205,7 +1205,7 @@ export default function PreOpQuickNoteDemo() {
 
   return (
     <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
-      <div className="max-w-5xl mx-auto px-6 pt-6 mb-4">
+      <div className="max-w-5xl mx-auto px-4 pt-6 mb-4 sm:px-6 lg:px-8">
         <Link
           href="/"
           className="inline-flex items-center gap-2 border border-gray-300 bg-white/80 px-4 py-2 text-sm font-medium tracking-tight text-gray-800 hover:bg-gray-100 transition"
@@ -1214,7 +1214,7 @@ export default function PreOpQuickNoteDemo() {
         </Link>
       </div>
 
-      <header className="max-w-5xl mx-auto px-6 mb-10">
+      <header className="max-w-5xl mx-auto px-4 mb-10 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
           Pre-Op QuickNote &amp; Risk Stratifier
         </h1>
@@ -1226,7 +1226,7 @@ export default function PreOpQuickNoteDemo() {
         </p>
       </header>
 
-      <main className="max-w-5xl mx-auto px-6 pb-32">
+      <main className="max-w-5xl mx-auto px-4 pb-32 sm:px-6 lg:px-8">
         <div className="space-y-6">
           {current === 1 && Step1}
           {current === 2 && Step2}
