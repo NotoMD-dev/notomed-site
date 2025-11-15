@@ -4,7 +4,9 @@ import OpioidCalcClient from "./client-page";
 import { absoluteUrl } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Opioid Conversion & Regimen Builder",
+  title: {
+    absolute: "Opioid Conversion & Regimen Builder",
+  },
   description:
     "Create safe inpatient opioid regimens with automatic oral morphine equivalents, taper guidance, and PRN suggestions.",
   alternates: {

@@ -4,7 +4,9 @@ import HyponaCalcClient from "./client-page";
 import { absoluteUrl } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Hyponatremia Calculator",
+  title: {
+    absolute: "Hyponatremia Calculator",
+  },
   description:
     "Guided hyponatremia workup with safety guardrails and differential support for inpatient teams.",
   alternates: {

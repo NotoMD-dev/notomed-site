@@ -4,7 +4,9 @@ import PreopNoteClient from "./client-page";
 import { absoluteUrl } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "AI Powered Pre-op Note Builder & Risk Stratifier",
+  title: {
+    absolute: "AI Powered Pre-op Note Builder & Risk Stratifier",
+  },
   description:
     "Generate complete pre-operative assessments with AI-assisted risk stratification, guideline prompts, and copy-ready notes.",
   alternates: {

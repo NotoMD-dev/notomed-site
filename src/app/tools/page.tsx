@@ -4,7 +4,9 @@ import ToolsDirectoryClient from "./client-page";
 import { absoluteUrl } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Clinical Tools Directory",
+  title: {
+    absolute: "Clinical Tools Directory",
+  },
   description:
     "Browse physician-built calculators and AI workflows for inpatient medicine, including opioid conversions, hyponatremia guidance, and pre-op planning.",
   alternates: {
