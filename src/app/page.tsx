@@ -150,9 +150,9 @@ const handleSupportSubmit = async (e: React.FormEvent) => {
               <Link href="/about" className="hover:text-black">
                 About
               </Link>
-              <a href="#tools" className="hover:text-black">
+              <Link href="/tools" className="hover:text-black">
                 Tools
-              </a>
+              </Link>
               <a href="#feedback" className="hover:text-black">
                 Feedback
               </a>
