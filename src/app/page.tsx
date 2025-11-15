@@ -5,15 +5,7 @@ import Link from "next/link";
 import { ChevronRight, Send, Heart, Mail, Linkedin } from "lucide-react";
 import React from "react";
 
-// === CONFIGURATION ===
-const CONFIG = {
-  linkedInUrl: "https://www.linkedin.com/in/yasmine-cheryl-abbey-503b3197/",
-  creatorName: "Yasmine Abbey, MD, MSc",
-  contactEmail: "yasmineabbey@gmail.com",
-  opioidToolPath: "/tools/opioid-calc",
-  hyponatremiaToolPath: "/tools/hypona-calc",
-  preopToolPath: "/tools/preop-note",
-};
+import { CONFIG } from "@/config/notomed-config";
 
 type ToolCard = {
   id: string;
@@ -35,12 +27,6 @@ const TOOLS: ToolCard[] = [
     name: "Hyponatremia Calculator",
     description: "Guided thinking for low sodium with safety in mind.",
     link: CONFIG.hyponatremiaToolPath,
-  },
-  {
-    id: "next-tool",
-    name: "AI powered pre-op risk stratifier",
-    description: "Easy to use pre-op risk stratifier that can be copied and pasted to your EHR.",
-    link: CONFIG.preopToolPath,
   },
 ];
 
@@ -158,9 +144,9 @@ const handleSupportSubmit = async (e: React.FormEvent) => {
               <Link href="/about" className="hover:text-black">
                 About
               </Link>
-              <a href="#tools" className="hover:text-black">
+              <Link href="/tools" className="hover:text-black">
                 Tools
-              </a>
+              </Link>
               <a href="#feedback" className="hover:text-black">
                 Feedback
               </a>
@@ -218,42 +204,50 @@ const handleSupportSubmit = async (e: React.FormEvent) => {
                   key={tool.id}
                   className={`p-6 border-t md:border-t-0 border-gray-300 ${
                     idx !== 0 ? "md:border-l" : ""
-                  } ${tool.isPlaceholder ? "bg-gray-100/70 text-gray-500" : ""}`}
+                  }`}
                 >
-                  <h2
-                    className={`text-sm font-semibold mb-1 ${
-                      tool.isPlaceholder ? "text-gray-600" : ""
-                    }`}
-                  >
+                  <h2 className="mb-1 text-sm font-semibold text-gray-800">
                     {tool.name}
                   </h2>
-                  <p
-                    className={`text-xs mb-4 leading-relaxed ${
-                      tool.isPlaceholder ? "text-gray-500" : "text-gray-600"
-                    }`}
-                  >
+                  <p className="mb-4 text-xs leading-relaxed text-gray-600">
                     {tool.description}
                   </p>
 
-                  {tool.isPlaceholder ? (
-                    <a
-                      href={tool.link}
-                      className="inline-flex items-center gap-1 text-xs font-semibold text-gray-600 hover:text-gray-800"
-                    >
-                      Suggest something else
-                      <ChevronRight className="w-3 h-3" />
-                    </a>
-                  ) : (
-                    <Link
-                      href={tool.link}
-                      className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-700 hover:text-indigo-900"
-                    >
-                      Open tool
-                      <ChevronRight className="w-3 h-3" />
-                    </Link>
-                  )}
+                  <Link
+                    href={tool.link}
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-700 hover:text-indigo-900"
+                  >
+                    Open tool
+                    <ChevronRight className="h-3 w-3" />
+                  </Link>
                 </div>
               ))}
+
+              <div className="border-t border-gray-300 p-6 md:border-l md:border-t-0">
+                <h2 className="mb-2 text-sm font-semibold text-gray-800">
+                  More tools
+                </h2>
+                <p className="mb-4 text-xs leading-relaxed text-gray-600">
+                  Explore the full directory of physician-built utilities or let
+                  us know what you&apos;d like to see next.
+                </p>
+                <div className="flex flex-col gap-2 text-xs font-semibold">
+                  <Link
+                    href="/tools"
+                    className="inline-flex items-center gap-1 text-indigo-700 hover:text-indigo-900"
+                  >
+                    Browse all tools
+                    <ChevronRight className="h-3 w-3" />
+                  </Link>
+                  <a
+                    href="#feedback"
+                    className="inline-flex items-center gap-1 text-gray-700 hover:text-gray-900"
+                  >
+                    Suggest something else
+                    <ChevronRight className="h-3 w-3" />
+                  </a>
+                </div>
+              </div>
             </div>
           </section>
 
