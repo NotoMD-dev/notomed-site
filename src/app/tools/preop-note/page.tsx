@@ -310,6 +310,15 @@ function composeNote(inputs: InputState) {
 }
 
 // ===== Small UI primitives =====
+// Keep these shared tokens aligned with the other calculators so the palette stays
+// consistent even if this file is re-merged later.
+const primaryButtonClass =
+  "rounded-xl bg-indigo-500 text-white px-4 py-2 text-sm font-semibold shadow-md transition hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:ring-offset-1";
+const secondaryButtonClass =
+  "rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-800 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-1";
+const fieldInputClass =
+  "w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-400";
+
 function StepHeader({
   step,
   total,
@@ -322,17 +331,17 @@ function StepHeader({
   hint?: string;
 }) {
   return (
-    <div className="mb-3">
-      <div className="flex items-center justify-between mb-2">
-        <div className="text-xs font-medium tracking-tight text-gray-500">
+    <div className="mb-4">
+      <div className="mb-3 flex items-center justify-between">
+        <div className="text-[11px] font-semibold uppercase tracking-wide text-indigo-500">
           Step {step} of {total}
         </div>
-        <div className="inline-flex items-center rounded-full bg-gray-900 text-white text-[10px] px-2 py-1">
+        <div className="inline-flex items-center rounded-full border border-indigo-100 bg-indigo-50 text-[10px] font-semibold text-indigo-600 px-3 py-1 shadow-sm">
           Pre-Op QuickNote
         </div>
       </div>
-      <h2 className="text-lg font-bold tracking-tight">{title}</h2>
-      {hint && <p className="text-xs text-gray-600 mt-1">{hint}</p>}
+      <h2 className="text-xl font-semibold text-gray-900 tracking-tight">{title}</h2>
+      {hint && <p className="mt-1 text-xs text-gray-600">{hint}</p>}
     </div>
   );
 }
@@ -348,18 +357,20 @@ function Chip({
   onClick?: () => void;
   disabled?: boolean;
 }) {
+  const base = "px-3 py-2 rounded-xl border text-sm font-semibold transition focus:outline-none";
+  const focus = disabled
+    ? ""
+    : "focus:ring-2 focus:ring-gray-200 focus:ring-offset-1";
+  const palette = disabled
+    ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed shadow-none"
+    : active
+    ? "bg-gray-900 text-white border-gray-900 shadow-md hover:bg-gray-800"
+    : "bg-white text-gray-800 border-gray-300 hover:bg-gray-50 hover:border-gray-400 shadow-sm";
   return (
     <button
       type="button"
       onClick={disabled ? undefined : onClick}
-      className={
-        "px-3 py-2 rounded-xl border text-sm transition " +
-        (disabled
-          ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
-          : active
-          ? "bg-gray-900 text-white border-gray-900"
-          : "bg-white text-gray-800 border-gray-300 hover:bg-gray-50")
-      }
+      className={`${base} ${focus} ${palette}`}
       title={disabled ? "Controlled by a previous step" : undefined}
     >
       {children}
@@ -369,7 +380,7 @@ function Chip({
 
 function Box({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-gray-200 bg-white shadow-sm p-4">
+    <div className="rounded-2xl border border-indigo-100 bg-white shadow-[0_18px_45px_-28px_rgba(79,70,229,0.35)] p-6">
       {children}
     </div>
   );
@@ -385,8 +396,8 @@ function BinaryChipGroup({
   onChange: (v: boolean) => void;
 }) {
   return (
-    <div className="flex items-center gap-2 mb-2">
-      <div className="text-sm text-gray-700 w-48 shrink-0">{label}</div>
+    <div className="mb-2 flex items-center gap-2">
+      <div className="w-48 shrink-0 text-sm font-medium text-gray-800">{label}</div>
       <div className="flex gap-2">
         <Chip active={value} onClick={() => onChange(true)}>
           Taking
@@ -516,37 +527,37 @@ export default function PreOpQuickNoteDemo() {
         hint="These two choices set the starting branch of the guideline."
       />
 
-      <div className="mb-2 text-sm text-gray-700 flex items-center gap-2">
-        <span className="font-medium">Procedure risk</span>
+      <div className="mb-2 flex items-center gap-2 text-sm text-gray-800">
+        <span className="font-medium text-gray-900">Procedure risk</span>
         <button
           type="button"
           aria-label="Examples"
           title="Click to toggle examples"
           onClick={() => setShowExamples((v) => !v)}
-          className="w-5 h-5 rounded-full border border-gray-300 text-[10px] leading-4 flex items-center justify-center"
+          className="flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 bg-white text-[11px] font-semibold leading-[22px] text-gray-700 transition hover:bg-gray-100"
         >
           ?
         </button>
       </div>
 
       {showExamples && (
-        <div className="text-sm text-gray-700 mb-3 rounded-lg border border-gray-200 bg-gray-50 p-3">
-          <div className="font-semibold mb-2">
+        <div className="mb-4 rounded-xl border border-indigo-100 bg-indigo-50/80 p-4 text-sm text-gray-800 shadow-inner">
+          <div className="mb-2 font-semibold text-gray-900">
             Examples by category
           </div>
           <div className="mb-1">
-            <span className="font-semibold">Low (&lt;1%):</span> cataract,
+            <span className="font-semibold text-gray-900">Low (&lt;1%):</span> cataract,
             superficial dermatologic, endoscopy/colonoscopy, minor dental,
             breast lumpectomy, ambulatory hernia repair.
           </div>
           <div className="mb-1">
-            <span className="font-semibold">Intermediate (1–5%):</span>{" "}
+            <span className="font-semibold text-gray-900">Intermediate (1–5%):</span>{" "}
             laparoscopic cholecystectomy/appendectomy, most general
             surgery, ortho (non-major spine), urologic (TURP, nephrectomy),
             gynecologic (hysterectomy), ENT, carotid endarterectomy.
           </div>
           <div>
-            <span className="font-semibold">High (&gt;5%):</span> major
+            <span className="font-semibold text-gray-900">High (&gt;5%):</span> major
             vascular (open AAA, aorto-bifemoral), thoracic, major abdominal
             with expected blood loss, transplant, long/complex spine.
           </div>
@@ -593,7 +604,7 @@ export default function PreOpQuickNoteDemo() {
       <div className="mt-6 flex justify-end">
         <button
           onClick={next}
-          className="rounded-xl border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+          className={primaryButtonClass}
         >
           Next
         </button>
@@ -653,13 +664,13 @@ export default function PreOpQuickNoteDemo() {
         <div className="mt-6 flex justify-between">
           <button
             onClick={back}
-            className="rounded-xl border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+            className={secondaryButtonClass}
           >
             Back
           </button>
           <button
             onClick={next}
-            className="rounded-xl border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+            className={primaryButtonClass}
           >
             Next
           </button>
@@ -721,7 +732,7 @@ export default function PreOpQuickNoteDemo() {
             None
           </Chip>
         </div>
-        <div className="mt-4 text-xs text-gray-600">
+        <div className="mt-4 text-xs text-gray-700">
           Score:{" "}
           <span className="font-semibold">
             {rcriScore}
@@ -731,13 +742,13 @@ export default function PreOpQuickNoteDemo() {
         <div className="mt-6 flex justify-between">
           <button
             onClick={back}
-            className="rounded-xl border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+            className={secondaryButtonClass}
           >
             Back
           </button>
           <button
             onClick={next}
-            className="rounded-xl border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+            className={primaryButtonClass}
           >
             Next
           </button>
@@ -793,7 +804,7 @@ export default function PreOpQuickNoteDemo() {
         </div>
         <input
           type="number"
-          className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm"
+          className={fieldInputClass}
           value={
             typeof state.functional.daisScore === "number"
               ? String(state.functional.daisScore)
@@ -816,13 +827,13 @@ export default function PreOpQuickNoteDemo() {
       <div className="mt-6 flex justify-between">
         <button
           onClick={back}
-          className="rounded-xl border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+          className={secondaryButtonClass}
         >
           Back
         </button>
         <button
           onClick={next}
-          className="rounded-xl border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+          className={primaryButtonClass}
         >
           Next
         </button>
@@ -876,7 +887,7 @@ export default function PreOpQuickNoteDemo() {
             Anticoagulant
           </div>
           <select
-            className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm"
+            className={fieldInputClass}
             value={state.meds.anticoagulant}
             onChange={(e) =>
               setState((s) => ({
@@ -940,13 +951,13 @@ export default function PreOpQuickNoteDemo() {
       <div className="mt-6 flex justify-between">
         <button
           onClick={back}
-          className="rounded-xl border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+          className={secondaryButtonClass}
         >
           Back
         </button>
         <button
           onClick={next}
-          className="rounded-xl border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+          className={primaryButtonClass}
         >
           Next
         </button>
@@ -994,7 +1005,7 @@ export default function PreOpQuickNoteDemo() {
               type="number"
               min={0}
               step={0.1}
-              className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm"
+              className={fieldInputClass}
               placeholder="e.g., 2.7"
               value={state.extras.vocalPennPct ?? ""}
               onChange={(e) =>
@@ -1015,7 +1026,7 @@ export default function PreOpQuickNoteDemo() {
         <label className="flex items-center gap-2 mt-1">
           <input
             type="checkbox"
-            className="w-4 h-4"
+            className="w-4 h-4 accent-indigo-600"
             checked={state.extras.onChronicSteroids}
             onChange={(e) =>
               setState((s) => ({
@@ -1027,7 +1038,7 @@ export default function PreOpQuickNoteDemo() {
               }))
             }
           />
-          <span className="text-sm text-gray-700">
+          <span className="text-sm text-gray-800">
             On chronic systemic steroids
           </span>
         </label>
@@ -1040,7 +1051,7 @@ export default function PreOpQuickNoteDemo() {
         </div>
         <input
           type="text"
-          className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm"
+          className={fieldInputClass}
           placeholder="e.g., cellulitis of LLE; recent COVID; chronic osteo on suppressive abx"
           value={state.extras.infectiousDx || ""}
           onChange={(e) =>
@@ -1061,7 +1072,7 @@ export default function PreOpQuickNoteDemo() {
           Additional notes to include (optional)
         </div>
         <textarea
-          className="w-full rounded-xl border border-gray-300 px-3 py-2 text-sm"
+          className={`${fieldInputClass} min-h-[96px]`}
           rows={3}
           placeholder="Any extra context you want copied into the note..."
           value={state.extras.additionalNotes || ""}
@@ -1080,13 +1091,13 @@ export default function PreOpQuickNoteDemo() {
       <div className="mt-6 flex justify-between">
         <button
           onClick={back}
-          className="rounded-xl border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+          className={secondaryButtonClass}
         >
           Back
         </button>
         <button
           onClick={next}
-          className="rounded-xl border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+          className={primaryButtonClass}
         >
           Next
         </button>
@@ -1105,35 +1116,37 @@ export default function PreOpQuickNoteDemo() {
       />
   
       {/* Big decision banner */}
-      <div className="rounded-2xl border border-gray-300 bg-gray-900 text-white px-4 py-3 mb-4 shadow-sm">
-        <div className="text-xs opacity-80">Cardiac clearance decision</div>
-        <div className="text-xl font-bold tracking-tight mt-1">
+      <div className="rounded-2xl border border-indigo-100 bg-gradient-to-r from-indigo-500 via-indigo-400 to-indigo-500 text-white px-5 py-4 mb-5 shadow-xl">
+        <div className="text-[11px] font-semibold uppercase tracking-wide text-indigo-100/80">
+          Cardiac clearance decision
+        </div>
+        <div className="text-xl font-semibold tracking-tight mt-1">
           {decision.decision}
         </div>
-        <div className="text-xs mt-1 opacity-80">
+        <div className="text-xs mt-1 text-indigo-100/70">
           RCRI {rcriScore} ({rcriRiskTable(rcriScore)})
           {typeof state.extras.vocalPennPct === "number" && (
             <> · VOCAL-Penn {state.extras.vocalPennPct.toFixed(1)}%</>
           )}
         </div>
       </div>
-  
+
       {/* Single note textbox — shows base note, then AI plan once generated */}
       <textarea
-        className="w-full h-[320px] rounded-xl border border-gray-300 p-3 text-sm font-mono whitespace-pre-wrap"
+        className="w-full h-[320px] rounded-2xl border border-indigo-100 bg-white/95 p-4 text-sm font-mono text-gray-900 whitespace-pre-wrap shadow-inner focus:outline-none focus:ring-2 focus:ring-indigo-200"
         value={aiText ?? note}
         readOnly
       />
-  
+
       {/* AI Plan panel (no internal textarea; just button + errors) */}
-      <div className="mt-4">
+      <div className="mt-6">
         <AiPlanPanel getData={getAIData} onText={setAiText} />
       </div>
-  
-      <div className="mt-4 flex justify-between">
+
+      <div className="mt-6 flex justify-between">
         <button
           onClick={back}
-          className="rounded-xl border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+          className={secondaryButtonClass}
         >
           Back
         </button>
@@ -1143,13 +1156,13 @@ export default function PreOpQuickNoteDemo() {
               setCurrent(1);
               setAiText(null); // clear AI output when restarting
             }}
-            className="rounded-xl border border-gray-300 px-4 py-2 text-sm hover:bg-gray-50"
+            className={secondaryButtonClass}
           >
             Start over
           </button>
           <button
             onClick={copyNote}
-            className="rounded-xl bg-gray-900 text-white px-4 py-2 text-sm"
+            className={primaryButtonClass}
           >
             Copy
           </button>
@@ -1172,16 +1185,16 @@ export default function PreOpQuickNoteDemo() {
   // Sticky summary dock
   const SummaryDock = (
     <div className="fixed left-0 right-0 bottom-0 z-30 pb-4">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        <div className="rounded-2xl border border-gray-200 bg-white/95 shadow-lg backdrop-blur-sm px-4 py-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <div className="text-xs text-gray-700">
-            <span className="font-semibold mr-2">RCRI {rcriScore}</span>
-            <span className="mr-2">({rcriRiskTable(rcriScore)})</span>
-            <span className="text-gray-500">Decision: {decision.decision}</span>
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="rounded-2xl border border-indigo-100 bg-indigo-50/80 shadow-lg backdrop-blur-sm px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div className="text-xs text-gray-800">
+            <span className="mr-2 font-semibold text-indigo-600">RCRI {rcriScore}</span>
+            <span className="mr-2 text-gray-700">({rcriRiskTable(rcriScore)})</span>
+            <span className="text-gray-700">Decision: {decision.decision}</span>
           </div>
           <button
             onClick={() => setCurrent(TOTAL_STEPS)}
-            className="text-xs font-medium text-indigo-700 hover:text-indigo-900"
+            className="text-xs font-medium text-indigo-600 hover:text-indigo-700"
           >
             Jump to note
           </button>
@@ -1191,8 +1204,8 @@ export default function PreOpQuickNoteDemo() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8 font-sans text-gray-800">
+      <div className="max-w-6xl mx-auto mb-4">
         <Link
           href="/"
           className="inline-flex items-center gap-2 border border-gray-300 bg-white/80 px-4 py-2 text-sm font-medium tracking-tight hover:bg-gray-100 transition"
@@ -1201,7 +1214,7 @@ export default function PreOpQuickNoteDemo() {
         </Link>
       </div>
 
-      <header className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 mt-4 mb-8">
+      <header className="max-w-6xl mx-auto mb-10">
         <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
           Pre-Op QuickNote &amp; Risk Stratifier
         </h1>
@@ -1213,8 +1226,8 @@ export default function PreOpQuickNoteDemo() {
         </p>
       </header>
 
-      <main className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-32">
-        <div className="space-y-4">
+      <main className="max-w-6xl mx-auto pb-32">
+        <div className="space-y-6">
           {current === 1 && Step1}
           {current === 2 && Step2}
           {current === 3 && Step3}
