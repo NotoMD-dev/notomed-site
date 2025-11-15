@@ -313,7 +313,7 @@ function composeNote(inputs: InputState) {
 // Keep these shared tokens aligned with the other calculators so the palette stays
 // consistent even if this file is re-merged later.
 const primaryButtonClass =
-  "rounded-xl bg-indigo-600 text-white px-4 py-2 text-sm font-semibold shadow-md transition hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:ring-offset-1";
+  "rounded-xl bg-indigo-500 text-white px-4 py-2 text-sm font-semibold shadow-md transition hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:ring-offset-1";
 const secondaryButtonClass =
   "rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-800 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-1";
 const fieldInputClass =
@@ -333,14 +333,14 @@ function StepHeader({
   return (
     <div className="mb-4">
       <div className="mb-3 flex items-center justify-between">
-        <div className="text-[11px] font-semibold uppercase tracking-wide text-indigo-600">
+        <div className="text-[11px] font-semibold uppercase tracking-wide text-indigo-500">
           Step {step} of {total}
         </div>
-        <div className="inline-flex items-center rounded-full border border-indigo-200 bg-indigo-50 text-[10px] font-semibold text-indigo-700 px-3 py-1 shadow-sm">
+        <div className="inline-flex items-center rounded-full border border-indigo-100 bg-indigo-50 text-[10px] font-semibold text-indigo-600 px-3 py-1 shadow-sm">
           Pre-Op QuickNote
         </div>
       </div>
-      <h2 className="text-xl font-semibold text-indigo-700 tracking-tight">{title}</h2>
+      <h2 className="text-xl font-semibold text-gray-900 tracking-tight">{title}</h2>
       {hint && <p className="mt-1 text-xs text-gray-600">{hint}</p>}
     </div>
   );
@@ -380,7 +380,7 @@ function Chip({
 
 function Box({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-indigo-100 bg-white shadow-[0_18px_45px_-28px_rgba(79,70,229,0.65)] p-6">
+    <div className="rounded-2xl border border-indigo-100 bg-white shadow-[0_18px_45px_-28px_rgba(79,70,229,0.35)] p-6">
       {children}
     </div>
   );
@@ -1116,14 +1116,14 @@ export default function PreOpQuickNoteDemo() {
       />
   
       {/* Big decision banner */}
-      <div className="rounded-2xl border border-indigo-200 bg-gradient-to-r from-indigo-600 via-indigo-500 to-indigo-600 text-white px-5 py-4 mb-5 shadow-xl">
-        <div className="text-[11px] font-semibold uppercase tracking-wide text-indigo-100/90">
+      <div className="rounded-2xl border border-indigo-100 bg-gradient-to-r from-indigo-500 via-indigo-400 to-indigo-500 text-white px-5 py-4 mb-5 shadow-xl">
+        <div className="text-[11px] font-semibold uppercase tracking-wide text-indigo-100/80">
           Cardiac clearance decision
         </div>
         <div className="text-xl font-semibold tracking-tight mt-1">
           {decision.decision}
         </div>
-        <div className="text-xs mt-1 text-indigo-100/80">
+        <div className="text-xs mt-1 text-indigo-100/70">
           RCRI {rcriScore} ({rcriRiskTable(rcriScore)})
           {typeof state.extras.vocalPennPct === "number" && (
             <> · VOCAL-Penn {state.extras.vocalPennPct.toFixed(1)}%</>
@@ -1133,7 +1133,7 @@ export default function PreOpQuickNoteDemo() {
 
       {/* Single note textbox — shows base note, then AI plan once generated */}
       <textarea
-        className="w-full h-[320px] rounded-2xl border border-indigo-200 bg-white/95 p-4 text-sm font-mono text-gray-900 whitespace-pre-wrap shadow-inner focus:outline-none focus:ring-2 focus:ring-indigo-200"
+        className="w-full h-[320px] rounded-2xl border border-indigo-100 bg-white/95 p-4 text-sm font-mono text-gray-900 whitespace-pre-wrap shadow-inner focus:outline-none focus:ring-2 focus:ring-indigo-200"
         value={aiText ?? note}
         readOnly
       />
@@ -1186,15 +1186,15 @@ export default function PreOpQuickNoteDemo() {
   const SummaryDock = (
     <div className="fixed left-0 right-0 bottom-0 z-30 pb-4">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="rounded-2xl border border-indigo-200 bg-indigo-50/90 shadow-lg backdrop-blur-sm px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div className="rounded-2xl border border-indigo-100 bg-indigo-50/80 shadow-lg backdrop-blur-sm px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div className="text-xs text-gray-800">
-            <span className="mr-2 font-semibold text-indigo-700">RCRI {rcriScore}</span>
+            <span className="mr-2 font-semibold text-indigo-600">RCRI {rcriScore}</span>
             <span className="mr-2 text-gray-700">({rcriRiskTable(rcriScore)})</span>
             <span className="text-gray-700">Decision: {decision.decision}</span>
           </div>
           <button
             onClick={() => setCurrent(TOTAL_STEPS)}
-            className="text-xs font-medium text-indigo-700 hover:text-indigo-900"
+            className="text-xs font-medium text-indigo-600 hover:text-indigo-700"
           >
             Jump to note
           </button>
@@ -1204,8 +1204,8 @@ export default function PreOpQuickNoteDemo() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+    <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8 font-sans text-gray-800">
+      <div className="max-w-6xl mx-auto mb-4">
         <Link
           href="/"
           className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-white/80 px-4 py-2 text-sm font-semibold text-indigo-700 tracking-tight shadow-sm transition hover:bg-indigo-50 hover:border-indigo-300"
@@ -1214,7 +1214,7 @@ export default function PreOpQuickNoteDemo() {
         </Link>
       </div>
 
-      <header className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 mt-2 mb-10">
+      <header className="max-w-6xl mx-auto mb-10">
         <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
           Pre-Op QuickNote &amp; Risk Stratifier
         </h1>
@@ -1226,7 +1226,7 @@ export default function PreOpQuickNoteDemo() {
         </p>
       </header>
 
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-32">
+      <main className="max-w-6xl mx-auto pb-32">
         <div className="space-y-6">
           {current === 1 && Step1}
           {current === 2 && Step2}
