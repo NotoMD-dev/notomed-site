@@ -262,35 +262,89 @@ function ToolCard({ tool }: { tool: Tool }) {
   const isLive = !tool.isPlaceholder && tool.path !== "#";
   const updatedLabel = formatUpdated(tool.lastUpdated);
 
+  const baseCardClasses = [
+    "group flex h-full flex-col justify-between rounded-3xl border shadow-lg transition",
+  ];
+  const variantCardClasses = tool.isPlaceholder
+    ? [
+        "border-gray-200",
+        "bg-gray-100/90",
+        "text-gray-500",
+        "opacity-80",
+        "hover:translate-y-0",
+        "focus-within:ring-0",
+      ]
+    : [
+        "border-indigo-100/80",
+        "bg-white/95",
+        "shadow-indigo-100/70",
+        "hover:-translate-y-0.5",
+        "hover:shadow-xl",
+        "focus-within:ring-2",
+        "focus-within:ring-indigo-400/70",
+      ];
+  const cardClasses = [...baseCardClasses, ...variantCardClasses].join(" ");
+
   const content = (
     // To disable hover float, remove hover:-translate-y-0.5 and hover:shadow-md.
-    <div className="group flex h-full flex-col justify-between rounded-3xl border border-indigo-100/80 bg-white/95 shadow-lg shadow-indigo-100/70 transition hover:-translate-y-0.5 hover:shadow-xl focus-within:ring-2 focus-within:ring-indigo-400/70">
+    <div className={cardClasses}>
       <div className="flex flex-1 flex-col gap-3 p-6">
         <div className="flex items-start justify-between gap-3">
-          <h2 className="text-base font-semibold text-gray-900 md:text-lg">
+          <h2
+            className={[
+              "text-base font-semibold md:text-lg",
+              tool.isPlaceholder ? "text-gray-600" : "text-gray-900",
+            ].join(" ")}
+          >
             {tool.name}
           </h2>
-          {tool.isNew && (
-            <span className="shrink-0 rounded-full bg-green-100 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-green-800">
+          {tool.isNew && !tool.isPlaceholder && (
+            <span
+              className={[
+                "shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide",
+                tool.isPlaceholder
+                  ? "bg-gray-200 text-gray-600"
+                  : "bg-green-100 text-green-800",
+              ].join(" ")}
+            >
               NEW
             </span>
           )}
         </div>
-        <p className="flex-1 text-sm leading-relaxed text-gray-600 md:text-[15px]">
+        <p
+          className={[
+            "flex-1 text-sm leading-relaxed md:text-[15px]",
+            tool.isPlaceholder ? "text-gray-500" : "text-gray-600",
+          ].join(" ")}
+        >
           {tool.description}
         </p>
       </div>
 
-      <div className="flex items-center justify-between border-t border-indigo-50 px-6 py-4 text-[12px]">
+      <div
+        className={[
+          "flex items-center justify-between border-t px-6 py-4 text-[12px]",
+          tool.isPlaceholder ? "border-gray-200" : "border-indigo-50",
+        ].join(" ")}
+      >
         <div className="flex flex-col gap-1.5">
-          <span className="inline-flex items-center rounded-full border border-indigo-100 bg-indigo-50 px-2.5 py-0.5 text-[11px] uppercase tracking-wide text-indigo-700">
+          <span
+            className={[
+              "inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] uppercase tracking-wide",
+              tool.isPlaceholder
+                ? "border-gray-200 bg-gray-200 text-gray-600"
+                : "border-indigo-100 bg-indigo-50 text-indigo-700",
+            ].join(" ")}
+          >
             {tool.category}
           </span>
-          <span className="text-[11px] text-gray-500">{updatedLabel}</span>
+          <span className="text-[11px] text-gray-500">
+            {updatedLabel}
+          </span>
         </div>
 
         {tool.isPlaceholder ? (
-          <span className="inline-flex items-center gap-1 text-sm font-semibold text-gray-500 group-hover:text-gray-700">
+          <span className="inline-flex items-center gap-1 text-sm font-semibold text-gray-500">
             Coming soon
             <span aria-hidden>→</span>
           </span>
