@@ -544,18 +544,18 @@ export default function PreOpQuickNoteDemo() {
             Examples by category
           </div>
           <div className="mb-1">
-            <span className="font-semibold">Low (&lt;1%):</span> cataract,
+            <span className="font-semibold text-gray-900">Low (&lt;1%):</span> cataract,
             superficial dermatologic, endoscopy/colonoscopy, minor dental,
             breast lumpectomy, ambulatory hernia repair.
           </div>
           <div className="mb-1">
-            <span className="font-semibold">Intermediate (1–5%):</span>{" "}
+            <span className="font-semibold text-gray-900">Intermediate (1–5%):</span>{" "}
             laparoscopic cholecystectomy/appendectomy, most general
             surgery, ortho (non-major spine), urologic (TURP, nephrectomy),
             gynecologic (hysterectomy), ENT, carotid endarterectomy.
           </div>
           <div>
-            <span className="font-semibold">High (&gt;5%):</span> major
+            <span className="font-semibold text-gray-900">High (&gt;5%):</span> major
             vascular (open AAA, aorto-bifemoral), thoracic, major abdominal
             with expected blood loss, transplant, long/complex spine.
           </div>
