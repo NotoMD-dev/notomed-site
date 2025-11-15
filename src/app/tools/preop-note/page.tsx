@@ -310,12 +310,14 @@ function composeNote(inputs: InputState) {
 }
 
 // ===== Small UI primitives =====
+// Keep these shared tokens aligned with the other calculators so the palette stays
+// consistent even if this file is re-merged later.
 const primaryButtonClass =
   "rounded-xl bg-indigo-600 text-white px-4 py-2 text-sm font-semibold shadow-md transition hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:ring-offset-1";
 const secondaryButtonClass =
-  "rounded-xl border border-indigo-200 bg-white px-4 py-2 text-sm font-semibold text-indigo-700 shadow-sm transition hover:bg-indigo-50 hover:border-indigo-300 focus:outline-none focus:ring-2 focus:ring-indigo-100 focus:ring-offset-1";
+  "rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-800 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-1";
 const fieldInputClass =
-  "w-full rounded-xl border border-indigo-200 bg-white px-3 py-2 text-sm text-gray-900 transition focus:outline-none focus:ring-2 focus:ring-indigo-200 focus:border-indigo-300";
+  "w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-400";
 
 function StepHeader({
   step,
@@ -330,7 +332,7 @@ function StepHeader({
 }) {
   return (
     <div className="mb-4">
-      <div className="flex items-center justify-between mb-3">
+      <div className="mb-3 flex items-center justify-between">
         <div className="text-[11px] font-semibold uppercase tracking-wide text-indigo-600">
           Step {step} of {total}
         </div>
@@ -338,8 +340,8 @@ function StepHeader({
           Pre-Op QuickNote
         </div>
       </div>
-      <h2 className="text-xl font-semibold text-gray-900 tracking-tight">{title}</h2>
-      {hint && <p className="text-xs text-gray-600 mt-1">{hint}</p>}
+      <h2 className="text-xl font-semibold text-indigo-700 tracking-tight">{title}</h2>
+      {hint && <p className="mt-1 text-xs text-gray-600">{hint}</p>}
     </div>
   );
 }
@@ -358,12 +360,12 @@ function Chip({
   const base = "px-3 py-2 rounded-xl border text-sm font-semibold transition focus:outline-none";
   const focus = disabled
     ? ""
-    : "focus:ring-2 focus:ring-indigo-200 focus:ring-offset-1";
+    : "focus:ring-2 focus:ring-gray-200 focus:ring-offset-1";
   const palette = disabled
     ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed shadow-none"
     : active
-    ? "bg-indigo-600 text-white border-indigo-700 shadow-md hover:bg-indigo-500"
-    : "bg-white text-indigo-700 border-indigo-200 hover:bg-indigo-50 hover:border-indigo-300 shadow-sm";
+    ? "bg-gray-900 text-white border-gray-900 shadow-md hover:bg-gray-800"
+    : "bg-white text-gray-800 border-gray-300 hover:bg-gray-50 hover:border-gray-400 shadow-sm";
   return (
     <button
       type="button"
@@ -394,8 +396,8 @@ function BinaryChipGroup({
   onChange: (v: boolean) => void;
 }) {
   return (
-    <div className="flex items-center gap-2 mb-2">
-      <div className="text-sm text-indigo-900 font-medium w-48 shrink-0">{label}</div>
+    <div className="mb-2 flex items-center gap-2">
+      <div className="w-48 shrink-0 text-sm font-medium text-gray-800">{label}</div>
       <div className="flex gap-2">
         <Chip active={value} onClick={() => onChange(true)}>
           Taking
@@ -525,22 +527,22 @@ export default function PreOpQuickNoteDemo() {
         hint="These two choices set the starting branch of the guideline."
       />
 
-      <div className="mb-2 text-sm text-indigo-900 flex items-center gap-2">
-        <span className="font-medium">Procedure risk</span>
+      <div className="mb-2 flex items-center gap-2 text-sm text-gray-800">
+        <span className="font-medium text-gray-900">Procedure risk</span>
         <button
           type="button"
           aria-label="Examples"
           title="Click to toggle examples"
           onClick={() => setShowExamples((v) => !v)}
-          className="w-6 h-6 rounded-full border border-indigo-200 bg-white text-[11px] font-semibold leading-[22px] text-indigo-600 flex items-center justify-center transition hover:bg-indigo-50 hover:border-indigo-300"
+          className="flex h-6 w-6 items-center justify-center rounded-full border border-gray-300 bg-white text-[11px] font-semibold leading-[22px] text-gray-700 transition hover:bg-gray-100"
         >
           ?
         </button>
       </div>
 
       {showExamples && (
-        <div className="text-sm text-indigo-900 mb-4 rounded-xl border border-indigo-100 bg-indigo-50/80 p-4 shadow-inner">
-          <div className="font-semibold mb-2">
+        <div className="mb-4 rounded-xl border border-indigo-100 bg-indigo-50/80 p-4 text-sm text-gray-800 shadow-inner">
+          <div className="mb-2 font-semibold text-gray-900">
             Examples by category
           </div>
           <div className="mb-1">
@@ -730,7 +732,7 @@ export default function PreOpQuickNoteDemo() {
             None
           </Chip>
         </div>
-        <div className="mt-4 text-xs text-indigo-700">
+        <div className="mt-4 text-xs text-gray-700">
           Score:{" "}
           <span className="font-semibold">
             {rcriScore}
@@ -1036,7 +1038,7 @@ export default function PreOpQuickNoteDemo() {
               }))
             }
           />
-          <span className="text-sm text-indigo-900">
+          <span className="text-sm text-gray-800">
             On chronic systemic steroids
           </span>
         </label>
@@ -1185,10 +1187,10 @@ export default function PreOpQuickNoteDemo() {
     <div className="fixed left-0 right-0 bottom-0 z-30 pb-4">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div className="rounded-2xl border border-indigo-200 bg-indigo-50/90 shadow-lg backdrop-blur-sm px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <div className="text-xs text-indigo-900">
-            <span className="font-semibold mr-2">RCRI {rcriScore}</span>
-            <span className="mr-2 text-indigo-800/90">({rcriRiskTable(rcriScore)})</span>
-            <span className="text-indigo-700/90">Decision: {decision.decision}</span>
+          <div className="text-xs text-gray-800">
+            <span className="mr-2 font-semibold text-indigo-700">RCRI {rcriScore}</span>
+            <span className="mr-2 text-gray-700">({rcriRiskTable(rcriScore)})</span>
+            <span className="text-gray-700">Decision: {decision.decision}</span>
           </div>
           <button
             onClick={() => setCurrent(TOTAL_STEPS)}
