@@ -993,35 +993,35 @@ function HyponatremiaAppContent() {
    OUTER WRAPPER (matches opioid)
    ========================= */
 
-   export default function HyponatremiaPage() {
-    return (
-      <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
-        {/* BACK BUTTON */}
-        <div className="max-w-5xl mx-auto px-6 pt-6 mb-4">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 border border-gray-300 bg-white/80 px-4 py-2 text-sm font-medium tracking-tight hover:bg-gray-100 transition"
-          >
-            ← Back to NotoMed.dev
-          </Link>
-        </div>
-  
-        {/* HEADER */}
-        <header className="max-w-5xl mx-auto px-6 mb-8">
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-            Hyponatremia Calculator — v4.1
-          </h1>
-          <p className="mt-2 text-base text-gray-600">
-            A guided clinical tool for evaluating low sodium with safety guardrails.
-          </p>
-          <p className="text-xs text-gray-800 italic mt-2">
-            This tool does not replace clinical judgement and is meant to assist in decision-making.
-            Always verify calculations and consider patient-specific factors.
-          </p>
-        </header>
-  
-        <HyponatremiaAppContent />
+export default function HyponatremiaPage() {
+  return (
+    <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
+      {/* BACK BUTTON */}
+      <div className="mx-auto mb-4 max-w-5xl px-6 pt-6">
+        <Link
+          href="/tools"
+          className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-white px-4 py-2 text-sm font-semibold tracking-tight text-indigo-700 shadow-sm transition hover:border-indigo-300 hover:bg-indigo-50"
+        >
+          ← Back to Tools
+        </Link>
       </div>
-    );
-  }
+
+      {/* HEADER */}
+      <header className="mx-auto mb-8 max-w-5xl px-6">
+        <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
+          Hyponatremia Calculator — v4.1
+        </h1>
+        <p className="mt-2 text-base text-gray-600">
+          A guided clinical tool for evaluating low sodium with safety guardrails.
+        </p>
+        <p className="mt-2 text-xs italic text-gray-800">
+          This tool does not replace clinical judgement and is meant to assist in decision-making.
+          Always verify calculations and consider patient-specific factors.
+        </p>
+      </header>
+
+      <HyponatremiaAppContent />
+    </div>
+  );
+}
   

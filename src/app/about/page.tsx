@@ -10,10 +10,10 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* back button */}
-      <div className="max-w-5xl mx-auto px-6 pt-6 mb-4">
+      <div className="mx-auto mb-4 max-w-5xl px-6 pt-6">
         <Link
           href="/"
-          className="inline-flex items-center gap-2 border border-gray-300 bg-white/80 px-4 py-2 text-sm font-medium tracking-tight hover:bg-gray-100 transition"
+          className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-white px-4 py-2 text-sm font-semibold tracking-tight text-indigo-700 shadow-sm transition hover:border-indigo-300 hover:bg-indigo-50"
         >
           ← Back to NotoMed.dev
         </Link>
