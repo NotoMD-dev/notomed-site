@@ -5,15 +5,7 @@ import Link from "next/link";
 import { ChevronRight, Send, Heart, Mail, Linkedin } from "lucide-react";
 import React from "react";
 
-// === CONFIGURATION ===
-const CONFIG = {
-  linkedInUrl: "https://www.linkedin.com/in/yasmine-cheryl-abbey-503b3197/",
-  creatorName: "Yasmine Abbey, MD, MSc",
-  contactEmail: "yasmineabbey@gmail.com",
-  opioidToolPath: "/tools/opioid-calc",
-  hyponatremiaToolPath: "/tools/hypona-calc",
-  preopToolPath: "/tools/preop-note",
-};
+import { CONFIG } from "@/config/notomed-config";
 
 type ToolCard = {
   id: string;
