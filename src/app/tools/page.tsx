@@ -5,13 +5,7 @@ import Link from "next/link";
 
 import { CONFIG } from "@/config/notomed-config";
 
-type ToolCategory =
-  | "Analgesia"
-  | "Electrolytes"
-  | "Peri-op"
-  | "Endocrine"
-  | "Cards"
-  | "Misc";
+type ToolCategory = "Analgesia" | "Electrolytes" | "Peri-op" | "Endocrine";
 
 type Tool = {
   id: string;
@@ -21,10 +15,11 @@ type Tool = {
   category: ToolCategory;
   isPlaceholder?: boolean;
   isNew?: boolean;
+  createdAt: string;
   lastUpdated: string;
 };
 
-type SortKey = "alphabetical" | "recent";
+type SortKey = "alphabetical" | "recent" | "created";
 
 const TOOLS: Tool[] = [
   {
@@ -33,6 +28,7 @@ const TOOLS: Tool[] = [
     description: "Build a custom inpatient opiate regimen with safety checks.",
     path: CONFIG.opioidToolPath,
     category: "Analgesia",
+    createdAt: "2024-06-01",
     lastUpdated: "2025-11-10",
   },
   {
@@ -41,6 +37,7 @@ const TOOLS: Tool[] = [
     description: "Guided thinking for low sodium with safety in mind.",
     path: CONFIG.hyponatremiaToolPath,
     category: "Electrolytes",
+    createdAt: "2024-08-15",
     lastUpdated: "2025-11-05",
   },
   {
@@ -51,6 +48,7 @@ const TOOLS: Tool[] = [
     category: "Peri-op",
     isPlaceholder: true,
     isNew: true,
+    createdAt: "2025-01-20",
     lastUpdated: "2025-11-14",
   },
   {
@@ -61,25 +59,8 @@ const TOOLS: Tool[] = [
     category: "Endocrine",
     isPlaceholder: true,
     isNew: true,
+    createdAt: "2025-02-10",
     lastUpdated: "2025-11-01",
-  },
-  {
-    id: "ards-tool",
-    name: "ARDS / Oxygen Escalation",
-    description: "Stepwise oxygen + ventilatory strategy guidance.",
-    path: "#",
-    category: "Cards",
-    isPlaceholder: true,
-    lastUpdated: "2025-10-20",
-  },
-  {
-    id: "repletion-tool",
-    name: "Fluids & Electrolytes: Quick Repletion",
-    description: "Potassium, magnesium, phosphate dosing hints.",
-    path: "#",
-    category: "Electrolytes",
-    isPlaceholder: true,
-    lastUpdated: "2025-10-15",
   },
 ];
 
@@ -91,6 +72,7 @@ const CATEGORIES = [
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: "alphabetical", label: "A–Z" },
   { key: "recent", label: "Recently updated" },
+  { key: "created", label: "Creation date" },
 ];
 
 function getDaysAgo(dateString: string): number | null {
@@ -119,6 +101,10 @@ function sortTools(tools: Tool[], sortKey: SortKey): Tool[] {
     case "recent":
       return cloned.sort(
         (a, b) => +new Date(b.lastUpdated) - +new Date(a.lastUpdated),
+      );
+    case "created":
+      return cloned.sort(
+        (a, b) => +new Date(b.createdAt) - +new Date(a.createdAt),
       );
     case "alphabetical":
     default:
@@ -162,7 +148,7 @@ export default function ToolsPage() {
         <div className="mb-4 text-xs">
           <Link
             href="/"
-            className="inline-flex items-center gap-1 rounded-full border border-gray-300 bg-white/80 px-3 py-1 text-[11px] font-medium tracking-tight text-gray-700 hover:bg-gray-100"
+            className="inline-flex items-center gap-2 rounded-full border border-gray-300 bg-white/80 px-4 py-2 text-sm font-medium tracking-tight text-gray-700 transition hover:bg-gray-100"
           >
             <span aria-hidden>←</span>
             Back to notomed.dev
@@ -200,7 +186,7 @@ export default function ToolsPage() {
               <select
                 value={sortKey}
                 onChange={(event) => setSortKey(event.target.value as SortKey)}
-                className="rounded-full border border-gray-300 bg-white/80 px-2 py-1 text-xs focus:outline-none"
+                className="rounded-full border border-gray-300 bg-white/85 px-3 py-1.5 text-xs font-medium focus:outline-none"
               >
                 {SORT_OPTIONS.map((option) => (
                   <option key={option.key} value={option.key}>
@@ -245,9 +231,11 @@ export default function ToolsPage() {
         </section>
 
         {filteredAndSorted.length === 0 ? (
-          <p className="mt-8 text-xs text-gray-500">No tools match your search.</p>
+          <p className="mt-8 text-sm text-gray-500">
+            No tools match your search.
+          </p>
         ) : (
-          <section className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <section className="grid gap-8 sm:grid-cols-2 xl:grid-cols-3">
             {filteredAndSorted.map((tool) => (
               <ToolCard key={tool.id} tool={tool} />
             ))}
@@ -264,36 +252,38 @@ function ToolCard({ tool }: { tool: Tool }) {
 
   const content = (
     // To disable hover float, remove hover:-translate-y-0.5 and hover:shadow-md.
-    <div className="group flex h-full flex-col justify-between rounded-2xl border border-gray-200 bg-white/90 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md focus-within:ring-2 focus-within:ring-indigo-500">
-      <div className="flex flex-1 flex-col p-5">
-        <div className="mb-2 flex items-start justify-between gap-2">
-          <h2 className="text-sm font-semibold text-gray-900">{tool.name}</h2>
+    <div className="group flex h-full flex-col justify-between rounded-3xl border border-indigo-100/80 bg-white/95 shadow-lg shadow-indigo-100/70 transition hover:-translate-y-0.5 hover:shadow-xl focus-within:ring-2 focus-within:ring-indigo-400/70">
+      <div className="flex flex-1 flex-col gap-3 p-6">
+        <div className="flex items-start justify-between gap-3">
+          <h2 className="text-base font-semibold text-gray-900 md:text-lg">
+            {tool.name}
+          </h2>
           {tool.isNew && (
-            <span className="shrink-0 rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-semibold text-green-800">
+            <span className="shrink-0 rounded-full bg-green-100 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-green-800">
               NEW
             </span>
           )}
         </div>
-        <p className="flex-1 text-xs leading-relaxed text-gray-600">
+        <p className="flex-1 text-sm leading-relaxed text-gray-600 md:text-[15px]">
           {tool.description}
         </p>
       </div>
 
-      <div className="flex items-center justify-between border-t border-gray-100 px-5 py-3 text-[11px]">
-        <div className="flex flex-col gap-1">
-          <span className="inline-flex items-center rounded-full border border-gray-200 bg-gray-50 px-2 py-0.5 text-[10px] uppercase tracking-wide text-gray-700">
+      <div className="flex items-center justify-between border-t border-indigo-50 px-6 py-4 text-[12px]">
+        <div className="flex flex-col gap-1.5">
+          <span className="inline-flex items-center rounded-full border border-indigo-100 bg-indigo-50 px-2.5 py-0.5 text-[11px] uppercase tracking-wide text-indigo-700">
             {tool.category}
           </span>
-          <span className="text-[10px] text-gray-500">{updatedLabel}</span>
+          <span className="text-[11px] text-gray-500">{updatedLabel}</span>
         </div>
 
         {tool.isPlaceholder ? (
-          <span className="inline-flex items-center gap-1 text-gray-500 group-hover:text-gray-700">
+          <span className="inline-flex items-center gap-1 text-sm font-semibold text-gray-500 group-hover:text-gray-700">
             Coming soon
             <span aria-hidden>→</span>
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1 text-indigo-700 group-hover:text-indigo-900">
+          <span className="inline-flex items-center gap-1 text-sm font-semibold text-indigo-700 group-hover:text-indigo-900">
             {isLive ? "Open tool" : "Coming soon"}
             <span aria-hidden>→</span>
           </span>
