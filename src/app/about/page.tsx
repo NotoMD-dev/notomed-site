@@ -62,9 +62,9 @@ export default function AboutPage() {
           </p>
 
           <p className="text-sm leading-relaxed text-gray-700">
-            <span className="font-semibold">A note on the tech side:</span> I’m not a software engineer.
-            I did a year of CS in college, and the rest I’ve pieced together with determination and help
-            from LLMs (Claude, Gemini, Codex). Each tool took real time to build, so if you find one
+            <span className="font-semibold">A note on the tech side:</span> I'm a largely self-taught coder/developer 
+            who completed a year of CS in college. This website and every tool were pierced together with determination and help
+            from LLMs (Gemini, GPT 5.1 and Codex). Each tool took real time to build, so if you find one
             useful, please share it or tell me how to make it better.
           </p>
 
