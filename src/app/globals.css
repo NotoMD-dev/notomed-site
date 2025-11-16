@@ -1,9 +1,90 @@
-/* Restyled global tokens and base styles for Olive V3 palette */
+/* Restyled global tokens and base styles for Olive V3 palette with theme support */
 @import "tailwindcss";
 
 :root {
   --font-base-sans: "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --font-base-mono: "JetBrains Mono", "Fira Code", "Menlo", monospace;
+
+  /* Dark (default) */
+  --bg-from: #344538;
+  --bg-via: #3e5142;
+  --bg-to: #485d4c;
+  --bg-base: #2a3830;
+  --grid-line: rgba(190, 183, 160, 0.42);
+  --lacquer-top: rgba(255, 255, 255, 0.12);
+  --lacquer-bottom: rgba(0, 0, 0, 0.5);
+
+  --text-primary: #f4f1ea;
+  --text-heading: #f9f6ef;
+  --text-body: #d0c8b9;
+  --text-muted: #989180;
+  --text-muted-strong: #a89f8f;
+
+  --card-from: #3f5143;
+  --card-via: #475b4c;
+  --card-to: #506656;
+  --card-border: #7a897b;
+  --card-muted: #3b4c40;
+  --card-outline: #485347;
+
+  --header-bg: rgba(48, 59, 50, 0.85);
+  --header-border: #444f44;
+  --nav-link: #cbc4b6;
+
+  --input-bg: #405247;
+  --input-border: #788878;
+  --input-placeholder: #989180;
+
+  --accent: #d27e58;
+  --accent-hover: #e29a6c;
+  --neutral-bg: #f4f1ea;
+  --neutral-hover: #e3ddcf;
+  --neutral-text: #25221e;
+
+  --pill-bg: #435447;
+  --pill-border: #7a897b;
+  --pill-text: #f0e5d7;
+}
+
+:root[data-theme="light"] {
+  --bg-from: #d9d1c4;
+  --bg-via: #cec3b2;
+  --bg-to: #c4b7a2;
+  --bg-base: #f6f0e6;
+  --grid-line: rgba(94, 90, 80, 0.35);
+  --lacquer-top: rgba(255, 255, 255, 0.2);
+  --lacquer-bottom: rgba(0, 0, 0, 0.15);
+
+  --text-primary: #2f271d;
+  --text-heading: #201913;
+  --text-body: #3e342a;
+  --text-muted: #6c6255;
+  --text-muted-strong: #5b5145;
+
+  --card-from: #f1e9db;
+  --card-via: #e4d8c3;
+  --card-to: #d8c8b0;
+  --card-border: #b7a88f;
+  --card-muted: #e8dece;
+  --card-outline: #c7b79f;
+
+  --header-bg: rgba(239, 229, 214, 0.9);
+  --header-border: #c7b79f;
+  --nav-link: #4d4034;
+
+  --input-bg: #eee4d6;
+  --input-border: #c9b9a1;
+  --input-placeholder: #8a7c6e;
+
+  --accent: #c56a44;
+  --accent-hover: #d57d55;
+  --neutral-bg: #2f271d;
+  --neutral-hover: #4a4035;
+  --neutral-text: #f6f1ea;
+
+  --pill-bg: #d8c8b0;
+  --pill-border: #b7a88f;
+  --pill-text: #2f271d;
 }
 
 @theme inline {
@@ -13,6 +94,132 @@
 
 body {
   font-family: var(--font-base-sans);
-  color: #f4f1ea;
-  background-color: #2a3830;
+  color: var(--text-primary);
+  background-color: var(--bg-base);
+}
+
+.theme-shell {
+  background: linear-gradient(to bottom, var(--bg-from), var(--bg-via), var(--bg-to));
+  color: var(--text-primary);
+}
+
+.theme-grid {
+  background: linear-gradient(
+      to right,
+      var(--grid-line) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.theme-lacquer {
+  background: radial-gradient(circle at top, var(--lacquer-top), transparent 55%),
+    radial-gradient(circle at bottom, var(--lacquer-bottom), transparent 60%);
+}
+
+.text-heading {
+  color: var(--text-heading);
+}
+
+.text-body {
+  color: var(--text-body);
+}
+
+.text-muted {
+  color: var(--text-muted);
+}
+
+.text-muted-strong {
+  color: var(--text-muted-strong);
+}
+
+.text-accent {
+  color: var(--accent);
+}
+
+.card-surface {
+  background: linear-gradient(to bottom right, var(--card-from), var(--card-via), var(--card-to));
+  border: 1px solid var(--card-border);
+}
+
+.card-muted {
+  background-color: var(--card-muted);
+  border: 1px solid var(--card-border);
+}
+
+.card-dashed {
+  background-color: var(--card-muted);
+  border: 1px dashed var(--card-border);
+}
+
+.header-surface {
+  background-color: var(--header-bg);
+  border-bottom: 1px solid var(--header-border);
+}
+
+.pill-outline {
+  background-color: var(--pill-bg);
+  border: 1px solid var(--pill-border);
+  color: var(--pill-text);
+}
+
+.input-olive {
+  background-color: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text-heading);
+}
+
+.input-olive::placeholder {
+  color: var(--input-placeholder);
+}
+
+.btn-primary {
+  background-color: var(--accent);
+  color: var(--neutral-text);
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-hover);
+}
+
+.btn-neutral {
+  background-color: var(--neutral-bg);
+  color: var(--neutral-text);
+}
+
+.btn-neutral:hover {
+  background-color: var(--neutral-hover);
+}
+
+.btn-outline {
+  background-color: var(--pill-bg);
+  border: 1px solid var(--pill-border);
+  color: var(--pill-text);
+}
+
+.btn-outline:hover {
+  border-color: var(--accent);
+  color: var(--accent-hover);
+}
+
+/* Light theme overrides for legacy utility classes still using fixed colors */
+:root[data-theme="light"] .text-\[\#f9f6ef\] {
+  color: var(--text-heading) !important;
+}
+
+:root[data-theme="light"] .text-\[\#d0c8b9\],
+:root[data-theme="light"] .text-\[\#d4cbba\] {
+  color: var(--text-body) !important;
+}
+
+:root[data-theme="light"] .text-\[\#989180\],
+:root[data-theme="light"] .text-\[\#a89f8f\],
+:root[data-theme="light"] .text-\[\#9a9384\] {
+  color: var(--text-muted) !important;
+}
+
+:root[data-theme="light"] .text-\[\#f5f2eb\],
+:root[data-theme="light"] .text-\[\#f4f1ea\] {
+  color: var(--text-heading) !important;
 }
