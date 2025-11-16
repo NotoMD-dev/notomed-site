@@ -30,7 +30,7 @@ export default function SiteHeader() {
           notomed.dev
         </Link>
 
-        <nav className="hidden items-center gap-6 text-sm text-muted md:flex">
+        <nav className="hidden items-center gap-6 text-base text-muted md:flex">
           <Link href="/tools" className="transition-colors hover:text-heading">
             Tools
           </Link>
@@ -65,7 +65,7 @@ export default function SiteHeader() {
         }`}
       >
         <div className="mx-4 mb-3 overflow-hidden rounded-2xl border border-[color:var(--card-border)] bg-[color:var(--card-muted)]/95 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
-          <nav className="flex flex-col divide-y divide-[color:var(--card-outline)] text-sm text-heading">
+          <nav className="flex flex-col divide-y divide-[color:var(--card-outline)] text-base text-heading">
             <Link
               href="/tools"
               className="px-5 py-3 transition-colors hover:text-accent"

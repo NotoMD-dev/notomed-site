@@ -23,17 +23,17 @@ export default function AboutPage() {
           </Link>
         </div>
 
-        <header className="mb-10 space-y-2 text-center sm:text-left">
+        <header className="mb-10 space-y-3 text-center sm:text-left">
           <h1 className="text-3xl font-semibold text-[#f9f6ef] sm:text-4xl">
             About NotoMed.dev and its creator
           </h1>
-          <p className="mx-auto max-w-2xl text-sm text-[#d0c8b9] md:text-base sm:mx-0">
+          <p className="mx-auto max-w-2xl text-base text-[#efe7d7] md:text-lg sm:mx-0">
             A collection of physician-built tools meant to reduce cognitive load, standardize workflows, and make on-service life a little easier.
           </p>
         </header>
 
         <main className="grid gap-10 md:grid-cols-[1.1fr,0.7fr] lg:grid-cols-[1.3fr,0.8fr]">
-          <div className="space-y-5 text-sm leading-relaxed text-[#d4cbba] md:text-[15px]">
+          <div className="space-y-5 text-base leading-relaxed text-[#f4eee3] md:text-lg">
             <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-[#a89f8f]">
               Hi, I’m Yasmine! 👋
             </h2>
