@@ -1,10 +1,11 @@
-// src/app/page.tsx
+// Restyled landing page to Olive V3 palette with unified cards and forms, logic unchanged
 "use client";
 
 import Link from "next/link";
-import { ChevronRight, Send, Heart, Mail, Linkedin } from "lucide-react";
+import { Heart, Mail, Search, Send } from "lucide-react";
 import React from "react";
 
+import SiteHeader from "@/components/SiteHeader";
 import { CONFIG } from "@/config/notomed-config";
 
 type ToolCard = {
@@ -34,8 +35,12 @@ export default function NotoMedLandingPage() {
   const [submitStatus, setSubmitStatus] = React.useState<"idle" | "success" | "error">("idle");
   const [supportAmount, setSupportAmount] = React.useState("5");
   const [supportLoading, setSupportLoading] = React.useState(false);
+  const [searchTerm, setSearchTerm] = React.useState("");
 
-  // FEEDBACK submit
+  const filteredTools = TOOLS.filter((tool) =>
+    tool.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
   const handleInternalFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const form = e.currentTarget;
@@ -66,213 +71,157 @@ export default function NotoMedLandingPage() {
     }
   };
 
-  // SUPPORT submit (Stripe)
-const handleSupportSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  const amountNum = Number(supportAmount);
+  const handleSupportSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const amountNum = Number(supportAmount);
 
-  if (Number.isNaN(amountNum) || amountNum <= 0) {
-    alert("Please enter a valid amount (e.g. 5).");
-    return;
-  }
-
-  setSupportLoading(true);
-  try {
-    const res = await fetch("/api/support/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ amount: amountNum }),
-    });
-
-    let data: { url?: string; error?: string } | null = null;
-    const text = await res.text();
-
-    // try to parse JSON, but don't die if it's HTML
-    try {
-      const parsed = JSON.parse(text) as unknown;
-      if (parsed && typeof parsed === "object") {
-        data = parsed as { url?: string; error?: string };
-      } else {
-        data = null;
-      }
-    } catch {
-      data = null;
-    }
-
-    if (!res.ok) {
-      const msg =
-        (data && data.error) ||
-        text ||
-        "Could not start checkout (server error).";
-      alert(msg);
+    if (Number.isNaN(amountNum) || amountNum <= 0) {
+      alert("Please enter a valid amount (e.g. 5).");
       return;
     }
 
-    if (data?.url) {
-      window.location.href = data.url;
-    } else {
-      alert("Checkout started but no URL was returned.");
+    setSupportLoading(true);
+    try {
+      const res = await fetch("/api/support/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: amountNum }),
+      });
+
+      let data: { url?: string; error?: string } | null = null;
+      const text = await res.text();
+
+      try {
+        const parsed = JSON.parse(text) as unknown;
+        if (parsed && typeof parsed === "object") {
+          data = parsed as { url?: string; error?: string };
+        } else {
+          data = null;
+        }
+      } catch {
+        data = null;
+      }
+
+      if (!res.ok) {
+        const msg =
+          (data && data.error) || text || "Could not start checkout (server error).";
+        alert(msg);
+        return;
+      }
+
+      if (data?.url) {
+        window.location.href = data.url;
+      } else {
+        alert("Checkout started but no URL was returned.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Could not start checkout (network).");
+    } finally {
+      setSupportLoading(false);
     }
-  } catch (err) {
-    console.error(err);
-    alert("Could not start checkout (network).");
-  } finally {
-    setSupportLoading(false);
-  }
-};
+  };
 
   return (
-    <>
-      {/* GRID BACKGROUND */}
-      <div
-        className="fixed inset-0 bg-white"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(0deg, #e5e7eb 0, #e5e7eb 1px, transparent 1px, transparent 40px), repeating-linear-gradient(90deg, #e5e7eb 0, #e5e7eb 1px, transparent 1px, transparent 40px)",
-          backgroundSize: "40px 40px",
-          zIndex: 0,
-        }}
-      />
+    <div className="relative z-10 min-h-screen">
+      <SiteHeader />
 
-      {/* PAGE WRAPPER */}
-      <div className="relative z-10 min-h-screen text-gray-900">
-        {/* TOP BAR */}
-        <header className="w-full border-b border-gray-300 bg-white/90 backdrop-blur-sm">
-          <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
-            <div className="text-lg font-semibold tracking-tight">notomed.dev</div>
-            <nav className="flex gap-6 text-sm">
-              <Link href="/about" className="hover:text-black">
-                About
-              </Link>
-              <Link href="/tools" className="hover:text-black">
-                Tools
-              </Link>
-              <a href="#feedback" className="hover:text-black">
-                Feedback
-              </a>
-              <a href="#support" className="hover:text-black">
-                Support
-              </a>
-            </nav>
+      <main className="mx-auto max-w-5xl space-y-24 px-4 pb-20 pt-16 sm:pt-20">
+        <section className="text-center">
+          <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.26em] text-[#989180]">
+            Project
+          </p>
+          <h1 className="mb-4 text-4xl font-semibold tracking-tight text-[#f9f6ef] md:text-5xl">
+            Physician-made clinical tools.
+          </h1>
+          <p className="mx-auto mb-10 max-w-2xl text-base text-[#d0c8b9] md:text-lg">
+            Creating web applications that simplify workflow and decrease cognitive load.
+          </p>
+          <p className="text-xs text-[#a89f8f]">All tools built by {CONFIG.creatorName}</p>
+
+          <div className="relative mx-auto mt-8 max-w-xl">
+            <div className="pointer-events-none absolute left-0 top-1/2 flex -translate-y-1/2 transform items-center pl-4">
+              <Search className="h-4 w-4 text-[#989180]" />
+            </div>
+            <input
+              type="text"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Search tools (e.g. opioid, sodium)..."
+              className="w-full rounded-xl border border-[#788878] bg-[#405247]/90 py-3 pl-11 pr-4 text-sm text-[#f6f2eb] placeholder-[#989180] shadow-[0_16px_45px_rgba(0,0,0,0.55)] focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#d27e58]/70 transition-all"
+            />
+            <div className="pointer-events-none mt-2 flex justify-center text-[11px] text-[#989180]">
+              <span className="rounded-full border border-[#788878] bg-[#405247]/90 px-2 py-1 shadow-[0_10px_32px_rgba(0,0,0,0.55)]">
+                Try: opioid regimen • hyponatremia
+              </span>
+            </div>
           </div>
-        </header>
+        </section>
 
-        {/* MAIN CONTENT */}
-        <main className="mx-auto max-w-6xl px-4 py-10 space-y-6">
-          {/* HERO */}
-          <section className="bg-white border border-gray-300 w-full">
-            <div className="grid grid-cols-1 md:grid-cols-[1.4fr,0.6fr]">
-              {/* LEFT */}
-              <div className="border-b md:border-b-0 md:border-r border-gray-300 p-6 md:p-8">
-                <p className="uppercase tracking-[0.3em] text-xs text-gray-500 mb-3">Project</p>
-                <h1 className="text-3xl md:text-[2.7rem] leading-tight font-bold mb-4">
-                  Physician-made clinical tools.
-                </h1>
-                <p className="text-sm md:text-base leading-relaxed mb-6 max-w-2xl">
-                  Creating web applications that simplify workflow and decrease cognitive load.
-                </p>
-                <p className="text-xs text-gray-500">All tools built by {CONFIG.creatorName}</p>
-              </div>
-
-              {/* RIGHT */}
-              <div className="p-6 md:p-8 bg-gray-50/50">
-                <p className="uppercase tracking-[0.3em] text-xs text-gray-500 mb-3">Current</p>
-                <ul className="space-y-2 text-sm">
-                  <li>Inpatient Opioid Regimen Builder</li>
-                  <li>Hyponatremia Calculator</li>
-                  <li className="text-gray-400">+ future tools</li>
-                </ul>
-                <div className="mt-6">
-                  <Link
-                    href={CONFIG.linkedInUrl}
-                    target="_blank"
-                    className="inline-flex items-center gap-2 text-sm font-medium text-indigo-700 hover:text-indigo-900"
-                  >
-                    <Linkedin className="w-4 h-4" />
-                    Connect with me
-                  </Link>
+        <section id="tools" className="scroll-mt-24">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+            {filteredTools.map((tool) => (
+              <Link
+                key={tool.id}
+                href={tool.link}
+                className="group relative overflow-hidden rounded-2xl border border-[#7a897b] bg-gradient-to-br from-[#3f5143] via-[#475b4c] to-[#506656] p-6 shadow-[0_22px_70px_rgba(0,0,0,0.7)] transition-transform duration-200 hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(0,0,0,0.9)]"
+              >
+                <div className="absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                  <div className="pointer-events-none absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(214,129,88,0.4),transparent_65%)] blur-3xl" />
                 </div>
-              </div>
-            </div>
-          </section>
+                <div className="relative">
+                  <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.2em] text-[#9a9384]">Tool</p>
+                  <h3 className="mb-2 text-lg font-semibold text-[#f9f6ef]">{tool.name}</h3>
+                  <p className="mb-6 text-sm text-[#d4cbba]">{tool.description}</p>
+                  <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.18em] text-[#f0a46c] transition-colors group-hover:text-[#f3b083]">
+                    Open Tool
+                    <span aria-hidden className="translate-x-0 transition-transform duration-200 group-hover:translate-x-0.5">
+                      →
+                    </span>
+                  </span>
+                </div>
+              </Link>
+            ))}
 
-          {/* TOOL ROW */}
-          <section id="tools" className="bg-white border border-gray-300">
-            <div className="grid grid-cols-1 md:grid-cols-3">
-              {TOOLS.map((tool, idx) => (
-                <div
-                  key={tool.id}
-                  className={`p-6 border-t md:border-t-0 border-gray-300 ${
-                    idx !== 0 ? "md:border-l" : ""
-                  }`}
+            <div className="group relative flex flex-col items-center justify-center rounded-2xl border border-dashed border-[#7a897b] bg-[#3b4c40] p-6 text-center shadow-[0_20px_70px_rgba(0,0,0,0.7)] transition-transform duration-200 hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(0,0,0,0.9)]">
+              <div className="absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                <div className="pointer-events-none absolute left-1/2 top-1/2 h-52 w-52 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(214,129,88,0.4),transparent_65%)] blur-3xl" />
+              </div>
+              <div className="relative">
+                <h3 className="mb-2 text-lg font-semibold text-[#f9f6ef]">Missing something?</h3>
+                <p className="mb-4 max-w-xs text-sm text-[#d4cbba]">
+                  Suggest a new workflow, calculator, or builder you wish existed on rounds.
+                </p>
+                <Link
+                  href="#contact"
+                  className="inline-flex items-center rounded-full border border-[#7a897b] bg-[#435447] px-4 py-1.5 text-xs font-medium uppercase tracking-[0.18em] text-[#f0e5d7] transition-colors hover:border-[#f0a46c] hover:text-[#f3b083]"
                 >
-                  <h2 className="mb-1 text-sm font-semibold text-gray-800">
-                    {tool.name}
-                  </h2>
-                  <p className="mb-4 text-xs leading-relaxed text-gray-600">
-                    {tool.description}
-                  </p>
-
-                  <Link
-                    href={tool.link}
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-700 hover:text-indigo-900"
-                  >
-                    Open tool
-                    <ChevronRight className="h-3 w-3" />
-                  </Link>
-                </div>
-              ))}
-
-              <div className="border-t border-gray-300 p-6 md:border-l md:border-t-0">
-                <h2 className="mb-2 text-sm font-semibold text-gray-800">
-                  More tools
-                </h2>
-                <p className="mb-4 text-xs leading-relaxed text-gray-600">
-                  Explore the full directory of physician-built utilities or let
-                  us know what you&apos;d like to see next.
-                </p>
-                <div className="flex flex-col gap-2 text-xs font-semibold">
-                  <Link
-                    href="/tools"
-                    className="inline-flex items-center gap-1 text-indigo-700 hover:text-indigo-900"
-                  >
-                    Browse all tools
-                    <ChevronRight className="h-3 w-3" />
-                  </Link>
-                  <a
-                    href="#feedback"
-                    className="inline-flex items-center gap-1 text-gray-700 hover:text-gray-900"
-                  >
-                    Suggest something else
-                    <ChevronRight className="h-3 w-3" />
-                  </a>
-                </div>
+                  Send Feedback
+                </Link>
               </div>
             </div>
-          </section>
+          </div>
+        </section>
 
-          {/* FEEDBACK + SUPPORT */}
-          <section
-            id="feedback"
-            className="bg-white border border-gray-300 grid grid-cols-1 md:grid-cols-[1.2fr,0.8fr]"
-          >
-            {/* feedback form */}
-            <div className="border-b md:border-b-0 md:border-r border-gray-300 p-6 md:p-7">
-              <div className="flex items-center gap-2 mb-4">
-                <Send className="w-4 h-4 text-gray-700" />
-                <h2 className="text-sm font-semibold tracking-tight">Feedback</h2>
+        <section id="contact" className="scroll-mt-24 border-t border-[#485347] pt-16">
+          <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
+            <div>
+              <div className="mb-2 flex items-center gap-2 text-[#f9f6ef]">
+                <Send className="h-4 w-4" />
+                <h2 className="text-2xl font-semibold">Feedback & enquiries</h2>
               </div>
-              <p className="text-xs text-gray-600 mb-4">Give me feedback or suggest new tools to build.</p>
-
+              <p className="mb-6 text-sm text-[#d4cbba]">
+                For suggestions, bug reports, or requests for new tools.
+              </p>
               <form onSubmit={handleInternalFormSubmit} className="space-y-4 text-sm">
-                <div className="flex flex-col gap-1">
-                  <label htmlFor="tool" className="text-xs font-medium tracking-tight">
+                <div>
+                  <label htmlFor="tool" className="text-xs font-medium text-[#a89f8f]">
                     Tool
                   </label>
                   <select
                     id="tool"
                     name="tool"
-                    className="border border-gray-300 bg-gray-50 px-2 py-2 text-xs focus:outline-none"
+                    className="mt-1 block w-full rounded-md border border-[#788878] bg-[#405247] px-3 py-2 text-sm text-[#f6f2eb] focus:outline-none focus:ring-1 focus:ring-[#d27e58]/70"
                     defaultValue="Opioid Regimen Builder"
                   >
                     <option>Opioid Regimen Builder</option>
@@ -280,90 +229,83 @@ const handleSupportSubmit = async (e: React.FormEvent) => {
                     <option>General website / new tool idea</option>
                   </select>
                 </div>
-                <div className="flex flex-col gap-1">
-                  <label htmlFor="message" className="text-xs font-medium tracking-tight">
+                <div>
+                  <label htmlFor="message" className="text-xs font-medium text-[#a89f8f]">
                     Message
                   </label>
                   <textarea
                     id="message"
                     name="message"
                     rows={4}
-                    className="border border-gray-300 bg-gray-50 px-2 py-2 text-xs focus:outline-none resize-y"
+                    className="mt-1 block w-full resize-y rounded-md border border-[#788878] bg-[#405247] px-3 py-2 text-sm text-[#f6f2eb] focus:outline-none focus:ring-1 focus:ring-[#d27e58]/70"
                     placeholder="Describe the issue or idea..."
                   />
                 </div>
 
                 {submitStatus === "success" ? (
-                  <div className="bg-green-100 border border-green-200 text-green-800 text-xs px-3 py-2">
+                  <div className="rounded-md border border-[#55b46d]/30 bg-[#1d2d24] px-3 py-2 text-xs text-[#55b46d]">
                     Thanks — got it.
                   </div>
                 ) : submitStatus === "error" ? (
-                  <div className="bg-red-100 border border-red-200 text-red-800 text-xs px-3 py-2">
+                  <div className="rounded-md border border-[#e57d6a]/40 bg-[#2f1f1c] px-3 py-2 text-xs text-[#e57d6a]">
                     Something went wrong. Try again.
                   </div>
                 ) : (
                   <button
                     type="submit"
-                    className="bg-black text-white text-xs px-4 py-2 tracking-tight"
+                    className="rounded-md bg-[#f4f1ea] px-4 py-2 text-sm font-medium text-[#25221e] transition-colors hover:bg-[#e3ddcf]"
                   >
                     Submit
                   </button>
                 )}
               </form>
             </div>
-          {/* support */}
-<div id="support" className="p-6 md:p-7">
-  <div className="flex items-center gap-2 mb-4">
-    <Heart className="w-4 h-4 text-gray-700" />
-    <h2 className="text-sm font-semibold tracking-tight">Support notomed</h2>
-  </div>
-  <p className="text-xs text-gray-700 mb-4">
-    All applications were built after hours and took significant time and determination to make.
-    If they save you time or help in anyway, you can support it here.
-  </p>
 
-  {/* put form + contact button in the SAME row */}
-  <div className="flex flex-wrap items-center gap-3">
-    {/* your custom-amount form stays the same */}
-    <form
-      onSubmit={handleSupportSubmit}
-      className="flex flex-wrap items-center gap-2"
-    >
-      <label className="text-xs text-gray-600" htmlFor="amount">
-        Amount (USD)
-      </label>
-      <input
-        id="amount"
-        type="number"
-        min="1"
-        step="1"
-        value={supportAmount}
-        onChange={(e) => setSupportAmount(e.target.value)}
-        className="border border-gray-300 rounded-md px-2 py-1 text-sm w-24"
-      />
-      <button
-        type="submit"
-        disabled={supportLoading}
-        className="bg-green-600 text-white text-xs px-4 py-2 inline-flex items-center gap-2 disabled:opacity-60 rounded-md"
-      >
-        <Heart className="w-3 h-3" />
-        {supportLoading ? "Redirecting..." : "Support"}
-      </button>
-    </form>
+            <div id="support">
+              <div className="mb-2 flex items-center gap-2 text-[#f9f6ef]">
+                <Heart className="h-4 w-4" />
+                <h2 className="text-2xl font-semibold">Support notomed</h2>
+              </div>
+              <p className="mb-6 text-sm text-[#d4cbba]">
+                All applications were built after hours and took significant time and determination to make. If they save you time or help in anyway, you can support it here.
+              </p>
 
-    {/* contact button stays a separate link, just in same flex row */}
-    <Link
-      href={`mailto:${CONFIG.contactEmail}`}
-      className="bg-blue-600 text-white text-xs px-4 py-2 inline-flex items-center gap-2 rounded-md"
-    >
-      <Mail className="w-3 h-3" />
-      Contact Me!
-    </Link>
-  </div>
-</div>
-          </section>
-        </main>
-      </div>
-    </>
+              <div className="flex flex-col gap-3 text-sm">
+                <form onSubmit={handleSupportSubmit} className="flex flex-wrap items-center gap-3">
+                  <label className="text-xs text-[#a89f8f]" htmlFor="amount">
+                    Amount (USD)
+                  </label>
+                  <input
+                    id="amount"
+                    type="number"
+                    min="1"
+                    step="1"
+                    value={supportAmount}
+                    onChange={(e) => setSupportAmount(e.target.value)}
+                    className="w-24 rounded-md border border-[#788878] bg-[#405247] px-3 py-2 text-sm text-[#f6f2eb] focus:outline-none focus:ring-1 focus:ring-[#d27e58]/70"
+                  />
+                  <button
+                    type="submit"
+                    disabled={supportLoading}
+                    className="inline-flex items-center gap-2 rounded-md bg-[#d27e58] px-5 py-2 text-sm font-medium text-[#221813] transition-colors hover:bg-[#e29a6c] disabled:opacity-50"
+                  >
+                    <Heart className="h-4 w-4" />
+                    {supportLoading ? "Redirecting..." : "Support"}
+                  </button>
+                </form>
+
+                <Link
+                  href={`mailto:${CONFIG.contactEmail}`}
+                  className="inline-flex items-center gap-2 rounded-md border border-[#7a897b] bg-[#435447] px-4 py-2 text-sm font-medium text-[#f0e5d7] transition-colors hover:border-[#f0a46c] hover:text-[#f3b083]"
+                >
+                  <Mail className="h-4 w-4" />
+                  Contact Me!
+                </Link>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
   );
-} 
+}

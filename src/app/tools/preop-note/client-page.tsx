@@ -1,3 +1,4 @@
+// Escaped apostrophe tip text for lint compliance
 "use client";
 
 import React, { useEffect, useMemo, useState, useCallback } from "react";
@@ -1168,7 +1169,7 @@ export default function PreOpQuickNoteDemo() {
       </div>
   
       <p className="mt-3 text-[11px] text-gray-500">
-        Tip: you can fill as much or as little as you want in earlier steps; the AI plan will still generate based on what's provided.
+        Tip: you can fill as much or as little as you want in earlier steps; the AI plan will still generate based on what&apos;s provided.
       </p>
       <p className="mt-2 text-[10px] text-gray-400">
         References: 2024 AHA/ACC perioperative guideline; Modha and Whinney 2022
