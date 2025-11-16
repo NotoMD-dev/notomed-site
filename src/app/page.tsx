@@ -132,20 +132,20 @@ export default function NotoMedLandingPage() {
     <div className="relative z-10 min-h-screen">
       <SiteHeader />
 
-      <main className="mx-auto max-w-5xl space-y-24 px-4 pb-20 pt-16 sm:pt-20">
+      <main className="mx-auto max-w-6xl space-y-24 px-4 pb-20 pt-16 sm:px-6 sm:pt-20 lg:px-8">
         <section className="text-center">
           <p className="mb-4 text-[11px] font-semibold uppercase tracking-[0.26em] text-muted">
             Project
           </p>
-          <h1 className="mb-4 text-4xl font-semibold tracking-tight text-heading md:text-5xl">
+          <h1 className="mb-4 text-4xl font-semibold tracking-tight text-heading sm:text-5xl lg:text-6xl">
             Physician-made clinical tools.
           </h1>
-          <p className="mx-auto mb-10 max-w-2xl text-base text-body md:text-lg">
+          <p className="mx-auto mb-10 max-w-3xl text-base text-body md:text-lg">
             Creating web applications that simplify workflow and decrease cognitive load.
           </p>
           <p className="text-xs text-muted-strong">All tools built by {CONFIG.creatorName}</p>
 
-          <div className="relative mx-auto mt-8 max-w-xl">
+          <div className="relative mx-auto mt-8 max-w-2xl px-2 sm:px-0">
             <div className="relative flex items-center rounded-xl shadow-[0_16px_45px_rgba(0,0,0,0.35)]">
               <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted">
                 <Search className="h-4 w-4" />
@@ -155,7 +155,7 @@ export default function NotoMedLandingPage() {
                 value={searchTerm}
                 onChange={(event) => setSearchTerm(event.target.value)}
                 placeholder="Search tools (e.g. opioid, sodium)..."
-                className="input-olive w-full rounded-xl py-3 pl-10 pr-4 text-sm shadow-[0_16px_45px_rgba(0,0,0,0.15)] focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)]/70 transition-all"
+                className="input-olive w-full rounded-xl py-3 pl-10 pr-4 text-sm shadow-[0_16px_45px_rgba(0,0,0,0.15)] focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)]/70 transition-all sm:text-base"
               />
             </div>
             <div className="pointer-events-none mt-2 flex justify-center text-[11px] text-muted">
@@ -167,7 +167,7 @@ export default function NotoMedLandingPage() {
         </section>
 
         <section id="tools" className="scroll-mt-24">
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
             {displayedTools.map((tool) => (
               <Link
                 key={tool.id}
@@ -282,13 +282,16 @@ export default function NotoMedLandingPage() {
                 If these tools save you time on the wards, consider supporting future maintenance and new builds.
               </p>
               <div className="space-y-4">
-                <form onSubmit={handleSupportSubmit} className="flex items-center gap-3">
+                <form
+                  onSubmit={handleSupportSubmit}
+                  className="flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:gap-4"
+                >
                   <input
                     type="number"
                     value={supportAmount}
                     min={1}
                     onChange={(event) => setSupportAmount(event.target.value)}
-                    className="input-olive w-24 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[color:var(--accent)]/70"
+                    className="input-olive w-full rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[color:var(--accent)]/70 sm:w-28"
                   />
                   <button
                     type="submit"
