@@ -524,7 +524,7 @@ export default function PreOpQuickNoteDemo() {
         step={1}
         total={TOTAL_STEPS}
         title="Procedure Risk and Urgency"
-        hint="These two choices set the starting branch of the guideline."
+        hint="These choices set the starting branch of the guideline."
       />
 
       <div className="mb-2 flex items-center gap-2 text-sm text-gray-800">
@@ -622,7 +622,6 @@ export default function PreOpQuickNoteDemo() {
           step={2}
           total={TOTAL_STEPS}
           title="Any active cardiac conditions?"
-          hint="Any yes ⇒ stabilize before surgery."
         />
         <div className="flex flex-wrap gap-2">
           {ACTIVE_CONDITION_OPTIONS.map(([label, key]) => (
@@ -847,7 +846,7 @@ export default function PreOpQuickNoteDemo() {
         step={5}
         total={TOTAL_STEPS}
         title="Peri-op medications"
-        hint="Toggle what the patient is actually taking."
+        hint="Select all medications patient is taking"
       />
 
       <BinaryChipGroup
@@ -971,7 +970,7 @@ export default function PreOpQuickNoteDemo() {
         step={6}
         total={TOTAL_STEPS}
         title="Additional risk screens"
-        hint="Only check what applies — note sections auto-populate."
+        hint="Select additional risk factors and provide extra context as needed."
       />
       <div className="flex flex-wrap gap-2 mb-3">
         {EXTRA_FLAG_OPTIONS.map(([label, key]) => (
