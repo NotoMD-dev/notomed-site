@@ -1,4 +1,5 @@
 // src/app/api/support/checkout/route.ts
+
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -29,7 +30,13 @@ export async function POST(req: Request) {
 
     const amountInCents = Math.round(amount * 100);
 
-    const origin = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    // 1) Prefer explicit base URL
+    // 2) Fall back to request origin
+    // 3) Finally default to localhost (dev)
+    const origin =
+      process.env.NEXT_PUBLIC_BASE_URL ||
+      req.headers.get("origin") ||
+      "http://localhost:3000";
 
     const stripeClient = getStripeClient();
 
