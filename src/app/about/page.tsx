@@ -1,16 +1,57 @@
 // Restyled about page to Olive V3 layout and card styling
 import Link from "next/link";
 import Image from "next/image";
+import Script from "next/script";
 import type { Metadata } from "next";
-import { aboutMetadata } from "@/lib/seo";
+import { aboutMetadata, siteConfig } from "@/lib/seo";
 
 import SiteHeader from "@/components/SiteHeader";
 
 export const metadata: Metadata = aboutMetadata;
 
+const aboutJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  name: "About NotoMed.dev",
+  url: `${siteConfig.url}/about`,
+  description:
+    "Learn about NotoMed.dev, a physician-built collection of AI-assisted inpatient medicine tools by Yasmine Abbey, MD, MSc.",
+  mainEntity: {
+    "@type": "Person",
+    name: "Yasmine Abbey, MD, MSc",
+    jobTitle: "Internal Medicine Resident & Clinical Tool Builder",
+    alumniOf: [
+      "UCLA David Geffen School of Medicine",
+      "Johns Hopkins University",
+      "Vassar College",
+    ],
+    worksFor: {
+      "@type": "Organization",
+      name: "NotoMed.dev",
+      url: siteConfig.url,
+    },
+    sameAs: [
+      "https://www.linkedin.com/in/yasmine-cheryl-abbey-503b3197/",
+      "https://twitter.com/yasmineabbey",
+    ],
+    knowsAbout: [
+      "clinical decision support",
+      "inpatient medicine",
+      "AI-assisted medical tools",
+    ],
+  },
+} as const;
+
 export default function AboutPage() {
   return (
     <div className="relative z-10 min-h-screen">
+      <Script
+        id="about-structured-data"
+        type="application/ld+json"
+        strategy="beforeInteractive"
+      >
+        {JSON.stringify(aboutJsonLd)}
+      </Script>
       <SiteHeader />
 
       <div className="mx-auto max-w-6xl px-4 pb-20 pt-12 sm:px-6 lg:px-8">
