@@ -23,17 +23,17 @@ export default function AboutPage() {
           </Link>
         </div>
 
-        <header className="mb-10 space-y-2 text-center sm:text-left">
-          <h1 className="text-3xl font-semibold text-[#f9f6ef] sm:text-4xl">
+        <header className="mb-10 space-y-3 text-center sm:text-left">
+          <h1 className="text-2xl font-semibold text-[#f9f6ef] sm:text-3xl">
             About NotoMed.dev and its creator
           </h1>
-          <p className="mx-auto max-w-2xl text-sm text-[#d0c8b9] md:text-base sm:mx-0">
+          <p className="mx-auto max-w-2xl text-sm text-[#efe7d7] md:text-base sm:mx-0">
             A collection of physician-built tools meant to reduce cognitive load, standardize workflows, and make on-service life a little easier.
           </p>
         </header>
 
         <main className="grid gap-10 md:grid-cols-[1.1fr,0.7fr] lg:grid-cols-[1.3fr,0.8fr]">
-          <div className="space-y-5 text-sm leading-relaxed text-[#d4cbba] md:text-[15px]">
+          <div className="space-y-5 text-sm leading-relaxed text-[#f4eee3] md:text-base">
             <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-[#a89f8f]">
               Hi, I’m Yasmine! 👋
             </h2>
@@ -43,7 +43,7 @@ export default function AboutPage() {
             </p>
 
             <p>
-              When I couldn’t find what I needed, I started building my own web applications and sharing them, which led to the creation of <span className="font-semibold text-[#f9f6ef]">notomed.dev</span>.
+              When I couldn’t find what I needed, I started building my own web applications and sharing them, which led to the creation of <span className="font-semibold text-[#f3b083]">notomed.dev</span>.
             </p>
 
             <p>
@@ -55,11 +55,11 @@ export default function AboutPage() {
             </p>
 
             <p>
-              <span className="font-semibold text-[#f9f6ef]">A note on the tech side:</span> I&apos;m a largely self-taught coder/developer who completed a year of CS in college. This website and all tools were pieced together with determination and help from LLMs (Gemini, GPT 5.1 and Codex). Each tool took real time to build, so if you find one useful, please share it or tell me how to make it better.
+              <span className="font-semibold text-[#f3b083]">A note on the tech side:</span> I&apos;m a largely self-taught coder/developer who completed a year of CS in college. This website and all tools were pieced together with determination and help from LLMs (Gemini, GPT 5.1 and Codex). Each tool took real time to build, so if you find one useful, please share it or tell me how to make it better.
             </p>
 
             <p>
-              <span className="font-semibold text-[#f9f6ef]">Important:</span> These tools are not meant to, and should not, replace clinical judgement. They are meant to offload the repeatable parts so we can spend more time on the part that matters: patient care.
+              <span className="font-semibold text-[#f3b083]">Important:</span> These tools are not meant to, and should not, replace clinical judgement. They are meant to offload the repeatable parts so we can spend more time on the part that matters: patient care.
             </p>
 
             <div className="flex flex-wrap gap-3">
