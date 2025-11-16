@@ -18,6 +18,9 @@ export const siteConfig = {
     "physician built apps",
     "AI assisted medicine",
     "hospital medicine workflows",
+    "internal medicine resume",
+    "physician founder profile",
+    "Yasmine Abbey MD",
   ],
   founder: {
     name: "Yasmine Abbey, MD, MSc",
@@ -80,6 +83,12 @@ export const aboutMetadata: Metadata = {
   title: "About NotoMed.dev",
   description:
     "Meet physician-founder Yasmine Abbey, MD, MSc and learn how NotoMed.dev builds AI-assisted inpatient medicine tools that make rounding more efficient.",
+  keywords: [
+    "Yasmine Abbey",
+    "about NotoMed.dev",
+    "internal medicine physician founder",
+    "AI-assisted clinical tools",
+  ],
   alternates: {
     canonical: `${siteConfig.url}/about`,
   },
@@ -105,6 +114,45 @@ export const aboutMetadata: Metadata = {
     title: "About NotoMed.dev",
     description:
       "Meet physician-founder Yasmine Abbey, MD, MSc and see how NotoMed.dev builds AI-assisted inpatient medicine tools for hospital teams.",
+    images: [siteConfig.socialImage],
+  },
+};
+
+export const resumeMetadata: Metadata = {
+  title: "Yasmine Abbey, MD, MSc | Resume & Clinical Training",
+  description:
+    "Explore the detailed resume for Yasmine Abbey, MD, MSc — Internal Medicine resident, clinical tool builder, and researcher with experience across Cedars-Sinai, UCLA, Johns Hopkins, Google, and Glass Health.",
+  keywords: [
+    "Yasmine Abbey resume",
+    "internal medicine CV",
+    "physician resume",
+    "clinical founder profile",
+  ],
+  alternates: {
+    canonical: `${siteConfig.url}/resume`,
+  },
+  openGraph: {
+    type: "profile",
+    url: `${siteConfig.url}/resume`,
+    title: "Yasmine Abbey, MD, MSc | Resume",
+    description:
+      "Detailed look at the education, training, research, tech experience, and publications of Yasmine Abbey, MD, MSc.",
+    images: [
+      {
+        url: siteConfig.socialImage,
+        width: 1200,
+        height: 630,
+        alt: `${siteConfig.name} social card`,
+      },
+    ],
+    firstName: "Yasmine",
+    lastName: "Abbey",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Yasmine Abbey, MD, MSc | Resume",
+    description:
+      "See the latest medical training, research awards, and tech experience of physician-founder Yasmine Abbey, MD, MSc.",
     images: [siteConfig.socialImage],
   },
 };
