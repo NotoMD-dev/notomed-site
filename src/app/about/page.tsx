@@ -47,7 +47,7 @@ export default function AboutPage() {
 
           <p className="text-sm leading-relaxed text-gray-700">
             When I couldn’t find what I needed, I started building my own web applications and sharing
-            them — which led to the creation of <span className="font-semibold">notomed.dev</span>.
+            them, which led to the creation of <span className="font-semibold">notomed.dev</span>.
           </p>
 
           <p className="text-sm leading-relaxed text-gray-700">
@@ -63,7 +63,7 @@ export default function AboutPage() {
 
           <p className="text-sm leading-relaxed text-gray-700">
             <span className="font-semibold">A note on the tech side:</span> I'm a largely self-taught coder/developer 
-            who completed a year of CS in college. This website and every tool were pierced together with determination and help
+            who completed a year of CS in college. This website and all tools were pierced together with determination and help
             from LLMs (Gemini, GPT 5.1 and Codex). Each tool took real time to build, so if you find one
             useful, please share it or tell me how to make it better.
           </p>
