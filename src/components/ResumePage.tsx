@@ -43,7 +43,7 @@ const sections = [
 
 const SectionChevron = ({ open }: { open: boolean }) => (
   <span
-    className={`ml-3 inline-flex h-5 w-5 items-center justify-center rounded-full border border-emerald-500/60 text-[11px] transition-transform duration-200 ${
+    className={`ml-3 inline-flex h-5 w-5 items-center justify-center rounded-full border border-[color:var(--accent)] text-[10px] text-[color:var(--accent)] transition-transform duration-200 ${
       open ? "rotate-90" : ""
     }`}
   >
@@ -55,60 +55,52 @@ export default function ResumePage() {
   const [openId, setOpenId] = useState<string | null>("education");
 
   return (
-    <div className="relative min-h-screen bg-[#172319] text-slate-100">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(34,197,94,0.15),_transparent_60%),_linear-gradient(to_right,_rgba(148,163,184,0.14)_1px,_transparent_1px),_linear-gradient(to_bottom,_rgba(148,163,184,0.14)_1px,_transparent_1px)] bg-[length:100%_100%,80px_80px,80px_80px] opacity-60"
-      />
+    <main className="mx-auto flex max-w-6xl flex-col gap-10 px-4 pb-20 pt-16 sm:px-6 lg:px-8">
+      <section className="max-w-3xl space-y-4">
+        <p className="text-[11px] uppercase tracking-[0.35em] text-muted-strong">
+          About the creator
+        </p>
+        <h1 className="text-3xl font-semibold leading-tight text-heading sm:text-4xl">
+          Resume & training overview
+        </h1>
+        <p className="text-sm leading-relaxed text-body sm:text-base">
+          A more detailed look at my medical training, research background, and tech
+          experience.
+          <span className="mt-2 block">Sections can be expanded or collapsed.</span>
+        </p>
+      </section>
 
-      <main className="relative mx-auto flex max-w-5xl flex-col gap-10 px-4 pb-16 pt-20 sm:px-8 lg:px-10">
-        <section className="max-w-3xl space-y-4">
-          <p className="text-xs uppercase tracking-[0.35em] text-emerald-200/80">
-            About the creator
-          </p>
-          <h1 className="text-3xl font-semibold leading-tight sm:text-4xl">
-            Resume & training overview
-          </h1>
-          <p className="text-sm leading-relaxed text-emerald-50/80 sm:text-base">
-            A more detailed look at my medical training, research background, and
-            technical work building tools like NotoMed.dev. Sections can be
-            expanded or collapsed so you can skim what matters most.
-          </p>
-        </section>
-
-        <section className="grid gap-6 lg:grid-cols-[minmax(0,_2fr)_minmax(260px,_1.2fr)]">
-          <div className="space-y-3">
-            {sections.map((section) => {
-              const open = openId === section.id;
-              return (
-                <article
-                  key={section.id}
-                  className={`overflow-hidden rounded-xl border border-emerald-900/70 bg-emerald-950/40 backdrop-blur-sm transition-shadow ${
-                    open
-                      ? "shadow-[0_18px_60px_rgba(0,0,0,0.4)]"
-                      : "shadow-[0_10px_30px_rgba(0,0,0,0.45)]"
-                  }`}
+      <section className="grid gap-6 lg:grid-cols-[minmax(0,_2fr)_minmax(260px,_1.1fr)]">
+        <div className="space-y-3">
+          {sections.map((section) => {
+            const open = openId === section.id;
+            return (
+              <article
+                key={section.id}
+                className={`overflow-hidden rounded-2xl border border-[color:var(--card-border)] bg-[color:var(--card-muted)]/60 backdrop-blur-sm transition-shadow duration-200 ${
+                  open
+                    ? "shadow-[0_18px_60px_rgba(0,0,0,0.45)]"
+                    : "shadow-[0_10px_30px_rgba(0,0,0,0.35)]"
+                }`}
+              >
+                <button
+                  type="button"
+                  onClick={() =>
+                    setOpenId((prev) => (prev === section.id ? null : section.id))
+                  }
+                  className="flex w-full items-center justify-between px-4 py-4 text-left sm:px-5"
                 >
-                  <button
-                    type="button"
-                    onClick={() =>
-                      setOpenId((prev) => (prev === section.id ? null : section.id))
-                    }
-                    className="flex w-full items-center justify-between px-4 py-4 text-left sm:px-5"
-                  >
-                    <div>
-                      <p className="text-[11px] uppercase tracking-[0.28em] text-emerald-200/70">
-                        {section.title}
-                      </p>
-                      <p className="mt-1 text-sm text-emerald-50/90">
-                        {section.blurb}
-                      </p>
-                    </div>
-                    <SectionChevron open={open} />
-                  </button>
+                  <div>
+                    <p className="text-[11px] uppercase tracking-[0.28em] text-muted-strong">
+                      {section.title}
+                    </p>
+                    <p className="mt-1 text-sm text-body">{section.blurb}</p>
+                  </div>
+                  <SectionChevron open={open} />
+                </button>
 
-                  {open && (
-                    <div className="border-t border-emerald-900/60 bg-black/20 px-4 py-4 text-sm leading-relaxed text-emerald-50/90 sm:px-5">
+                {open && (
+                  <div className="border-t border-[color:var(--card-outline)] bg-[color:var(--input-bg)]/60 px-4 py-4 text-sm leading-relaxed text-body sm:px-5">
                       {section.id === "education" && (
                         <ul className="space-y-1.5 text-[13px]">
                           <li>
@@ -195,46 +187,41 @@ export default function ResumePage() {
                       )}
 
                       {section.id === "publications" && (
-                        <ul className="space-y-1.5 text-[13px]">
+                        <ul className="space-y-4 text-[13px]">
                           <li>
-                            Rook, J. M., Hayashi, A., Salinas, D., Abbey, Y. C., et al. (2025). Recent
-                            trends and risk factors for chemical and physical restraint of trauma
-                            patients during emergency department evaluation and treatment: An
-                            institutional study. <span className="italic">Neuropharmacology</span>.{" "}
+                            Rook, J. M., Hayashi, A., Salinas, D., <span className="font-semibold text-heading">Abbey, Y. C.</span>, et al.
+                            (2025). Recent trends and risk factors for chemical and physical restraint of trauma patients during emergency
+                            department evaluation and treatment: An institutional study. <span className="italic">Neuropharmacology</span>.{" "}
                             <a
                               href="https://doi.org/10.1016/j.neuropharm.2024.109876"
                               target="_blank"
                               rel="noreferrer"
-                              className="underline decoration-emerald-400/70 underline-offset-2 hover:decoration-emerald-300"
+                              className="underline decoration-[color:var(--accent)]/70 underline-offset-2 hover:decoration-[color:var(--accent)]"
                             >
                               https://doi.org/10.1016/j.neuropharm.2024.109876
                             </a>
                           </li>
                           <li>
-                            Senatorov, I. S., Abbey, Y. C., et al. (2024). Castrate-resistant prostate
-                            cancer response to taxane is determined by an HNF1-dependent apoptosis
-                            resistance circuit. <span className="italic">Cell Reports Medicine</span>, 5(7),
-                            101234.{" "}
+                            Senatorov, I. S., <span className="font-semibold text-heading">Abbey, Y. C.</span>, et al. (2024). Castrate-resistant prostate cancer response
+                            to taxane is determined by an HNF1-dependent apoptosis resistance circuit. <span className="italic">Cell Reports Medicine</span>, 5(7), 101234.{" "}
                             <a
                               href="https://doi.org/10.1016/j.xcrm.2024.101234"
                               target="_blank"
                               rel="noreferrer"
-                              className="underline decoration-emerald-400/70 underline-offset-2 hover:decoration-emerald-300"
+                              className="underline decoration-[color:var(--accent)]/70 underline-offset-2 hover:decoration-[color:var(--accent)]"
                             >
                               https://doi.org/10.1016/j.xcrm.2024.101234
                             </a>
                           </li>
                           <li>
-                            Jansson, K. H., Tucker, J. B., Stahl, L. E., Simmons, J. K., Fuller, C., Abbey,
-                            Y. C., et al. (2018). High-throughput screens identify HSP90 inhibitors as
-                            potent therapeutics that target inter-related growth and survival pathways
-                            in advanced prostate cancer. <span className="italic">Scientific Reports</span>, 8,
-                            17239.{" "}
+                            Jansson, K. H., Tucker, J. B., Stahl, L. E., Simmons, J. K., Fuller, C., <span className="font-semibold text-heading">Abbey, Y. C.</span>, et al. (2018). High-throughput
+                            screens identify HSP90 inhibitors as potent therapeutics that target inter-related growth and survival pathways in advanced prostate cancer.
+                            <span className="italic"> Scientific Reports</span>, 8, 17239.{" "}
                             <a
                               href="https://doi.org/10.1038/s41598-018-35417-0"
                               target="_blank"
                               rel="noreferrer"
-                              className="underline decoration-emerald-400/70 underline-offset-2 hover:decoration-emerald-300"
+                              className="underline decoration-[color:var(--accent)]/70 underline-offset-2 hover:decoration-[color:var(--accent)]"
                             >
                               https://doi.org/10.1038/s41598-018-35417-0
                             </a>
@@ -259,21 +246,21 @@ export default function ResumePage() {
             })}
           </div>
 
-          <aside className="mt-2 flex flex-col gap-4 rounded-2xl border border-emerald-900/70 bg-emerald-950/40 p-5 text-sm text-emerald-50/85 shadow-[0_16px_50px_rgba(0,0,0,0.45)] sm:p-6">
+          <aside className="mt-2 flex flex-col gap-4 rounded-2xl card-surface p-5 text-sm text-body shadow-[0_16px_50px_rgba(0,0,0,0.45)] sm:p-6">
             <div className="flex items-center gap-4">
-              <div className="h-16 w-16 overflow-hidden rounded-full border border-emerald-500/70 bg-emerald-900/40" />
+              <div className="h-16 w-16 overflow-hidden rounded-full border border-[color:var(--card-border)] bg-[color:var(--card-muted)]" />
               <div>
-                <p className="text-xs uppercase tracking-[0.22em] text-emerald-200/80">
+                <p className="text-xs uppercase tracking-[0.22em] text-muted-strong">
                   Yasmine C. Abbey, MD, MSc
                 </p>
-                <p className="mt-1 text-[13px] text-emerald-50/90">
+                <p className="mt-1 text-[13px] text-body">
                   Third-year Internal Medicine resident at Cedars-Sinai in Los
                   Angeles, building physician-made clinical tools.
                 </p>
               </div>
             </div>
 
-            <p className="text-[13px] leading-relaxed text-emerald-100/75">
+            <p className="text-[13px] leading-relaxed text-body">
               My work lives at the intersection of bedside medicine, clinical
               research, and software. I care about reducing cognitive load for
               clinicians so we can focus on the parts of the job that actually
@@ -283,7 +270,7 @@ export default function ResumePage() {
             <div className="mt-1 flex flex-wrap gap-2">
               <a
                 href="mailto:Yasmineabbey@gmail.com"
-                className="inline-flex items-center rounded-full border border-emerald-400/70 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-100/90 transition hover:bg-emerald-400 hover:text-[#051109]"
+                className="inline-flex items-center rounded-full border border-[color:var(--accent)] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-heading transition hover:bg-[color:var(--accent)] hover:text-[color:var(--neutral-text)]"
               >
                 Email me
               </a>
@@ -291,14 +278,13 @@ export default function ResumePage() {
                 href="https://www.linkedin.com/in/yasmine-cheryl-abbey-503b3197/"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center rounded-full border border-emerald-400/40 bg-black/20 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-100/80 transition hover:border-emerald-300 hover:bg-emerald-400/10"
+                className="inline-flex items-center rounded-full border border-[color:var(--card-border)] bg-[color:var(--pill-bg)]/70 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-heading transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
               >
                 View LinkedIn
               </a>
             </div>
           </aside>
         </section>
-      </main>
-    </div>
+    </main>
   );
 }
