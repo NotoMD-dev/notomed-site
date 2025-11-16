@@ -477,13 +477,20 @@ export default function PreOpQuickNoteDemo() {
   const back = () => setCurrent((c) => Math.max(1, c - 1));
 
   const copyNote = async () => {
+    if (!aiText) {
+      alert('Please click "Generate AI Plan" first.');
+      return;
+    }
+  
     try {
-      await navigator.clipboard.writeText(aiText ?? note);
-      alert("Copied note to clipboard.");
+      await navigator.clipboard.writeText(aiText);
+      alert("Copied AI plan to clipboard.");
     } catch {
       alert("Copy failed - select and copy manually.");
     }
   };
+  
+  
 
   const getAIData = useCallback<() => PreopAIRequest>(
     () => ({
@@ -846,7 +853,7 @@ export default function PreOpQuickNoteDemo() {
         step={5}
         total={TOTAL_STEPS}
         title="Peri-op medications"
-        hint="Select all that apply"
+        hint="Select all that apply."
       />
 
       <BinaryChipGroup
@@ -1111,7 +1118,7 @@ export default function PreOpQuickNoteDemo() {
         step={7}
         total={TOTAL_STEPS}
         title="Copy-ready note"
-        hint="Click Generate AI Plan, review, then copy into Epic/Cerner."
+        hint='Click "Generate AI Plan" to create a copy-ready A/P, then copy into Epic/Cerner.'
       />
   
       {/* Big decision banner */}
@@ -1129,19 +1136,11 @@ export default function PreOpQuickNoteDemo() {
           )}
         </div>
       </div>
-
-      {/* Single note textbox — shows base note, then AI plan once generated */}
-      <textarea
-        className="w-full h-[320px] rounded-2xl border border-indigo-100/70 bg-white/95 p-4 text-sm font-mono text-gray-900 whitespace-pre-wrap shadow-inner focus:outline-none focus:ring-2 focus:ring-indigo-200/70"
-        value={aiText ?? note}
-        readOnly
-      />
-
-      {/* AI Plan panel (no internal textarea; just button + errors) */}
-      <div className="mt-6">
-        <AiPlanPanel getData={getAIData} onText={setAiText} />
-      </div>
-
+  
+      {/* AI Assessment & Plan card (this is the ONLY textbox now) */}
+      <AiPlanPanel getData={getAIData} onText={setAiText} />
+  
+      {/* Navigation + global Copy */}
       <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between">
         <button
           onClick={back}
@@ -1169,8 +1168,7 @@ export default function PreOpQuickNoteDemo() {
       </div>
   
       <p className="mt-3 text-[11px] text-gray-500">
-        Tip: you can fill only what changes the branch; everything else is
-        optional.
+        Tip: you can fill as much or as little as you want in earlier steps; the AI plan will still generate based on what's provided.
       </p>
       <p className="mt-2 text-[10px] text-gray-400">
         References: 2024 AHA/ACC perioperative guideline; Modha and Whinney 2022
