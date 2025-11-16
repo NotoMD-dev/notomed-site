@@ -846,7 +846,7 @@ export default function PreOpQuickNoteDemo() {
         step={5}
         total={TOTAL_STEPS}
         title="Peri-op medications"
-        hint="Select all medications patient is taking"
+        hint="Select all that apply"
       />
 
       <BinaryChipGroup

@@ -15,8 +15,8 @@ export const OPIOID_LABELS: Record<Opioid, string> = {
   fentanyl_tds: "Fentanyl (transdermal)",
   methadone: "Methadone",
   buprenorphine: "Buprenorphine",
-  oxycodone_apap: "Oxycodone/APAP (Percocet)",
-  hydrocodone_apap: "Hydrocodone/APAP (Norco)",
+  oxycodone_apap: "Oxycodone/APAP (Percocet); APAP = tylenol",
+  hydrocodone_apap: "Hydrocodone/APAP (Norco) APAP = tylenol",
 };
 
 export const OPIOID_SHORT: Record<Opioid, string> = {

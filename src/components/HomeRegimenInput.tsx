@@ -81,7 +81,7 @@ export function HomeRegimenInput() {
               <div>Freq (hours)</div>
               <div>PRN?</div>
               <div className="text-gray-400">Avg PRN/Day</div>
-              <div>ER / LA?</div>
+              <div>ER / LA? (Extended Release/Long Acting)</div>
               <div />
             </div>
 

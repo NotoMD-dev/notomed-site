@@ -371,7 +371,7 @@ function computeAssessment(
     caveats.push("Recent medication changes can precipitate SIADH — review meds.");
   }
   caveats.push(
-    "Avoid rapid correction: generally aim 4–6 mEq/L increase in 24h (≤6 if high ODS risk)."
+    "Avoid rapid correction: generally aim 4–6 or 6-8 mEq/L increase in 24h (≤6 if high ODS risk)."
   );
 
   // severity layering
