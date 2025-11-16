@@ -64,8 +64,7 @@ export default function AboutPage() {
 
             <div className="flex flex-wrap gap-3">
               <Link
-                href="/Yasmine-Abbey-Resume.pdf"
-                target="_blank"
+                href="/resume"
                 className="inline-flex items-center gap-2 rounded-md bg-[#d27e58] px-4 py-2 text-xs font-medium text-[#221813] transition-colors hover:bg-[#e29a6c]"
               >
                 View résumé
