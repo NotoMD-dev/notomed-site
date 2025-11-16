@@ -187,7 +187,7 @@ export function totalHomeOME(rows: HomeMedRow[]): {
   }
 
   // show APAP at top
-  details.unshift(`Tylenol(APAP)/day: ${Math.round(totalAPAP)} mg`);
+  details.unshift(`Tylenol/day: ${Math.round(totalAPAP)} mg`);
 
   return { ome: totalOME, details, apapDailyMg: totalAPAP };
 }

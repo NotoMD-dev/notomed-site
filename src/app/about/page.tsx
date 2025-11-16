@@ -39,7 +39,7 @@ export default function AboutPage() {
             </h2>
 
             <p>
-              I’m a third-year Internal Medicine resident at Cedars-Sinai. I recognized that much of my daily work involved recurring, cognitively heavy tasks (e.g. hyponatremia workups, insulin management, opioid conversions), yet there were few streamlined, web-based solutions to reduce that load.
+              I’m a third-year Internal Medicine Physician (pgy-3). I recognized that much of my daily work involved recurring, cognitively heavy tasks (e.g. hyponatremia workups, insulin management, opioid conversions), yet there were few streamlined, web-based solutions to reduce that load.
             </p>
 
             <p>
@@ -55,7 +55,7 @@ export default function AboutPage() {
             </p>
 
             <p>
-              <span className="font-semibold text-[#f9f6ef]">A note on the tech side:</span> I&apos;m a largely self-taught coder/developer who completed a year of CS in college. This website and all tools were pierced together with determination and help from LLMs (Gemini, GPT 5.1 and Codex). Each tool took real time to build, so if you find one useful, please share it or tell me how to make it better.
+              <span className="font-semibold text-[#f9f6ef]">A note on the tech side:</span> I&apos;m a largely self-taught coder/developer who completed a year of CS in college. This website and all tools were pieced together with determination and help from LLMs (Gemini, GPT 5.1 and Codex). Each tool took real time to build, so if you find one useful, please share it or tell me how to make it better.
             </p>
 
             <p>
