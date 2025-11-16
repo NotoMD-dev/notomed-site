@@ -314,7 +314,7 @@ function composeNote(inputs: InputState) {
 // Keep these shared tokens aligned with the other calculators so the palette stays
 // consistent even if this file is re-merged later.
 const primaryButtonClass =
-  "rounded-xl bg-indigo-500 text-white px-4 py-2 text-sm font-semibold shadow-md transition hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-200/80 focus:ring-offset-1";
+  "rounded-xl bg-[#3f6b53] text-white px-4 py-2 text-sm font-semibold shadow-md transition hover:bg-[#4f7f64] focus:outline-none focus:ring-2 focus:ring-[#c7d8c7]/80 focus:ring-offset-1";
 const secondaryButtonClass =
   "rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-800 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-1";
 const fieldInputClass =
@@ -334,10 +334,10 @@ function StepHeader({
   return (
     <div className="mb-4">
       <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div className="text-[11px] font-semibold uppercase tracking-wide text-indigo-400">
+        <div className="text-[11px] font-semibold uppercase tracking-wide text-[#5d7d6a]">
           Step {step} of {total}
         </div>
-        <div className="inline-flex items-center rounded-full border border-indigo-100/70 bg-indigo-50/70 text-[10px] font-semibold text-indigo-500 px-3 py-1 shadow-sm">
+        <div className="inline-flex items-center rounded-full border border-[#d7e0d4]/70 bg-[#eef2ed]/70 text-[10px] font-semibold text-[#3f6b53] px-3 py-1 shadow-sm">
           Pre-Op QuickNote
         </div>
       </div>
@@ -381,7 +381,7 @@ function Chip({
 
 function Box({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-indigo-100/70 bg-white shadow-[0_18px_45px_-32px_rgba(79,70,229,0.25)] p-4 sm:p-6">
+    <div className="rounded-2xl border border-[#d7e0d4]/70 bg-white shadow-[0_18px_45px_-32px_rgba(79,70,229,0.25)] p-4 sm:p-6">
       {children}
     </div>
   );
@@ -549,7 +549,7 @@ export default function PreOpQuickNoteDemo() {
       </div>
 
       {showExamples && (
-        <div className="mb-4 rounded-xl border border-indigo-100 bg-indigo-50/80 p-4 text-sm text-gray-800 shadow-inner">
+        <div className="mb-4 rounded-xl border border-[#d7e0d4] bg-[#eef2ed]/80 p-4 text-sm text-gray-800 shadow-inner">
           <div className="mb-2 font-semibold text-gray-900">
             Examples by category
           </div>
@@ -593,7 +593,7 @@ export default function PreOpQuickNoteDemo() {
         ))}
       </div>
 
-      <div className="mb-2 text-xs text-indigo-700">Urgency</div>
+      <div className="mb-2 text-xs text-[#2f4c3d]">Urgency</div>
       <div className="flex flex-wrap gap-2">
         {["Elective", "Time-sensitive", "Emergency"].map((x) => (
           <Chip
@@ -806,7 +806,7 @@ export default function PreOpQuickNoteDemo() {
         </Chip>
       </div>
       <label className="block mt-2">
-        <div className="text-xs text-indigo-700 mb-1">
+        <div className="text-xs text-[#2f4c3d] mb-1">
           DASI score (optional)
         </div>
         <input
@@ -890,7 +890,7 @@ export default function PreOpQuickNoteDemo() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-4">
         <label className="block">
-          <div className="text-xs text-indigo-700 mb-1">
+          <div className="text-xs text-[#2f4c3d] mb-1">
             Anticoagulant
           </div>
           <select
@@ -921,7 +921,7 @@ export default function PreOpQuickNoteDemo() {
           </select>
         </label>
         <div>
-          <div className="text-xs text-indigo-700 mb-1">
+          <div className="text-xs text-[#2f4c3d] mb-1">
             Antiplatelets
           </div>
           <div className="flex flex-wrap gap-2">
@@ -1005,7 +1005,7 @@ export default function PreOpQuickNoteDemo() {
         {/* Show VOCAL-Penn only if cirrhosis is checked */}
         {state.extras.cirrhosis && (
           <label className="block">
-            <div className="text-xs text-indigo-700 mb-1">
+            <div className="text-xs text-[#2f4c3d] mb-1">
               VOCAL-Penn (30-day mortality, %)
             </div>
             <input
@@ -1033,7 +1033,7 @@ export default function PreOpQuickNoteDemo() {
         <label className="flex items-center gap-2 mt-1">
           <input
             type="checkbox"
-            className="w-4 h-4 accent-indigo-600"
+            className="w-4 h-4 accent-[#355a45]"
             checked={state.extras.onChronicSteroids}
             onChange={(e) =>
               setState((s) => ({
@@ -1053,7 +1053,7 @@ export default function PreOpQuickNoteDemo() {
 
       {/* Infectious free-text */}
       <label className="block mt-3">
-        <div className="text-xs text-indigo-700 mb-1">
+        <div className="text-xs text-[#2f4c3d] mb-1">
           Infectious disease Dx / concern (optional)
         </div>
         <input
@@ -1075,7 +1075,7 @@ export default function PreOpQuickNoteDemo() {
 
       {/* Additional free-notes */}
       <label className="block mt-3">
-        <div className="text-xs text-indigo-700 mb-1">
+        <div className="text-xs text-[#2f4c3d] mb-1">
           Additional notes to include (optional)
         </div>
         <textarea
@@ -1123,14 +1123,14 @@ export default function PreOpQuickNoteDemo() {
       />
   
       {/* Big decision banner */}
-      <div className="rounded-2xl border border-indigo-100/70 bg-gradient-to-r from-indigo-400/90 via-indigo-300/90 to-indigo-400/90 text-white px-5 py-4 mb-5 shadow-xl">
-        <div className="text-[11px] font-semibold uppercase tracking-wide text-indigo-50/90">
+      <div className="rounded-2xl border border-[#d7e0d4]/70 bg-gradient-to-r from-[#4f6b5b]/90 via-[#6c8877]/90 to-[#4f6b5b]/90 text-white px-5 py-4 mb-5 shadow-xl">
+        <div className="text-[11px] font-semibold uppercase tracking-wide text-[#eef2ed]/90">
           Cardiac clearance decision
         </div>
         <div className="text-xl font-semibold tracking-tight mt-1">
           {decision.decision}
         </div>
-        <div className="text-xs mt-1 text-indigo-50/80">
+        <div className="text-xs mt-1 text-[#eef2ed]/80">
           RCRI {rcriScore} ({rcriRiskTable(rcriScore)})
           {typeof state.extras.vocalPennPct === "number" && (
             <> · VOCAL-Penn {state.extras.vocalPennPct.toFixed(1)}%</>
@@ -1184,15 +1184,15 @@ export default function PreOpQuickNoteDemo() {
   const SummaryDock = (
     <div className="fixed left-0 right-0 bottom-0 z-30 pb-4">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
-        <div className="rounded-2xl border border-indigo-100/70 bg-indigo-50/70 shadow-lg backdrop-blur-sm px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+        <div className="rounded-2xl border border-[#d7e0d4]/70 bg-[#eef2ed]/70 shadow-lg backdrop-blur-sm px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div className="text-xs text-gray-800 text-pretty">
-            <span className="mr-2 font-semibold text-indigo-500">RCRI {rcriScore}</span>
+            <span className="mr-2 font-semibold text-[#3f6b53]">RCRI {rcriScore}</span>
             <span className="mr-2 text-gray-700">({rcriRiskTable(rcriScore)})</span>
             <span className="text-gray-700">Decision: {decision.decision}</span>
           </div>
           <button
             onClick={() => setCurrent(TOTAL_STEPS)}
-            className="text-xs font-medium text-indigo-500 hover:text-indigo-600"
+            className="text-xs font-medium text-[#3f6b53] hover:text-[#355a45]"
           >
             Jump to note
           </button>
@@ -1206,7 +1206,7 @@ export default function PreOpQuickNoteDemo() {
       <div className="mx-auto max-w-6xl px-4 pt-6 sm:px-6 lg:px-8">
         <Link
           href="/tools"
-          className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-white px-4 py-2 text-sm font-semibold tracking-tight text-indigo-700 shadow-sm transition hover:border-indigo-300 hover:bg-indigo-50"
+          className="inline-flex items-center gap-2 rounded-xl border border-[#c7d2c5] bg-white px-4 py-2 text-sm font-semibold tracking-tight text-[#2f4c3d] shadow-sm transition hover:border-[#9eb39f] hover:bg-[#eef2ed]"
         >
           ← Back to Tools
         </Link>

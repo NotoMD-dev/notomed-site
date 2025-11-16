@@ -78,7 +78,7 @@ function AppContent() {
       {/* Quick Converter - Secondary Tool */}
       <div
         className={`bg-white rounded-xl shadow-lg border transition-all duration-300 ${
-          showQuick ? "border-indigo-400 shadow-indigo-200" : "border-gray-200"
+          showQuick ? "border-[#8aa291] shadow-[0_14px_36px_rgba(63,107,83,0.18)]" : "border-gray-200"
         }`}
       >
         <div
@@ -109,7 +109,7 @@ export default function OpioidConversionPage() {
         <div className="mx-auto mb-4 max-w-6xl">
           <Link
             href="/tools"
-            className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-white px-4 py-2 text-sm font-semibold tracking-tight text-indigo-700 shadow-sm transition hover:border-indigo-300 hover:bg-indigo-50"
+            className="inline-flex items-center gap-2 rounded-xl border border-[#c7d2c5] bg-white px-4 py-2 text-sm font-semibold tracking-tight text-[#2f4c3d] shadow-sm transition hover:border-[#9eb39f] hover:bg-[#eef2ed]"
           >
             ← Back to Tools
           </Link>

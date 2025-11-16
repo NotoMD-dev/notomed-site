@@ -421,10 +421,10 @@ function computeAssessment(
     children: React.ReactNode;
   }) {
     return (
-      <div className="rounded-2xl border border-indigo-100 bg-white shadow-sm mb-6 overflow-hidden">
+      <div className="rounded-2xl border border-[#d7e0d4] bg-white shadow-sm mb-6 overflow-hidden">
         {/* taller top bar */}
-        <div className="flex items-center gap-3 px-5 py-4 bg-indigo-50/70 border-b border-indigo-100">
-          {icon ? <span className="text-indigo-600 text-lg">{icon}</span> : null}
+        <div className="flex items-center gap-3 px-5 py-4 bg-[#eef2ed]/70 border-b border-[#d7e0d4]">
+          {icon ? <span className="text-[#355a45] text-lg">{icon}</span> : null}
           <h2 className="text-sm font-semibold text-gray-900">{title}</h2>
         </div>
         {/* body with a little extra top space */}
@@ -468,7 +468,7 @@ function NumberInput({
       value={value ?? ""}
       onChange={(e) => onChange(e.target.value === "" ? undefined : Number(e.target.value))}
       className={`w-full rounded-lg border px-3 py-2 text-sm focus:outline-none focus:ring-2 transition ${
-        error ? "border-red-400 ring-red-200" : "border-gray-300 focus:ring-indigo-200"
+        error ? "border-red-400 ring-red-200" : "border-gray-300 focus:ring-[#c7d8c7]"
       }`}
     />
   );
@@ -479,7 +479,7 @@ function InputWithUnit({ children, unit }: { children: React.ReactNode; unit?: s
     <div className="relative">
       {children}
       {unit ? (
-        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs px-1.5 py-0.5 rounded-md border bg-indigo-50 text-indigo-700">
+        <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs px-1.5 py-0.5 rounded-md border bg-[#eef2ed] text-[#2f4c3d]">
           {unit}
         </span>
       ) : null}
@@ -500,8 +500,8 @@ function ChipToggle({
 }) {
   const styles = {
     default: {
-      on: "bg-indigo-600 text-white shadow-md border-indigo-700",
-      off: "bg-white text-gray-800 hover:bg-indigo-50 border-gray-300",
+      on: "bg-[#3f6b53] text-white shadow-md border-[#2f4c3d]",
+      off: "bg-white text-gray-800 hover:bg-[#eef2ed] border-gray-300",
     },
     severe: {
       on: "bg-red-600 text-white shadow-md border-red-700",
@@ -848,7 +848,7 @@ function HyponatremiaAppContent() {
           <div className="flex gap-2">
             <button
               onClick={resetAll}
-              className="px-4 py-2 rounded-lg border bg-white text-gray-800 hover:bg-indigo-50 hover:border-indigo-300 transition shadow-sm"
+              className="px-4 py-2 rounded-lg border bg-white text-gray-800 hover:bg-[#eef2ed] hover:border-[#9eb39f] transition shadow-sm"
             >
               Reset All
             </button>
@@ -876,7 +876,7 @@ function HyponatremiaAppContent() {
                   <div className="text-xs uppercase tracking-wide text-gray-500 font-semibold">
                     Likely Diagnosis
                   </div>
-                  <div className="text-xl font-bold text-indigo-700 mt-1">{assessment.category}</div>
+                  <div className="text-xl font-bold text-[#2f4c3d] mt-1">{assessment.category}</div>
                 </div>
 
                 {assessment.possibleEtiologies?.length ? (
@@ -917,13 +917,13 @@ function HyponatremiaAppContent() {
                     </div>
                     {assessment.fena != null && (
                       <p className="text-sm mt-1 text-gray-700">
-                        FENa ≈ <b className="text-indigo-700">{assessment.fena}%</b> —{" "}
+                        FENa ≈ <b className="text-[#2f4c3d]">{assessment.fena}%</b> —{" "}
                         {interpretFENa(assessment.fena)}
                       </p>
                     )}
                     {assessment.feurea != null && (
                       <p className="text-sm mt-1 text-gray-700">
-                        FEUrea ≈ <b className="text-indigo-700">{assessment.feurea}%</b> —{" "}
+                        FEUrea ≈ <b className="text-[#2f4c3d]">{assessment.feurea}%</b> —{" "}
                         {interpretFEUrea(assessment.feurea)}
                       </p>
                     )}
@@ -962,7 +962,7 @@ function HyponatremiaAppContent() {
                     href="https://www.aafp.org/pubs/afp/issues/2015/0915/p430b/jcr:content/root/aafp-article-primary-content-container/aafp_article_main_par/aafp_figure.enlarge.html"
                     target="_blank"
                     rel="noreferrer"
-                    className="underline text-indigo-600 hover:text-indigo-800"
+                    className="underline text-[#355a45] hover:text-[#1f362c]"
                   >
                     view figure
                   </a>
@@ -1000,7 +1000,7 @@ export default function HyponatremiaPage() {
       <div className="mx-auto mb-4 max-w-5xl px-6 pt-6">
         <Link
           href="/tools"
-          className="inline-flex items-center gap-2 rounded-xl border border-indigo-200 bg-white px-4 py-2 text-sm font-semibold tracking-tight text-indigo-700 shadow-sm transition hover:border-indigo-300 hover:bg-indigo-50"
+          className="inline-flex items-center gap-2 rounded-xl border border-[#c7d2c5] bg-white px-4 py-2 text-sm font-semibold tracking-tight text-[#2f4c3d] shadow-sm transition hover:border-[#9eb39f] hover:bg-[#eef2ed]"
         >
           ← Back to Tools
         </Link>

@@ -48,7 +48,6 @@ const TOOLS: Tool[] = [
     description: "Simple pre-op risk write-up you can paste into the EHR.",
     path: CONFIG.preopToolPath,
     category: "Peri-op",
-    isNew: true,
     createdAt: "2024-02-01",
     lastUpdated: "2025-11-14",
   },
@@ -59,7 +58,6 @@ const TOOLS: Tool[] = [
     path: "#",
     category: "Endocrine",
     isPlaceholder: true,
-    isNew: true,
     createdAt: "2024-05-01",
     lastUpdated: "2025-11-01",
   },
@@ -248,15 +246,22 @@ function ToolCard({ tool }: { tool: Tool }) {
   const isLive = !tool.isPlaceholder && tool.path !== "#";
   const updatedLabel = formatUpdated(tool.lastUpdated);
 
+  const cardClasses = [
+    "group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border p-6 shadow-[0_22px_70px_rgba(0,0,0,0.7)] transition-transform duration-200",
+    tool.isPlaceholder
+      ? "border-[#7b8378] bg-gradient-to-br from-[#3a413b] via-[#414941] to-[#4a534b] opacity-75"
+      : "border-[#7a897b] bg-gradient-to-br from-[#3f5143] via-[#475b4c] to-[#506656] hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(0,0,0,0.9)]",
+  ].join(" ");
+
   const content = (
-    <div className="group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border border-[#7a897b] bg-gradient-to-br from-[#3f5143] via-[#475b4c] to-[#506656] p-6 shadow-[0_22px_70px_rgba(0,0,0,0.7)] transition-transform duration-200 hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(0,0,0,0.9)]">
+    <div className={cardClasses}>
       <div className="absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
         <div className="pointer-events-none absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(214,129,88,0.4),transparent_65%)] blur-3xl" />
       </div>
       <div className="relative flex flex-1 flex-col gap-3">
         <div className="flex items-start justify-between gap-3">
           <h2 className="text-lg font-semibold text-[#f9f6ef] md:text-xl">{tool.name}</h2>
-          {tool.isNew && (
+          {tool.isNew && !tool.isPlaceholder && (
             <span className="shrink-0 rounded-full border border-[#7a897b] bg-[#435447] px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-[#f0e5d7]">
               NEW
             </span>

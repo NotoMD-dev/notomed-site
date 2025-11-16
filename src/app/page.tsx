@@ -46,6 +46,7 @@ export default function NotoMedLandingPage() {
   const filteredTools = TOOLS.filter((tool) =>
     tool.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
+  const displayedTools = searchTerm ? filteredTools : TOOLS.slice(0, 2);
 
   const handleInternalFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -167,7 +168,7 @@ export default function NotoMedLandingPage() {
 
         <section id="tools" className="scroll-mt-24">
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-            {filteredTools.map((tool) => (
+            {displayedTools.map((tool) => (
               <Link
                 key={tool.id}
                 href={tool.link}
@@ -187,24 +188,6 @@ export default function NotoMedLandingPage() {
               </Link>
             ))}
 
-            <div className="group relative flex flex-col items-center justify-center rounded-2xl card-dashed p-6 text-center shadow-[0_20px_70px_rgba(0,0,0,0.7)] transition-transform duration-200 hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(0,0,0,0.9)]">
-              <div className="absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                <div className="pointer-events-none absolute left-1/2 top-1/2 h-52 w-52 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(214,129,88,0.4),transparent_65%)] blur-3xl" />
-              </div>
-              <div className="relative">
-                <h3 className="mb-2 text-lg font-semibold text-heading">Missing something?</h3>
-                <p className="mb-4 max-w-xs text-sm text-body">
-                  Suggest a new workflow, calculator, or builder you wish existed on rounds.
-                </p>
-                <Link
-                  href="#contact"
-                  className="inline-flex items-center rounded-full px-4 py-1.5 text-xs font-medium uppercase tracking-[0.18em] btn-outline"
-                >
-                  Send Feedback
-                </Link>
-              </div>
-            </div>
-
             <Link
               href="/tools"
               className="group relative flex flex-col justify-between overflow-hidden rounded-2xl card-surface p-6 shadow-[0_22px_70px_rgba(0,0,0,0.7)] transition-transform duration-200 hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(0,0,0,0.9)]"
@@ -223,6 +206,24 @@ export default function NotoMedLandingPage() {
                 </span>
               </div>
             </Link>
+
+            <div className="group relative flex flex-col items-center justify-center rounded-2xl card-dashed p-6 text-center shadow-[0_20px_70px_rgba(0,0,0,0.7)] transition-transform duration-200 hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(0,0,0,0.9)]">
+              <div className="absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
+                <div className="pointer-events-none absolute left-1/2 top-1/2 h-52 w-52 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(214,129,88,0.4),transparent_65%)] blur-3xl" />
+              </div>
+              <div className="relative">
+                <h3 className="mb-2 text-lg font-semibold text-heading">Missing something?</h3>
+                <p className="mb-4 max-w-xs text-sm text-body">
+                  Suggest a new workflow, calculator, or builder you wish existed on rounds.
+                </p>
+                <Link
+                  href="#contact"
+                  className="inline-flex items-center rounded-full px-4 py-1.5 text-xs font-medium uppercase tracking-[0.18em] btn-outline"
+                >
+                  Send Feedback
+                </Link>
+              </div>
+            </div>
           </div>
         </section>
 
