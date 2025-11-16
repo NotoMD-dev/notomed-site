@@ -13,7 +13,7 @@ export default function AboutPage() {
     <div className="relative z-10 min-h-screen">
       <SiteHeader />
 
-      <div className="mx-auto max-w-5xl px-4 pb-20 pt-12">
+      <div className="mx-auto max-w-6xl px-4 pb-20 pt-12 sm:px-6 lg:px-8">
         <div className="mb-6">
           <Link
             href="/"
@@ -23,17 +23,17 @@ export default function AboutPage() {
           </Link>
         </div>
 
-        <header className="mb-10 space-y-2">
-          <h1 className="text-3xl font-semibold text-[#f9f6ef]">
+        <header className="mb-10 space-y-2 text-center sm:text-left">
+          <h1 className="text-3xl font-semibold text-[#f9f6ef] sm:text-4xl">
             About NotoMed.dev and its creator
           </h1>
-          <p className="max-w-2xl text-sm text-[#d0c8b9] md:text-base">
+          <p className="mx-auto max-w-2xl text-sm text-[#d0c8b9] md:text-base sm:mx-0">
             A collection of physician-built tools meant to reduce cognitive load, standardize workflows, and make on-service life a little easier.
           </p>
         </header>
 
-        <main className="grid gap-10 md:grid-cols-[1.1fr,0.7fr]">
-          <div className="space-y-5 text-sm leading-relaxed text-[#d4cbba]">
+        <main className="grid gap-10 md:grid-cols-[1.1fr,0.7fr] lg:grid-cols-[1.3fr,0.8fr]">
+          <div className="space-y-5 text-sm leading-relaxed text-[#d4cbba] md:text-[15px]">
             <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-[#a89f8f]">
               Hi, I’m Yasmine! 👋
             </h2>
@@ -81,12 +81,13 @@ export default function AboutPage() {
           </div>
 
           <div className="flex flex-col items-center gap-4 rounded-2xl border border-[#7a897b] bg-gradient-to-br from-[#3f5143] via-[#475b4c] to-[#506656] p-6 text-center shadow-[0_22px_70px_rgba(0,0,0,0.7)]">
-            <div className="h-40 w-40 overflow-hidden rounded-full border border-[#7a897b] bg-[#3b4c40]">
+            <div className="h-36 w-36 overflow-hidden rounded-full border border-[#7a897b] bg-[#3b4c40] sm:h-40 sm:w-40">
               <Image
                 src="/picture/yasmine.jpg"
                 alt="Photo of Yasmine Abbey"
                 width={320}
                 height={320}
+                sizes="(max-width: 640px) 10rem, 13rem"
                 className="h-full w-full object-cover"
               />
             </div>
