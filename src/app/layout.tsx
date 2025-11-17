@@ -5,6 +5,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { cn } from "@/lib/cn";
 import { THEME_OVERLAYS, THEME_SHELL_CLASS } from "@/lib/design-system";
+import { Analytics } from '@vercel/analytics/next';
 
 export const metadata: Metadata = defaultMetadata;
 
