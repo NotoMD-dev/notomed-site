@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
+import ToolPageShell, { ToolHeroTone } from "@/components/ToolPageShell";
 import { RegimenProvider, useRegimenContext } from "@/context/RegimenContext";
 import { HomeRegimenInput } from "@/components/HomeRegimenInput";
 import { PRNSuggestionTable } from "@/components/PRNSuggestionTable";
@@ -11,6 +11,7 @@ import { QuickConvert } from "@/components/QuickConvert";
 import { Switch } from "@/components/ui/Switch";
 import { AccordionStep } from "@/components/AccordionStep";
 import { ChevronRight } from "lucide-react";
+import { HeroToneSelector } from "@/components/HeroToneSelector";
 
 // =========================================================
 // Opioid Regimen Builder - v5.0.0 (UX Rework)
@@ -20,13 +21,20 @@ function AppContent() {
   const { ome, opioidNaive } = useRegimenContext();
   const [activeStep, setActiveStep] = useState(1);
   const [showQuick, setShowQuick] = useState(false);
+  const toggleQuick = () => setShowQuick((prev) => !prev);
+  const handleQuickKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      toggleQuick();
+    }
+  };
 
   // Logic to determine if a step is complete (gates the next step)
   const isStep1Complete = opioidNaive || ome > 0;
   const isStep2Complete = isStep1Complete;
 
   return (
-    <div className="max-w-6xl mx-auto space-y-4">
+    <div className="space-y-4">
       {/* 1. Home Regimen (Step 1) */}
       <AccordionStep
         step={1}
@@ -77,22 +85,31 @@ function AppContent() {
 
       {/* Quick Converter - Secondary Tool */}
       <div
-        className={`bg-white rounded-xl shadow-lg border transition-all duration-300 ${
-          showQuick ? "border-[#8aa291] shadow-[0_14px_36px_rgba(63,107,83,0.18)]" : "border-gray-200"
+        className={`rounded-2xl border bg-white/95 shadow-sm overflow-hidden transition-all duration-300 ${
+          showQuick
+            ? "border-[color:var(--tool-panel-header-border-current)] shadow-[0_18px_50px_rgba(12,18,15,0.35)]"
+            : "border-[color:var(--tool-panel-header-border-current)]"
         }`}
       >
         <div
-          className="w-full flex items-center justify-between p-6 hover:bg-gray-50 cursor-pointer"
-          onClick={() => setShowQuick(!showQuick)}
+          role="button"
+          tabIndex={0}
+          aria-expanded={showQuick}
+          onClick={toggleQuick}
+          onKeyDown={handleQuickKeyDown}
+          className="tool-module-header flex items-center justify-between px-6 py-5 cursor-pointer"
         >
-          <h3 className="text-lg font-extrabold text-gray-900">
-            Quick Opioid-to-Opioid Converter
-          </h3>
+          <div>
+            <h3 className="tool-module-title text-lg font-semibold">Quick Opioid-to-Opioid Converter</h3>
+            <p className="tool-module-subtext mt-0.5 text-sm">
+              Lightweight panel for one-off opioid conversions.
+            </p>
+          </div>
           <Switch checked={showQuick} onChange={setShowQuick} />
         </div>
 
         {showQuick && (
-          <div className="p-6 pt-4 border-t border-gray-100">
+          <div className="border-t border-gray-100 bg-white/95 p-6 pt-4">
             <QuickConvert />
           </div>
         )}
@@ -102,36 +119,28 @@ function AppContent() {
 }
 
 export default function OpioidConversionPage() {
+  const [heroTone, setHeroTone] = useState<ToolHeroTone>("pear");
+
   return (
     <RegimenProvider>
-      <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8 font-sans text-gray-800">
-        {/* BACK BUTTON (top-left, like About) */}
-        <div className="mx-auto mb-4 max-w-6xl">
-          <Link
-            href="/tools"
-            className="inline-flex items-center gap-2 rounded-xl border border-[#c7d2c5] bg-white px-4 py-2 text-sm font-semibold tracking-tight text-[#2f4c3d] shadow-sm transition hover:border-[#9eb39f] hover:bg-[#eef2ed]"
-          >
-            ← Back to Tools
-          </Link>
-        </div>
-
-        {/* HEADER */}
-        <header className="max-w-6xl mx-auto mb-8">
-          <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-            Opioid Conversion &amp; Regimen Builder
-          </h1>
-          <p className="mt-2 text-base text-gray-600">
-            A clinical tool for calculating opioid conversions and building pain regimens for
-            hospitalized adults.
+      <ToolPageShell
+        title="Opioid Conversion & Regimen Builder"
+        eyebrow="Analgesia"
+        description={
+          <p>A clinical tool for calculating opioid conversions and building pain regimens for hospitalized adults.</p>
+        }
+        footnote={
+          <p>
+            This tool does not replace clinical judgement and is meant to assist in decision-making. Always verify calculations
+            and consider patient-specific factors.
           </p>
-          <p className="text-xs text-gray-800 italic mt-2">
-            This tool does not replace clinical judgement and is meant to assist in decision-making.
-            Always verify calculations and consider patient-specific factors.
-          </p>
-        </header>
-
+        }
+        bodyClassName="space-y-6"
+        heroTone={heroTone}
+        heroAside={<HeroToneSelector value={heroTone} onChange={setHeroTone} />}
+      >
         <AppContent />
-      </div>
+      </ToolPageShell>
     </RegimenProvider>
   );
 }
