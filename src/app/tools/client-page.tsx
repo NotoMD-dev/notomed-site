@@ -52,8 +52,8 @@ const TOOLS: Tool[] = [
     description: "Simple pre-op risk write-up you can paste into the EHR.",
     path: CONFIG.preopToolPath,
     category: "Peri-op",
-    createdAt: "2024-02-01",
-    lastUpdated: "2025-11-14",
+    createdAt: "2025-11-12",
+    lastUpdated: "2025-11-16",
   },
   {
     id: "insulin-tool",
