@@ -36,18 +36,18 @@ export function ToolPageShell({
             </Link>
           </div>
 
-          <section className="tool-hero">
+          <section className="tool-header">
             <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
               <div className="space-y-3">
-                {eyebrow ? <p className="tool-hero-eyebrow">{eyebrow}</p> : null}
-                <h1 className="tool-hero-title">{title}</h1>
-                {description ? <div className="tool-hero-copy">{description}</div> : null}
+                {eyebrow ? <p className="tool-header-eyebrow">{eyebrow}</p> : null}
+                <h1 className="tool-header-title">{title}</h1>
+                {description ? <div className="tool-header-copy">{description}</div> : null}
               </div>
 
-              {heroAside ? <div className="tool-hero-aside">{heroAside}</div> : null}
+              {heroAside ? <div className="tool-header-aside">{heroAside}</div> : null}
             </div>
 
-            {footnote ? <div className="tool-hero-footnote">{footnote}</div> : null}
+            {footnote ? <div className="tool-header-footnote">{footnote}</div> : null}
           </section>
 
           <div className={bodyClassName}>{children}</div>

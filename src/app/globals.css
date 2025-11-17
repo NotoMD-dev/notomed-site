@@ -45,20 +45,15 @@
   --pill-border: #7a897b;
   --pill-text: #f0e5d7;
 
-  --tool-hero-border: var(--hero-tone-pear-border);
-  --tool-hero-surface: var(--hero-tone-pear-surface);
-  --tool-hero-title: var(--hero-tone-pear-title);
-  --tool-hero-text: var(--hero-tone-pear-body);
-  --tool-hero-muted: var(--hero-tone-pear-muted);
-  --tool-hero-eyebrow: var(--hero-tone-pear-muted);
   --tool-back-bg: rgba(67, 84, 71, 0.95);
   --tool-back-border: #7a897b;
   --tool-back-text: #f0e5d7;
-  --tool-panel-header-bg: var(--hero-tone-pear-surface);
-  --tool-panel-header-hover: #f7f1e7;
-  --tool-panel-header-border: var(--hero-tone-pear-border);
-  --tool-panel-header-text: var(--hero-tone-pear-title);
-  --tool-panel-header-subtext: var(--hero-tone-pear-body);
+  --tool-header-divider: rgba(240, 229, 215, 0.25);
+  --tool-panel-header-bg: var(--hero-tone-sage-surface);
+  --tool-panel-header-hover: #e6efe8;
+  --tool-panel-header-border: var(--hero-tone-sage-border);
+  --tool-panel-header-text: var(--hero-tone-sage-title);
+  --tool-panel-header-subtext: var(--hero-tone-sage-body);
 
   --hero-tone-sage-surface: #f1f6f2;
   --hero-tone-sage-border: #c9d5c8;
@@ -125,20 +120,15 @@
   --pill-border: #b7a88f;
   --pill-text: #2f271d;
 
-  --tool-hero-border: var(--hero-tone-pear-border);
-  --tool-hero-surface: var(--hero-tone-pear-surface);
-  --tool-hero-title: var(--hero-tone-pear-title);
-  --tool-hero-text: var(--hero-tone-pear-body);
-  --tool-hero-muted: var(--hero-tone-pear-muted);
-  --tool-hero-eyebrow: var(--hero-tone-pear-muted);
   --tool-back-bg: rgba(83, 101, 88, 0.15);
   --tool-back-border: #748a78;
   --tool-back-text: #2f271d;
-  --tool-panel-header-bg: var(--hero-tone-pear-surface);
-  --tool-panel-header-hover: #f7f1e7;
-  --tool-panel-header-border: var(--hero-tone-pear-border);
-  --tool-panel-header-text: var(--hero-tone-pear-title);
-  --tool-panel-header-subtext: var(--hero-tone-pear-body);
+  --tool-header-divider: rgba(32, 25, 19, 0.15);
+  --tool-panel-header-bg: var(--hero-tone-sage-surface);
+  --tool-panel-header-hover: #dce8e0;
+  --tool-panel-header-border: var(--hero-tone-sage-border);
+  --tool-panel-header-text: var(--hero-tone-sage-title);
+  --tool-panel-header-subtext: var(--hero-tone-sage-body);
 
   --hero-tone-sage-surface: #f1f6f2;
   --hero-tone-sage-border: #c9d5c8;
@@ -310,48 +300,42 @@ body {
 }
 
 
-.tool-hero {
-  --tool-hero-border-current: var(--tool-hero-border);
-  --tool-hero-surface-current: var(--tool-hero-surface);
-  --tool-hero-title-current: var(--tool-hero-title);
-  --tool-hero-text-current: var(--tool-hero-text);
-  --tool-hero-eyebrow-current: var(--tool-hero-eyebrow);
-  --tool-hero-divider-current: rgba(84, 65, 45, 0.2);
-
-  border-radius: 28px;
-  border: 1px solid var(--tool-hero-border-current);
-  background: var(--tool-hero-surface-current);
-  padding: 2rem;
-  box-shadow: 0 35px 90px rgba(8, 12, 10, 0.28);
+.tool-header {
+  padding: 0;
 }
 
-.tool-hero-title {
+.tool-header-aside {
+  color: var(--text-body);
+}
+
+.tool-header-title {
   font-size: clamp(2rem, 4vw, 2.75rem);
   font-weight: 700;
   letter-spacing: -0.015em;
-  color: var(--tool-hero-title-current);
+  color: var(--text-heading);
 }
 
-.tool-hero-eyebrow {
+.tool-header-eyebrow {
   font-size: 0.75rem;
   text-transform: uppercase;
   letter-spacing: 0.25em;
-  color: var(--tool-hero-eyebrow-current);
+  color: var(--text-muted);
 }
 
-.tool-hero-copy,
-.tool-hero-footnote {
-  color: var(--tool-hero-text-current);
+.tool-header-copy,
+.tool-header-footnote {
+  color: var(--text-body);
   font-size: 0.95rem;
-  line-height: 1.5;
+  line-height: 1.6;
 }
 
-.tool-hero-footnote {
+.tool-header-footnote {
   margin-top: 1.5rem;
-  border-top: 1px solid var(--tool-hero-divider-current);
+  border-top: 1px solid var(--tool-header-divider);
   padding-top: 1rem;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-style: italic;
+  color: var(--text-muted);
 }
 
 .tool-module-header {
