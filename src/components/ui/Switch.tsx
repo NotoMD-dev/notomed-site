@@ -13,13 +13,20 @@ export function Switch({
 }) {
   return (
     <div
-      onClick={() => onChange(!checked)}
+      onClick={(event) => {
+        event.stopPropagation();
+        onChange(!checked);
+      }}
       role="switch"
       aria-checked={checked}
       tabIndex={0}
-      onKeyDown={(e) =>
-        (e.key === "Enter" || e.key === " ") && onChange(!checked)
-      }
+      onKeyDown={(event) => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          event.stopPropagation();
+          onChange(!checked);
+        }
+      }}
       className={`relative w-14 h-8 rounded-full border cursor-pointer transition-colors duration-200 ease-in-out ${
         checked
           ? "bg-[#2f4c3d] border-[#203528]"
