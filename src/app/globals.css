@@ -44,6 +44,40 @@
   --pill-bg: #435447;
   --pill-border: #7a897b;
   --pill-text: #f0e5d7;
+
+  --tool-back-bg: rgba(67, 84, 71, 0.95);
+  --tool-back-border: #7a897b;
+  --tool-back-text: #f0e5d7;
+  --tool-header-divider: rgba(240, 229, 215, 0.25);
+  --tool-panel-header-bg: var(--hero-tone-sage-surface);
+  --tool-panel-header-hover: #e6efe8;
+  --tool-panel-header-border: var(--hero-tone-sage-border);
+  --tool-panel-header-text: var(--hero-tone-sage-title);
+  --tool-panel-header-subtext: var(--hero-tone-sage-body);
+
+  --hero-tone-sage-surface: #f1f6f2;
+  --hero-tone-sage-border: #c9d5c8;
+  --hero-tone-sage-title: #1f3326;
+  --hero-tone-sage-body: #2b3f30;
+  --hero-tone-sage-muted: #4c6052;
+
+  --hero-tone-pear-surface: #fdf8f1;
+  --hero-tone-pear-border: #eadfcd;
+  --hero-tone-pear-title: #3a2f22;
+  --hero-tone-pear-body: #4b3f31;
+  --hero-tone-pear-muted: #8c7560;
+
+  --hero-tone-rose-surface: #fdf5f6;
+  --hero-tone-rose-border: #f0d7dd;
+  --hero-tone-rose-title: #3c262b;
+  --hero-tone-rose-body: #4f3037;
+  --hero-tone-rose-muted: #a06a73;
+
+  --hero-tone-dusk-surface: #ecf1ee;
+  --hero-tone-dusk-border: #c4d0c8;
+  --hero-tone-dusk-title: #142820;
+  --hero-tone-dusk-body: #1f3329;
+  --hero-tone-dusk-muted: #52645b;
 }
 
 :root[data-theme="light"] {
@@ -85,6 +119,40 @@
   --pill-bg: #d8c8b0;
   --pill-border: #b7a88f;
   --pill-text: #2f271d;
+
+  --tool-back-bg: rgba(83, 101, 88, 0.15);
+  --tool-back-border: #748a78;
+  --tool-back-text: #2f271d;
+  --tool-header-divider: rgba(32, 25, 19, 0.15);
+  --tool-panel-header-bg: var(--hero-tone-sage-surface);
+  --tool-panel-header-hover: #dce8e0;
+  --tool-panel-header-border: var(--hero-tone-sage-border);
+  --tool-panel-header-text: var(--hero-tone-sage-title);
+  --tool-panel-header-subtext: var(--hero-tone-sage-body);
+
+  --hero-tone-sage-surface: #f1f6f2;
+  --hero-tone-sage-border: #c9d5c8;
+  --hero-tone-sage-title: #1f3326;
+  --hero-tone-sage-body: #2b3f30;
+  --hero-tone-sage-muted: #4c6052;
+
+  --hero-tone-pear-surface: #fdf8f1;
+  --hero-tone-pear-border: #eadfcd;
+  --hero-tone-pear-title: #3a2f22;
+  --hero-tone-pear-body: #4b3f31;
+  --hero-tone-pear-muted: #8c7560;
+
+  --hero-tone-rose-surface: #fdf5f6;
+  --hero-tone-rose-border: #f0d7dd;
+  --hero-tone-rose-title: #3c262b;
+  --hero-tone-rose-body: #4f3037;
+  --hero-tone-rose-muted: #a06a73;
+
+  --hero-tone-dusk-surface: #ecf1ee;
+  --hero-tone-dusk-border: #c4d0c8;
+  --hero-tone-dusk-title: #142820;
+  --hero-tone-dusk-body: #1f3329;
+  --hero-tone-dusk-muted: #52645b;
 }
 
 @theme inline {
@@ -201,6 +269,92 @@ body {
 .btn-outline:hover {
   border-color: var(--accent);
   color: var(--accent-hover);
+}
+
+.tool-shell {
+  min-height: 100vh;
+  color: var(--text-primary);
+}
+
+.tool-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--tool-back-border);
+  background-color: var(--tool-back-bg);
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--tool-back-text);
+  text-decoration: none;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.tool-back-link:hover {
+  border-color: var(--accent);
+  color: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+
+.tool-header {
+  padding: 0;
+}
+
+.tool-header-aside {
+  color: var(--text-body);
+}
+
+.tool-header-title {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--text-heading);
+}
+
+.tool-header-eyebrow {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--text-muted);
+}
+
+.tool-header-copy,
+.tool-header-footnote {
+  color: var(--text-body);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+.tool-header-footnote {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--tool-header-divider);
+  padding-top: 1rem;
+  font-size: 0.85rem;
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.tool-module-header {
+  background-color: var(--tool-panel-header-bg);
+  border-bottom: 1px solid var(--tool-panel-header-border);
+  color: var(--tool-panel-header-text);
+}
+
+button.tool-module-header:hover {
+  background-color: var(--tool-panel-header-hover);
+}
+
+.tool-module-title {
+  color: var(--tool-panel-header-text);
+}
+
+.tool-module-subtext,
+.tool-module-icon {
+  color: var(--tool-panel-header-subtext);
 }
 
 /* Light theme overrides for legacy utility classes still using fixed colors */
