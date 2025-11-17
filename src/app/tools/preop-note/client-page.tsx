@@ -412,7 +412,7 @@ function BinaryChipGroup({
 }
 
 // ===== Main Component (Guided Flow) =====
-export default function PreOpQuickNoteDemo() {
+function PreOpQuickNoteDemo() {
   const TOTAL_STEPS = 7;
   const [current, setCurrent] = useState(1);
   const [showExamples, setShowExamples] = useState(false);
@@ -1183,7 +1183,7 @@ export default function PreOpQuickNoteDemo() {
   // Sticky summary dock
   const SummaryDock = (
     <div className="fixed left-0 right-0 bottom-0 z-30 pb-4">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <div className="rounded-2xl border border-[#d7e0d4]/70 bg-[#eef2ed]/70 shadow-lg backdrop-blur-sm px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div className="text-xs text-gray-800 text-pretty">
             <span className="mr-2 font-semibold text-[#3f6b53]">RCRI {rcriScore}</span>
