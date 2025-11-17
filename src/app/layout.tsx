@@ -6,6 +6,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { cn } from "@/lib/cn";
 import { THEME_OVERLAYS, THEME_SHELL_CLASS } from "@/lib/design-system";
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 export const metadata: Metadata = defaultMetadata;
 
@@ -31,6 +32,7 @@ export default function RootLayout({
 
         {/* 👇 Analytics should live inside <body>, after your app UI */}
         <Analytics />
+        <SpeedInsights/>
       </body>
     </html>
   );
