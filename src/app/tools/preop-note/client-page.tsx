@@ -1206,7 +1206,7 @@ export default function PreOpQuickNoteDemo() {
       <div className="mx-auto max-w-6xl px-4 pt-6 sm:px-6 lg:px-8">
         <Link
           href="/tools"
-          className="inline-flex items-center gap-2 rounded-xl border border-[#c7d2c5] bg-white px-4 py-2 text-sm font-semibold tracking-tight text-[#2f4c3d] shadow-sm transition hover:border-[#9eb39f] hover:bg-[#eef2ed]"
+          className="inline-flex items-center gap-2 rounded-xl border border-[#c7d2c5] bg-[#050505] px-4 py-2 text-sm font-semibold tracking-tight text-white shadow-sm transition hover:border-[#9eb39f] hover:bg-[#171717]"
         >
           ← Back to Tools
         </Link>
