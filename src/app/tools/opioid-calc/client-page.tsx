@@ -77,22 +77,37 @@ function AppContent() {
 
       {/* Quick Converter - Secondary Tool */}
       <div
-        className={`bg-white rounded-xl shadow-lg border transition-all duration-300 ${
-          showQuick ? "border-[#8aa291] shadow-[0_14px_36px_rgba(63,107,83,0.18)]" : "border-gray-200"
+        className={`rounded-2xl border bg-white/95 shadow-lg transition-all duration-300 overflow-hidden ${
+          showQuick
+            ? "border-[color:var(--tool-panel-header-border)] shadow-[0_18px_50px_rgba(12,18,15,0.35)]"
+            : "border-[#d7e0d4]"
         }`}
       >
         <div
-          className="w-full flex items-center justify-between p-6 hover:bg-gray-50 cursor-pointer"
+          className="tool-module-header hoverable flex w-full items-center justify-between px-6 py-5 cursor-pointer"
           onClick={() => setShowQuick(!showQuick)}
+          role="button"
+          tabIndex={0}
+          onKeyDown={(event) => {
+            if (event.key === "Enter" || event.key === " ") {
+              event.preventDefault();
+              setShowQuick(!showQuick);
+            }
+          }}
         >
-          <h3 className="text-lg font-extrabold text-gray-900">
-            Quick Opioid-to-Opioid Converter
-          </h3>
+          <div>
+            <h3 className="tool-module-title text-base font-semibold">
+              Quick Opioid-to-Opioid Converter
+            </h3>
+            <p className="tool-module-subtext text-xs mt-1">
+              Toggle an inline calculator for simple one-off conversions.
+            </p>
+          </div>
           <Switch checked={showQuick} onChange={setShowQuick} />
         </div>
 
         {showQuick && (
-          <div className="p-6 pt-4 border-t border-gray-100">
+          <div className="border-t border-[#e5ede2] bg-white/95 p-6 pt-4">
             <QuickConvert />
           </div>
         )}

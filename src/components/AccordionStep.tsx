@@ -15,9 +15,9 @@ interface AccordionStepProps {
 
 const statusClasses = {
   complete:
-    "bg-[color:rgba(210,126,88,0.2)] text-[color:var(--accent)] border border-[color:rgba(210,126,88,0.35)]",
+    "bg-[color:rgba(210,126,88,0.15)] text-[color:var(--accent)] border border-[color:rgba(210,126,88,0.35)]",
   incomplete:
-    "bg-[color:rgba(67,84,71,0.35)] text-[color:var(--tool-panel-header-subtext)] border border-[color:rgba(122,137,123,0.35)]",
+    "bg-[color:rgba(61,96,72,0.12)] text-[color:var(--tool-panel-header-text)] border border-[color:rgba(122,137,123,0.35)]",
 };
 
 export function AccordionStep({

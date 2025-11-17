@@ -1005,6 +1005,7 @@ export default function HyponatremiaPage() {
           calculations and consider patient-specific factors.
         </p>
       }
+      maxWidthClass="max-w-5xl"
       bodyClassName="mx-auto max-w-5xl"
     >
       <HyponatremiaAppContent />

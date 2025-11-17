@@ -45,18 +45,19 @@
   --pill-border: #7a897b;
   --pill-text: #f0e5d7;
 
-  --tool-hero-bg-from: #18241c;
-  --tool-hero-bg-to: #33483a;
-  --tool-hero-border: rgba(152, 196, 169, 0.45);
-  --tool-hero-muted: #d4cbc0;
+  --tool-hero-bg-from: #fefdf9;
+  --tool-hero-bg-to: #f2ede2;
+  --tool-hero-border: rgba(48, 80, 61, 0.2);
+  --tool-hero-muted: #4f5d51;
+  --tool-hero-title: #1f3b2d;
   --tool-back-bg: rgba(67, 84, 71, 0.95);
   --tool-back-border: #7a897b;
   --tool-back-text: #f0e5d7;
-  --tool-panel-header-bg: #243428;
-  --tool-panel-header-hover: #2e4534;
-  --tool-panel-header-border: rgba(138, 162, 145, 0.55);
-  --tool-panel-header-text: #f9f6ef;
-  --tool-panel-header-subtext: rgba(233, 241, 232, 0.85);
+  --tool-panel-header-bg: #fcfbf6;
+  --tool-panel-header-hover: #f3f6f1;
+  --tool-panel-header-border: #d7e0d4;
+  --tool-panel-header-text: #1f3b2d;
+  --tool-panel-header-subtext: #4c5c50;
 }
 
 :root[data-theme="light"] {
@@ -99,18 +100,19 @@
   --pill-border: #b7a88f;
   --pill-text: #2f271d;
 
-  --tool-hero-bg-from: #dfe7dc;
-  --tool-hero-bg-to: #c7d5c8;
+  --tool-hero-bg-from: #ffffff;
+  --tool-hero-bg-to: #f4f7f1;
   --tool-hero-border: rgba(63, 107, 83, 0.35);
-  --tool-hero-muted: #4a4035;
+  --tool-hero-muted: #3c4c41;
+  --tool-hero-title: #1f3b2d;
   --tool-back-bg: rgba(83, 101, 88, 0.15);
   --tool-back-border: #748a78;
   --tool-back-text: #2f271d;
-  --tool-panel-header-bg: #aec2b0;
-  --tool-panel-header-hover: #9ab39e;
-  --tool-panel-header-border: rgba(63, 107, 83, 0.45);
-  --tool-panel-header-text: #1f241e;
-  --tool-panel-header-subtext: rgba(32, 34, 30, 0.75);
+  --tool-panel-header-bg: #fdfaf4;
+  --tool-panel-header-hover: #f6f8f2;
+  --tool-panel-header-border: rgba(63, 107, 83, 0.35);
+  --tool-panel-header-text: #1f3b2d;
+  --tool-panel-header-subtext: #4c5c50;
 }
 
 @theme inline {
@@ -258,18 +260,19 @@ body {
 }
 
 .tool-hero {
-  border-radius: 28px;
+  border-radius: 24px;
   border: 1px solid var(--tool-hero-border);
-  background: linear-gradient(135deg, var(--tool-hero-bg-from), var(--tool-hero-bg-to));
+  background: linear-gradient(140deg, var(--tool-hero-bg-from), var(--tool-hero-bg-to));
   padding: 2rem;
-  box-shadow: 0 35px 100px rgba(8, 12, 10, 0.6);
+  box-shadow: 0 25px 60px rgba(20, 24, 21, 0.28);
+  color: var(--tool-hero-title);
 }
 
 .tool-hero-title {
   font-size: clamp(2rem, 4vw, 2.75rem);
   font-weight: 700;
   letter-spacing: -0.015em;
-  color: var(--text-heading);
+  color: var(--tool-hero-title);
 }
 
 .tool-hero-eyebrow {
@@ -288,7 +291,7 @@ body {
 
 .tool-hero-footnote {
   margin-top: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgba(31, 59, 45, 0.18);
   padding-top: 1rem;
   font-size: 0.8rem;
   font-style: italic;
@@ -300,7 +303,8 @@ body {
   color: var(--tool-panel-header-text);
 }
 
-button.tool-module-header:hover {
+button.tool-module-header:hover,
+.tool-module-header.hoverable:hover {
   background-color: var(--tool-panel-header-hover);
 }
 
