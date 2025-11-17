@@ -1,3 +1,5 @@
+"use client";
+
 // Restyled global header to Olive V3 theme for consistent navigation
 import Link from "next/link";
 
