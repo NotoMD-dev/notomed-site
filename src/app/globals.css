@@ -358,6 +358,50 @@ body {
   font-style: italic;
 }
 
+.step-header {
+  border-radius: 24px;
+  border: 1px solid var(--tool-hero-border);
+  background: var(--tool-hero-surface);
+  padding: 1.5rem;
+  box-shadow: 0 25px 55px rgba(9, 23, 16, 0.18);
+}
+
+.step-header-eyebrow {
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.35em;
+  color: var(--tool-hero-eyebrow);
+  font-weight: 600;
+}
+
+.step-header-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  border: 1px solid rgba(79, 118, 96, 0.35);
+  background: rgba(255, 255, 255, 0.75);
+  padding: 0.3rem 0.95rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--tool-hero-title);
+  box-shadow: 0 10px 25px rgba(16, 47, 32, 0.12);
+}
+
+.step-header-title {
+  font-size: clamp(1.5rem, 3vw, 2.15rem);
+  font-weight: 650;
+  color: var(--tool-hero-title);
+  letter-spacing: -0.02em;
+}
+
+.step-header-hint {
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
+  color: var(--tool-hero-text);
+}
+
 .tool-module-header {
   background-color: var(--tool-panel-header-bg);
   border-bottom: 1px solid var(--tool-panel-header-border);
