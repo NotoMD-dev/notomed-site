@@ -334,15 +334,17 @@ function StepHeader({
   return (
     <div className="mb-4">
       <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div className="text-[11px] font-semibold uppercase tracking-wide text-[#5d7d6a]">
+        <div className="text-[11px] font-semibold uppercase tracking-[0.35em] text-[var(--tool-hero-eyebrow)]">
           Step {step} of {total}
         </div>
-        <div className="inline-flex items-center rounded-full border border-[#d7e0d4]/70 bg-[#eef2ed]/70 text-[10px] font-semibold text-[#3f6b53] px-3 py-1 shadow-sm">
+        <div className="inline-flex items-center rounded-full border border-[rgba(18,42,29,0.12)] bg-[radial-gradient(circle_at_top,_rgba(248,253,249,0.95),_rgba(227,239,231,0.85))] px-3 py-1 text-[10px] font-semibold tracking-wide text-[var(--tool-hero-title)] shadow-sm">
           Pre-Op QuickNote
         </div>
       </div>
-      <h2 className="text-xl font-semibold text-gray-900 tracking-tight">{title}</h2>
-      {hint && <p className="mt-1 text-xs text-gray-600">{hint}</p>}
+      <h2 className="text-xl font-semibold tracking-tight text-[var(--tool-hero-title)]">{title}</h2>
+      {hint && (
+        <p className="mt-1 text-xs text-[rgba(35,56,42,0.75)]">{hint}</p>
+      )}
     </div>
   );
 }
