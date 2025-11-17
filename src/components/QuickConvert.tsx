@@ -149,6 +149,7 @@ export function QuickConvert() {
                 className={`flex-1 ${numberInputClass}`}
                 value={fromDose}
                 onChange={(e) => setFromDose(Number(e.target.value) || 0)}
+                style={{ WebkitTextFillColor: "#111827" }}
               />
               <span className="text-xs text-gray-500">mg</span>
             </div>
@@ -201,6 +202,7 @@ export function QuickConvert() {
               className={`mt-1 ${numberInputClass}`}
               value={crossTol}
               onChange={(e) => setCrossTol(Number(e.target.value) || 0)}
+              style={{ WebkitTextFillColor: "#111827" }}
             />
           </div>
         </div>
