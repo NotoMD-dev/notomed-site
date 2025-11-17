@@ -332,17 +332,13 @@ function StepHeader({
   hint?: string;
 }) {
   return (
-    <div className="mb-4">
-      <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div className="text-[11px] font-semibold uppercase tracking-wide text-[#5d7d6a]">
-          Step {step} of {total}
-        </div>
-        <div className="inline-flex items-center rounded-full border border-[#d7e0d4]/70 bg-[#eef2ed]/70 text-[10px] font-semibold text-[#3f6b53] px-3 py-1 shadow-sm">
-          Pre-Op QuickNote
-        </div>
+    <div className="step-header mb-5">
+      <div className="mb-4 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <div className="step-header-eyebrow">Step {step} of {total}</div>
+        <div className="step-header-badge">Pre-Op QuickNote</div>
       </div>
-      <h2 className="text-xl font-semibold text-gray-900 tracking-tight">{title}</h2>
-      {hint && <p className="mt-1 text-xs text-gray-600">{hint}</p>}
+      <h2 className="step-header-title">{title}</h2>
+      {hint ? <p className="step-header-hint">{hint}</p> : null}
     </div>
   );
 }
