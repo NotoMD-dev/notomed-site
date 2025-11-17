@@ -14,6 +14,8 @@ import {
 } from "../utils/conversionLogic";
 
 const FREQ_OPTIONS = [2, 3, 4, 6, 8, 12];
+const numberInputClass =
+  "h-9 w-full rounded-lg border border-gray-200 bg-white px-2 text-sm text-gray-900 placeholder:text-gray-500 caret-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-200";
 
 export function QuickConvert() {
   // FROM side
@@ -108,7 +110,7 @@ export function QuickConvert() {
             <div>
               <label className="text-xs font-medium text-gray-500">Drug</label>
               <select
-                className="mt-1 w-full h-9 rounded-lg border border-gray-200 bg-white px-2 text-sm"
+                className="mt-1 w-full h-9 rounded-lg border border-gray-200 bg-white px-2 text-sm text-gray-900"
                 value={fromDrug}
                 onChange={(e) => setFromDrug(e.target.value as Opioid)}
               >
@@ -122,7 +124,7 @@ export function QuickConvert() {
             <div>
               <label className="text-xs font-medium text-gray-500">Route</label>
               <select
-                className="mt-1 w-full h-9 rounded-lg border border-gray-200 bg-white px-2 text-sm"
+                className="mt-1 w-full h-9 rounded-lg border border-gray-200 bg-white px-2 text-sm text-gray-900"
                 value={fromRoute}
                 onChange={(e) => setFromRoute(e.target.value as Route)}
               >
@@ -144,7 +146,7 @@ export function QuickConvert() {
                 type="number"
                 min={0}
                 step={0.1}
-                className="flex-1 h-9 rounded-lg border border-gray-200 bg-white px-2 text-sm"
+                className={`flex-1 ${numberInputClass}`}
                 value={fromDose}
                 onChange={(e) => setFromDose(Number(e.target.value) || 0)}
               />
@@ -173,7 +175,7 @@ export function QuickConvert() {
               Freq (qH)
             </label>
             <select
-              className={`mt-1 w-full h-9 rounded-lg border px-2 text-sm ${
+              className={`mt-1 w-full h-9 rounded-lg border px-2 text-sm text-gray-900 ${
                 includeFreq
                   ? "bg-white border-gray-200"
                   : "bg-gray-100 border-gray-100 text-gray-400"
@@ -196,7 +198,7 @@ export function QuickConvert() {
             </label>
             <input
               type="number"
-              className="mt-1 w-full h-9 rounded-lg border border-gray-200 bg-white px-2 text-sm"
+              className={`mt-1 ${numberInputClass}`}
               value={crossTol}
               onChange={(e) => setCrossTol(Number(e.target.value) || 0)}
             />
@@ -210,7 +212,7 @@ export function QuickConvert() {
             <div>
               <label className="text-xs font-medium text-gray-500">Drug</label>
               <select
-                className="mt-1 w-full h-9 rounded-lg border border-gray-200 bg-white px-2 text-sm"
+                className="mt-1 w-full h-9 rounded-lg border border-gray-200 bg-white px-2 text-sm text-gray-900"
                 value={toDrug}
                 onChange={(e) => setToDrug(e.target.value as Opioid)}
               >
@@ -224,7 +226,7 @@ export function QuickConvert() {
             <div>
               <label className="text-xs font-medium text-gray-500">Route</label>
               <select
-                className="mt-1 w-full h-9 rounded-lg border border-gray-200 bg-white px-2 text-sm"
+                className="mt-1 w-full h-9 rounded-lg border border-gray-200 bg-white px-2 text-sm text-gray-900"
                 value={toRoute}
                 onChange={(e) => setToRoute(e.target.value as Route)}
               >
@@ -243,7 +245,7 @@ export function QuickConvert() {
                 Target freq (qH)
               </label>
               <select
-                className="mt-1 w-full h-9 rounded-lg border border-gray-200 bg-white px-2 text-sm"
+                className="mt-1 w-full h-9 rounded-lg border border-gray-200 bg-white px-2 text-sm text-gray-900"
                 value={toFreq}
                 onChange={(e) => setToFreq(Number(e.target.value))}
               >

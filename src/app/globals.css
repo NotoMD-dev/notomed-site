@@ -27,6 +27,9 @@
   --card-muted: #3b4c40;
   --card-outline: #485347;
 
+  --form-field-text: #111827;
+  --form-field-placeholder: #6b7280;
+
   --header-bg: rgba(48, 59, 50, 0.85);
   --header-border: #444f44;
   --nav-link: #f8efe1;
@@ -102,6 +105,9 @@
   --card-muted: #e8dece;
   --card-outline: #c7b79f;
 
+  --form-field-text: #111827;
+  --form-field-placeholder: #6b7280;
+
   --header-bg: rgba(239, 229, 214, 0.9);
   --header-border: #c7b79f;
   --nav-link: #4d4034;
@@ -164,6 +170,19 @@ body {
   font-family: var(--font-base-sans);
   color: var(--text-primary);
   background-color: var(--bg-base);
+}
+
+input,
+select,
+textarea {
+  color: var(--form-field-text);
+  -webkit-text-fill-color: var(--form-field-text);
+  caret-color: var(--form-field-text);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--form-field-placeholder);
 }
 
 .theme-shell {
@@ -246,6 +265,8 @@ body {
   background-color: var(--input-bg);
   border: 1px solid var(--input-border);
   color: var(--text-heading);
+  -webkit-text-fill-color: var(--text-heading);
+  caret-color: var(--text-heading);
 }
 
 .input-olive::placeholder {
