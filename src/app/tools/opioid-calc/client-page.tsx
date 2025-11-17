@@ -137,6 +137,7 @@ export default function OpioidConversionPage() {
         }
         bodyClassName="space-y-6"
         heroTone={heroTone}
+        panelTone={heroTone}
         heroAside={<HeroToneSelector value={heroTone} onChange={setHeroTone} />}
       >
         <AppContent />

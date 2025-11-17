@@ -361,6 +361,38 @@ body {
   --tool-hero-divider-current: rgba(28, 45, 37, 0.25);
 }
 
+.tool-shell[data-panel-tone="sage"] {
+  --tool-panel-header-bg: var(--hero-tone-sage-surface);
+  --tool-panel-header-hover: #e7efe8;
+  --tool-panel-header-border: var(--hero-tone-sage-border);
+  --tool-panel-header-text: var(--hero-tone-sage-title);
+  --tool-panel-header-subtext: var(--hero-tone-sage-body);
+}
+
+.tool-shell[data-panel-tone="pear"] {
+  --tool-panel-header-bg: var(--hero-tone-pear-surface);
+  --tool-panel-header-hover: #f7f1e7;
+  --tool-panel-header-border: var(--hero-tone-pear-border);
+  --tool-panel-header-text: var(--hero-tone-pear-title);
+  --tool-panel-header-subtext: var(--hero-tone-pear-body);
+}
+
+.tool-shell[data-panel-tone="rose"] {
+  --tool-panel-header-bg: var(--hero-tone-rose-surface);
+  --tool-panel-header-hover: #f7ecef;
+  --tool-panel-header-border: var(--hero-tone-rose-border);
+  --tool-panel-header-text: var(--hero-tone-rose-title);
+  --tool-panel-header-subtext: var(--hero-tone-rose-body);
+}
+
+.tool-shell[data-panel-tone="dusk"] {
+  --tool-panel-header-bg: var(--hero-tone-dusk-surface);
+  --tool-panel-header-hover: #dde6e0;
+  --tool-panel-header-border: var(--hero-tone-dusk-border);
+  --tool-panel-header-text: var(--hero-tone-dusk-title);
+  --tool-panel-header-subtext: var(--hero-tone-dusk-body);
+}
+
 .tool-hero-title {
   font-size: clamp(2rem, 4vw, 2.75rem);
   font-weight: 700;

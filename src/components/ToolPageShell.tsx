@@ -15,6 +15,7 @@ interface ToolPageShellProps {
   maxWidthClass?: string;
   bodyClassName?: string;
   heroTone?: ToolHeroTone;
+  panelTone?: ToolHeroTone;
 }
 
 export function ToolPageShell({
@@ -29,9 +30,13 @@ export function ToolPageShell({
   maxWidthClass = "max-w-6xl",
   bodyClassName = "",
   heroTone = "sage",
+  panelTone,
 }: ToolPageShellProps) {
   return (
-    <div className="tool-shell theme-shell theme-grid theme-lacquer">
+    <div
+      className="tool-shell theme-shell theme-grid theme-lacquer"
+      data-panel-tone={panelTone ?? undefined}
+    >
       <div className={`relative z-10 px-4 pb-16 pt-6 sm:px-6 lg:px-10`}>
         <div className={`mx-auto w-full ${maxWidthClass} space-y-6`}>
           <div>

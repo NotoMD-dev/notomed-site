@@ -423,9 +423,9 @@ function computeAssessment(
   }) {
     return (
       <div className="rounded-2xl border border-[#d7e0d4] bg-white shadow-sm mb-6 overflow-hidden">
-        <div className="flex items-center gap-3 px-5 py-4 border-b border-[#e4ede2] bg-[#f8faf7] text-[#1f362c]">
-          {icon ? <span className="text-lg text-[#4a5b50]">{icon}</span> : null}
-          <h2 className="text-sm font-semibold tracking-wide uppercase text-[#1f362c]">{title}</h2>
+        <div className="tool-module-header flex items-center gap-3 px-5 py-4">
+          {icon ? <span className="tool-module-icon text-lg">{icon}</span> : null}
+          <h2 className="tool-module-title text-sm font-semibold tracking-wide uppercase">{title}</h2>
         </div>
         <div className="p-5 pt-6">{children}</div>
       </div>
@@ -993,7 +993,7 @@ function HyponatremiaAppContent() {
    ========================= */
 
 export default function HyponatremiaPage() {
-  const [heroTone, setHeroTone] = useState<ToolHeroTone>("sage");
+  const [heroTone, setHeroTone] = useState<ToolHeroTone>("pear");
 
   return (
     <ToolPageShell
@@ -1011,6 +1011,7 @@ export default function HyponatremiaPage() {
       maxWidthClass="max-w-5xl"
       bodyClassName="mx-auto max-w-5xl"
       heroTone={heroTone}
+      panelTone={heroTone}
       heroAside={<HeroToneSelector value={heroTone} onChange={setHeroTone} />}
     >
       <HyponatremiaAppContent />
