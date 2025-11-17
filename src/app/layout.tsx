@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { defaultMetadata } from "@/lib/seo";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { Analytics } from "@vercel/analytics/next"; // 👈 add this
 
 export const metadata: Metadata = defaultMetadata;
 
@@ -25,6 +26,9 @@ export default function RootLayout({
             <div className="relative z-10 min-h-screen">{children}</div>
           </div>
         </ThemeProvider>
+
+        {/* 👇 Analytics should live inside <body>, after your app UI */}
+        <Analytics />
       </body>
     </html>
   );
