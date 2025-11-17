@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-
+import ToolPageShell from "@/components/ToolPageShell";
 import AiPlanPanel from "@/components/AiPlanPanel";
 import { BackButton } from "@/components/BackButton";
 import type { StructuredData } from "@/lib/getAIPlan";
@@ -412,7 +412,7 @@ function computeAssessment(
    UI PRIMITIVES
    ========================= */
 
-   function Section({
+  function Section({
     title,
     icon,
     children,
@@ -423,12 +423,10 @@ function computeAssessment(
   }) {
     return (
       <div className="rounded-2xl border border-[#d7e0d4] bg-white shadow-sm mb-6 overflow-hidden">
-        {/* taller top bar */}
-        <div className="flex items-center gap-3 px-5 py-4 bg-[#eef2ed]/70 border-b border-[#d7e0d4]">
-          {icon ? <span className="text-[#355a45] text-lg">{icon}</span> : null}
-          <h2 className="text-sm font-semibold text-gray-900">{title}</h2>
+        <div className="tool-module-header flex items-center gap-3 px-5 py-4">
+          {icon ? <span className="tool-module-icon text-lg">{icon}</span> : null}
+          <h2 className="tool-module-title text-sm font-semibold tracking-wide uppercase">{title}</h2>
         </div>
-        {/* body with a little extra top space */}
         <div className="p-5 pt-6">{children}</div>
       </div>
     );
@@ -683,7 +681,7 @@ function HyponatremiaAppContent() {
   };
 
   return (
-    <main className="max-w-5xl mx-auto px-6 pb-10">
+    <main className="px-4 pb-10 sm:px-6">
       <div className="grid md:grid-cols-2 gap-6">
         {/* LEFT PANEL */}
         <div className="md:col-span-1">
@@ -996,23 +994,23 @@ function HyponatremiaAppContent() {
 
 export default function HyponatremiaPage() {
   return (
-    <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
-      <header className="mx-auto mb-8 max-w-5xl px-6 pt-6">
-        <BackButton href="/tools" label="Back to Tools" />
-        <h1 className="text-3xl font-extrabold tracking-tight text-gray-900">
-          Hyponatremia Calculator — v4.1
-        </h1>
-        <p className="mt-2 text-base text-gray-600">
-          A guided clinical tool for evaluating low sodium with safety guardrails.
+    <ToolPageShell
+      title="Hyponatremia Calculator — v4.1"
+      eyebrow="Electrolytes"
+      description={
+        <p>A guided clinical tool for evaluating low sodium with safety guardrails.</p>
+      }
+      footnote={
+        <p>
+          This tool does not replace clinical judgement and is meant to assist in decision-making. Always verify
+          calculations and consider patient-specific factors.
         </p>
-        <p className="mt-2 text-xs italic text-gray-800">
-          This tool does not replace clinical judgement and is meant to assist in decision-making.
-          Always verify calculations and consider patient-specific factors.
-        </p>
-      </header>
-
+      }
+      maxWidthClass="max-w-5xl"
+      bodyClassName="mx-auto max-w-5xl"
+    >
       <HyponatremiaAppContent />
-    </div>
+    </ToolPageShell>
   );
 }
   

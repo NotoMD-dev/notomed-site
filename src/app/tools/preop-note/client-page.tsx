@@ -1203,9 +1203,17 @@ export default function PreOpQuickNoteDemo() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
-      <header className="max-w-5xl mx-auto px-4 pt-6 mb-10 sm:px-6 lg:px-8">
-        <BackButton href="/tools" label="Back to Tools" />
+    <div className="min-h-screen font-sans text-gray-800 tool-shell theme-shell theme-grid theme-lacquer">
+      <div className="mx-auto max-w-6xl px-4 pt-6 sm:px-6 lg:px-8">
+        <Link
+          href="/tools"
+          className="inline-flex items-center gap-2 rounded-xl border border-[#c7d2c5] bg-white px-4 py-2 text-sm font-semibold tracking-tight text-[#2f4c3d] shadow-sm transition hover:border-[#9eb39f] hover:bg-[#eef2ed]"
+        >
+          ← Back to Tools
+        </Link>
+      </div>
+
+      <header className="max-w-5xl mx-auto px-4 mb-10 sm:px-6 lg:px-8">
         <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
           Pre-Op QuickNote &amp; Risk Stratifier
         </h1>
