@@ -2,7 +2,6 @@
 "use client";
 
 import React, { useEffect, useMemo, useState, useCallback } from "react";
-
 import AiPlanPanel from "@/components/AiPlanPanel";
 import ToolPageShell from "@/components/ToolPageShell";
 import type {
@@ -1203,14 +1202,15 @@ function PreOpQuickNoteDemo() {
   );
 
   return (
-    <div className="min-h-screen font-sans text-gray-800 tool-shell theme-shell theme-grid theme-lacquer">
-      <div className="mx-auto max-w-6xl px-4 pt-6 sm:px-6 lg:px-8">
-        <Link
-          href="/tools"
-          className="inline-flex items-center gap-2 rounded-xl border border-[#c7d2c5] bg-white px-4 py-2 text-sm font-semibold tracking-tight text-[#2f4c3d] shadow-sm transition hover:border-[#9eb39f] hover:bg-[#eef2ed]"
-        >
-          ← Back to Tools
-        </Link>
+    <>
+      <div className="space-y-6">
+        {current === 1 && Step1}
+        {current === 2 && Step2}
+        {current === 3 && Step3}
+        {current === 4 && Step4}
+        {current === 5 && Step5}
+        {current === 6 && Step6}
+        {current === 7 && Step7}
       </div>
 
       {current >= 3 && SummaryDock}
