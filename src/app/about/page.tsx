@@ -106,14 +106,14 @@ export default function AboutPage() {
             <div className="flex flex-wrap gap-3">
               <Link
                 href="/resume"
-                className="inline-flex items-center gap-2 rounded-md bg-[color:var(--accent)] px-4 py-2 text-xs font-medium text-[color:var(--neutral-text)] transition-colors hover:bg-[color:var(--accent-hover)]"
+                className="inline-flex items-center gap-2 rounded-md bg-[color:var(--accent)] px-5 py-2.5 text-[0.94rem] font-medium text-[color:var(--neutral-text)] transition-colors hover:bg-[color:var(--accent-hover)]"
               >
                 View résumé
               </Link>
 
               <Link
                 href="mailto:yasmineabbey@gmail.com"
-                className="inline-flex items-center gap-2 rounded-md border border-[color:var(--card-border)] bg-[color:var(--pill-bg)] px-4 py-2 text-xs font-medium text-[color:var(--pill-text)] transition-colors hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
+                className="inline-flex items-center gap-2 rounded-md border border-[color:var(--card-border)] bg-[color:var(--pill-bg)] px-5 py-2.5 text-[0.94rem] font-medium text-[color:var(--pill-text)] transition-colors hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
               >
                 Email me
               </Link>
