@@ -1,11 +1,9 @@
 
 import { useEffect, useState } from "react";
+
+import { copyToClipboard } from "@/lib/clipboard";
 import type { StructuredData } from "@/lib/getAIPlan";
 import type { PreopAIRequest } from "@/types/preop";
-
-const SECURE_CTX =
-  typeof window !== "undefined" &&
-  (window.isSecureContext || window.location.hostname === "localhost");
 
 type AiPlanPayload = StructuredData | PreopAIRequest;
 
@@ -51,28 +49,6 @@ export default function AiPlanPanel({
   const [copied, setCopied] = useState(false);
 
   useEffect(() => setCopied(false), [text]);
-
-  async function copyToClipboard(payload: string) {
-    try {
-      if (SECURE_CTX && navigator.clipboard?.writeText) {
-        await navigator.clipboard.writeText(payload);
-      } else {
-        const ta = document.createElement("textarea");
-        ta.value = payload;
-        ta.setAttribute("readonly", "");
-        ta.style.position = "absolute";
-        ta.style.left = "-9999px";
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        document.body.removeChild(ta);
-      }
-      setCopied(true);
-    } catch {
-      setCopied(false);
-      alert("Could not copy to clipboard. Please copy manually.");
-    }
-  }
 
   async function handleGenerate() {
     setError(null);
@@ -157,7 +133,16 @@ export default function AiPlanPanel({
             <button
               type="button"
               className="text-xs rounded-lg border border-[color:var(--hero-tone-pear-border)] px-3 py-1 font-semibold text-[color:var(--hero-tone-pear-title)] bg-white/80 hover:bg-white transition"
-              onClick={() => copyToClipboard(text)}
+              onClick={async () => {
+                try {
+                  await copyToClipboard(text);
+                  setCopied(true);
+                } catch (error) {
+                  console.error("Clipboard copy failed", error);
+                  setCopied(false);
+                  alert("Could not copy to clipboard. Please copy manually.");
+                }
+              }}
               disabled={!text}
             >
               {copied ? "Copied!" : "Copy"}

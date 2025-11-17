@@ -263,7 +263,15 @@ export function QuickConvert() {
               </p>
               <button
                 type="button"
-                onClick={() => result && copyToClipboard(result.displayText)}
+                onClick={async () => {
+                  if (!result) return;
+                  try {
+                    await copyToClipboard(result.displayText);
+                  } catch (error) {
+                    console.error("Clipboard copy failed", error);
+                    alert("Could not copy to clipboard. Please copy manually.");
+                  }
+                }}
                 className="text-xs font-semibold text-[#2f4c3d] hover:text-[#1f362c] disabled:text-[#a4ae9f]"
                 disabled={!result}
               >

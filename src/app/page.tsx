@@ -7,35 +7,15 @@ import React from "react";
 
 import SiteHeader from "@/components/SiteHeader";
 import { CONFIG } from "@/config/notomed-config";
+import { toolsData, type ToolDefinition } from "@/config/tools-data";
 
-type ToolCard = {
-  id: string;
-  name: string;
-  description: string;
-  link: string;
-  isPlaceholder?: boolean;
-};
+function isLiveTool(
+  tool: ToolDefinition,
+): tool is ToolDefinition & { path: string } {
+  return typeof tool.path === "string" && tool.path.length > 0;
+}
 
-const TOOLS: ToolCard[] = [
-  {
-    id: "opioid-tool",
-    name: "Inpatient Opioid Regimen Builder",
-    description: "Build a custom inpatient opiate regimen with safety checks.",
-    link: CONFIG.opioidToolPath,
-  },
-  {
-    id: "hyponatremia-tool",
-    name: "Hyponatremia Calculator",
-    description: "Guided thinking for low sodium with safety in mind.",
-    link: CONFIG.hyponatremiaToolPath,
-  },
-  {
-    id: "preop-tool",
-    name: "AI-powered Pre-op Risk Stratifier",
-    description: "Simple pre-op risk write-up you can paste into the EHR.",
-    link: CONFIG.preopToolPath,
-  },
-];
+const LIVE_TOOLS = toolsData.filter(isLiveTool);
 
 export default function NotoMedLandingPage() {
   const [submitStatus, setSubmitStatus] = React.useState<"idle" | "success" | "error">("idle");
@@ -43,10 +23,10 @@ export default function NotoMedLandingPage() {
   const [supportLoading, setSupportLoading] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState("");
 
-  const filteredTools = TOOLS.filter((tool) =>
+  const filteredTools = LIVE_TOOLS.filter((tool) =>
     tool.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
-  const displayedTools = searchTerm ? filteredTools : TOOLS.slice(0, 2);
+  const displayedTools = searchTerm ? filteredTools : LIVE_TOOLS.slice(0, 2);
 
   const handleInternalFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -171,7 +151,7 @@ export default function NotoMedLandingPage() {
             {displayedTools.map((tool) => (
               <Link
                 key={tool.id}
-                href={tool.link}
+                href={tool.path}
                 className="group relative overflow-hidden rounded-2xl card-surface p-6 shadow-[0_22px_70px_rgba(0,0,0,0.7)] transition-transform duration-200 hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(0,0,0,0.9)]"
               >
                 <div className="absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100">

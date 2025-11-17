@@ -403,27 +403,9 @@ export function prnSuggestion(
 }
 
 /* -------------------------------------------------------------
- * clipboard helper (QuickConvert uses this)
+ * clipboard helper (QuickConvert + RegimenSummary reuse this)
  * ----------------------------------------------------------- */
-
-export async function copyToClipboard(text: string): Promise<void> {
-  try {
-    if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
-      await navigator.clipboard.writeText(text);
-      return;
-    }
-  } catch {}
-  const ta = document.createElement("textarea");
-  ta.value = text;
-  ta.style.position = "fixed";
-  ta.style.opacity = "0";
-  document.body.appendChild(ta);
-  ta.select();
-  try {
-    document.execCommand("copy");
-  } catch {}
-  document.body.removeChild(ta);
-}
+export { copyToClipboard } from "@/lib/clipboard";
 
 /* -------------------------------------------------------------
  * quick-convert helpers (the simplified 4-line version)

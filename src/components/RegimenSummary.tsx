@@ -110,9 +110,15 @@ export function RegimenSummary() { // Removed showPrnArea and setShowPrnArea fro
 
   async function handleCopy() {
     if (!planText) return;
-    await copyToClipboard(planText);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1400);
+    try {
+      await copyToClipboard(planText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1400);
+    } catch (error) {
+      console.error("Clipboard copy failed", error);
+      setCopied(false);
+      alert("Could not copy to clipboard. Please copy manually.");
+    }
   }
 
   return (
