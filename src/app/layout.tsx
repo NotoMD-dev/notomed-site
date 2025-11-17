@@ -27,6 +27,9 @@ export default function RootLayout({
             <div className="relative z-10 min-h-screen">{children}</div>
           </div>
         </ThemeProvider>
+
+        {/* 👇 Analytics should live inside <body>, after your app UI */}
+        <Analytics />
       </body>
     </html>
   );
