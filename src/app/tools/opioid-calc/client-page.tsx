@@ -10,6 +10,7 @@ import { RegimenSummary } from "@/components/RegimenSummary";
 import { QuickConvert } from "@/components/QuickConvert";
 import { Switch } from "@/components/ui/Switch";
 import { AccordionStep } from "@/components/AccordionStep";
+import { BackButton } from "@/components/BackButton";
 import { ChevronRight } from "lucide-react";
 
 // =========================================================
@@ -104,7 +105,13 @@ function AppContent() {
               Lightweight panel for one-off opioid conversions.
             </p>
           </div>
-          <Switch checked={showQuick} onChange={setShowQuick} />
+          <div
+            onClick={(event) => event.stopPropagation()}
+            onKeyDown={(event) => event.stopPropagation()}
+            className="flex items-center"
+          >
+            <Switch checked={showQuick} onChange={setShowQuick} />
+          </div>
         </div>
 
         {showQuick && (

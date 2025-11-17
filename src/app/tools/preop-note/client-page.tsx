@@ -2,8 +2,9 @@
 "use client";
 
 import React, { useEffect, useMemo, useState, useCallback } from "react";
-import Link from "next/link";
+
 import AiPlanPanel from "@/components/AiPlanPanel";
+import { BackButton } from "@/components/BackButton";
 import type {
   Antiplatelet,
   Anticoagulant,
@@ -1202,7 +1203,7 @@ export default function PreOpQuickNoteDemo() {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans text-gray-800">
+    <div className="min-h-screen font-sans text-gray-800 tool-shell theme-shell theme-grid theme-lacquer">
       <div className="mx-auto max-w-6xl px-4 pt-6 sm:px-6 lg:px-8">
         <Link
           href="/tools"

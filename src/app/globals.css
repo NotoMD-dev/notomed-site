@@ -14,11 +14,11 @@
   --lacquer-top: rgba(255, 255, 255, 0.12);
   --lacquer-bottom: rgba(0, 0, 0, 0.5);
 
-  --text-primary: #f4f1ea;
-  --text-heading: #f9f6ef;
-  --text-body: #d0c8b9;
-  --text-muted: #989180;
-  --text-muted-strong: #a89f8f;
+  --text-primary: #ffffff;
+  --text-heading: #fffef9;
+  --text-body: #fff8ee;
+  --text-muted: #f8eee1;
+  --text-muted-strong: #fff1e4;
 
   --card-from: #3f5143;
   --card-via: #475b4c;
@@ -29,7 +29,7 @@
 
   --header-bg: rgba(48, 59, 50, 0.85);
   --header-border: #444f44;
-  --nav-link: #cbc4b6;
+  --nav-link: #f8efe1;
 
   --input-bg: #405247;
   --input-border: #788878;
@@ -181,6 +181,16 @@ body {
 .card-dashed {
   background-color: var(--card-muted);
   border: 1px dashed var(--card-border);
+}
+
+.card-divider {
+  border-color: var(--card-outline);
+}
+
+.chip-new {
+  background-color: var(--accent);
+  border: 1px solid var(--accent-hover);
+  color: var(--neutral-text);
 }
 
 .header-surface {

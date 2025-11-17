@@ -21,9 +21,9 @@ export function HomeRegimenInput() {
 
   const isFentanyl = (drug?: Opioid) => drug === "fentanyl_tds";
   const inputClass =
-    "w-full h-10 px-2 py-2 border border-gray-300 rounded-lg bg-white text-gray-800 text-sm focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition-shadow disabled:bg-gray-100 disabled:text-gray-500";
+    "w-full h-10 px-2 py-2 border border-[#d7e0d4] rounded-lg bg-white text-[#1f2d23] text-sm focus:ring-1 focus:ring-[#c1d1c3] focus:border-[#7b9884] transition-shadow disabled:bg-[#f3f1ec] disabled:text-[#9ca59a]";
   const checkClass =
-    "form-checkbox h-5 w-5 rounded transition-colors text-indigo-600 focus:ring-indigo-500";
+    "form-checkbox h-5 w-5 rounded transition-colors text-[#3f6b53] focus:ring-[#c1d1c3] focus:ring-offset-0";
 
   // 8-column grid
   const rowGridStyle = {
@@ -32,6 +32,8 @@ export function HomeRegimenInput() {
   } as const;
 
   const buttonStyle = "px-4 py-2 text-sm font-semibold rounded-lg transition-colors shadow-md";
+  const detailSummaryClass =
+    "px-3 py-1.5 rounded-lg border border-[#e1d7c8] bg-[color:var(--hero-tone-pear-surface)] text-[color:var(--hero-tone-pear-title)] hover:bg-[#f8f2e8] cursor-pointer font-semibold";
   const removeButtonStyle =
     "p-1 border border-transparent text-red-500 rounded-md hover:bg-red-50 hover:border-red-300 transition-colors h-8 w-8 text-lg flex items-center justify-center";
 
@@ -40,10 +42,10 @@ export function HomeRegimenInput() {
       <div className="flex justify-between items-center gap-3 mb-4">
         {/* Removed redundant <h3> header */}
         <div className="flex items-center gap-4 ml-auto">
-          <label className="flex items-center gap-2 text-base font-semibold text-gray-800 cursor-pointer">
+          <label className="flex items-center gap-2 text-base font-semibold text-[color:var(--hero-tone-pear-title)] cursor-pointer">
             <input
               type="checkbox"
-              className="form-checkbox h-5 w-5 text-indigo-600 rounded focus:ring-indigo-500"
+              className="form-checkbox h-5 w-5 rounded focus:ring-[#c1d1c3] text-[#3f6b53]"
               checked={opioidNaive}
               onChange={(e) => setOpioidNaive(e.target.checked)}
             />
@@ -52,8 +54,8 @@ export function HomeRegimenInput() {
           <button
             type="button"
             className={`${buttonStyle} ${opioidNaive
-                ? "bg-gray-300 text-gray-600 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-700 text-white"
+                ? "bg-[#e0e5db] text-[#8b9688] cursor-not-allowed"
+                : "bg-[#2f4c3d] hover:bg-[#253c30] text-white"
               }`}
             onClick={addHomeRow}
             disabled={opioidNaive}
@@ -175,7 +177,7 @@ export function HomeRegimenInput() {
                     <input
                       disabled={opioidNaive || !r.drug || !!r.isER}
                       type="checkbox"
-                      className={`${checkClass} ${r.isER ? "text-gray-400" : "text-indigo-600"
+                      className={`${checkClass} ${r.isER ? "text-[#9ca59a]" : "text-[#3f6b53]"
                         }`}
                       checked={!!r.isPRN}
                       onChange={(e) =>
@@ -218,7 +220,7 @@ export function HomeRegimenInput() {
                     <input
                       disabled={opioidNaive || !r.drug || !!r.isPRN}
                       type="checkbox"
-                      className={`${checkClass} ${r.isPRN ? "text-gray-400" : "text-indigo-600"
+                      className={`${checkClass} ${r.isPRN ? "text-[#9ca59a]" : "text-[#3f6b53]"
                         }`}
                       checked={!!r.isER}
                       onChange={(e) =>
@@ -256,8 +258,8 @@ export function HomeRegimenInput() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
             {/* LEFT */}
             <div className="space-y-3">
-              <details className="text-sm">
-                <summary className="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 cursor-pointer">
+              <details className="text-sm text-[color:var(--hero-tone-pear-title)]">
+                <summary className={detailSummaryClass}>
                   OME breakdown
                 </summary>
                 <ul className="mt-2 pl-5 list-disc space-y-1 text-gray-700">
@@ -265,8 +267,8 @@ export function HomeRegimenInput() {
                 </ul>
               </details>
 
-              <details className="text-sm">
-                <summary className="px-3 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 cursor-pointer">
+              <details className="text-sm text-[color:var(--hero-tone-pear-title)]">
+                <summary className={detailSummaryClass}>
                   Dosing equivalents (reference)
                 </summary>
                 <div className="mt-2">
@@ -277,9 +279,9 @@ export function HomeRegimenInput() {
 
             {/* RIGHT */}
             <div className="flex lg:justify-end">
-              <div className="text-xl lg:text-2xl font-extrabold text-gray-900">
+              <div className="text-xl lg:text-2xl font-extrabold text-[color:var(--hero-tone-pear-title)]">
                 Total estimated HOME OME:
-                <span className="text-indigo-700 ml-2">~{Math.round(ome)} mg/day</span>
+                <span className="text-[#2f4c3d] ml-2">~{Math.round(ome)} mg/day</span>
               </div>
             </div>
           </div>
