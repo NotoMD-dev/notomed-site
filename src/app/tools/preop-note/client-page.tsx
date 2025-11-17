@@ -4,7 +4,7 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 
 import AiPlanPanel from "@/components/AiPlanPanel";
-import { BackButton } from "@/components/BackButton";
+import ToolPageShell from "@/components/ToolPageShell";
 import type {
   Antiplatelet,
   Anticoagulant,
@@ -1203,30 +1203,24 @@ export default function PreOpQuickNoteDemo() {
   );
 
   return (
-    <div className="min-h-screen font-sans text-gray-800 tool-shell theme-shell theme-grid theme-lacquer">
-      <div className="mx-auto max-w-6xl px-4 pt-6 sm:px-6 lg:px-8">
-        <Link
-          href="/tools"
-          className="inline-flex items-center gap-2 rounded-xl border border-[#c7d2c5] bg-white px-4 py-2 text-sm font-semibold tracking-tight text-[#2f4c3d] shadow-sm transition hover:border-[#9eb39f] hover:bg-[#eef2ed]"
-        >
-          ← Back to Tools
-        </Link>
-      </div>
-
-      <header className="max-w-5xl mx-auto px-4 mb-10 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-          Pre-Op QuickNote &amp; Risk Stratifier
-        </h1>
-        <p className="mt-2 text-base text-gray-600">
-          A guided workflow for perioperative risk assessment with copy-ready documentation.
-        </p>
-        <p className="text-xs text-gray-800 italic mt-2">
-          This tool is a clinical aid and does not replace clinical judgement. Verify all recommendations with patient-specific factors.
-        </p>
-      </header>
-
-      <main className="max-w-5xl mx-auto px-4 pb-32 sm:px-6 lg:px-8">
-        <div className="space-y-6">
+    <div className="font-sans text-gray-800">
+      <ToolPageShell
+        title="Pre-Op QuickNote &amp; Risk Stratifier"
+        eyebrow="Perioperative"
+        description={
+          <p>
+            A guided workflow for perioperative risk assessment with copy-ready documentation.
+          </p>
+        }
+        footnote={
+          <p className="text-xs italic text-gray-800">
+            This tool is a clinical aid and does not replace clinical judgement. Verify all recommendations with patient-specific
+            factors.
+          </p>
+        }
+        bodyClassName="mx-auto max-w-5xl pb-32"
+      >
+        <main className="space-y-6">
           {current === 1 && Step1}
           {current === 2 && Step2}
           {current === 3 && Step3}
@@ -1234,8 +1228,8 @@ export default function PreOpQuickNoteDemo() {
           {current === 5 && Step5}
           {current === 6 && Step6}
           {current === 7 && Step7}
-        </div>
-      </main>
+        </main>
+      </ToolPageShell>
 
       {current >= 3 && SummaryDock}
     </div>
