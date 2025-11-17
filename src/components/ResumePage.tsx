@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import React, { useState } from "react";
 
 const sections = [
@@ -43,7 +44,7 @@ const sections = [
 
 const SectionChevron = ({ open }: { open: boolean }) => (
   <span
-    className={`ml-3 inline-flex h-5 w-5 items-center justify-center rounded-full border border-[color:var(--accent)] text-[10px] text-[color:var(--accent)] transition-transform duration-200 ${
+    className={`ml-3 inline-flex h-5 w-5 items-center justify-center rounded-full border border-[color:var(--accent)] text-[15px] text-[color:var(--accent)] transition-transform duration-200 ${
       open ? "rotate-90" : ""
     }`}
   >
@@ -57,13 +58,21 @@ export default function ResumePage() {
   return (
     <main className="mx-auto flex max-w-6xl flex-col gap-10 px-4 pb-20 pt-16 sm:px-6 lg:px-8">
       <section className="max-w-3xl space-y-4">
-        <p className="text-[11px] uppercase tracking-[0.35em] text-muted-strong">
+        <p className="text-[16.5px] uppercase tracking-[0.35em] text-muted-strong">
           About the creator
         </p>
-        <h1 className="text-3xl font-semibold leading-tight text-heading sm:text-4xl">
-          Resume & training overview
-        </h1>
-        <p className="text-sm leading-relaxed text-body sm:text-base">
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <h1 className="text-[2.8125rem] font-semibold leading-tight text-heading sm:text-[3.375rem]">
+            Resume & training overview
+          </h1>
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 rounded-full border border-[color:var(--card-border)] bg-[color:var(--pill-bg)]/80 px-4 py-2 text-[16.5px] font-semibold uppercase tracking-[0.18em] text-heading transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
+          >
+            <span aria-hidden="true">←</span> Back to NotoMed.dev
+          </Link>
+        </div>
+        <p className="text-[1.3125rem] leading-relaxed text-body sm:text-[1.5rem]">
           A more detailed look at my medical training, research background, and tech
           experience.
           <span className="mt-2 block">Sections can be expanded or collapsed.</span>
@@ -91,18 +100,18 @@ export default function ResumePage() {
                   className="flex w-full items-center justify-between px-4 py-4 text-left sm:px-5"
                 >
                   <div>
-                    <p className="text-[11px] uppercase tracking-[0.28em] text-muted-strong">
+                    <p className="text-[16.5px] uppercase tracking-[0.28em] text-muted-strong">
                       {section.title}
                     </p>
-                    <p className="mt-1 text-sm text-body">{section.blurb}</p>
+                    <p className="mt-1 text-[1.3125rem] text-body">{section.blurb}</p>
                   </div>
                   <SectionChevron open={open} />
                 </button>
 
                 {open && (
-                  <div className="border-t border-[color:var(--card-outline)] bg-[color:var(--input-bg)]/60 px-4 py-4 text-sm leading-relaxed text-body sm:px-5">
+                  <div className="border-t border-[color:var(--card-outline)] bg-[color:var(--input-bg)]/60 px-4 py-4 text-[1.3125rem] leading-relaxed text-body sm:px-5">
                       {section.id === "education" && (
-                        <ul className="space-y-1.5 text-[13px]">
+                        <ul className="space-y-1.5 text-[19.5px]">
                           <li>
                             <span className="font-semibold">UCLA David Geffen School of Medicine</span>{" — MD (2023)"}
                           </li>
@@ -118,7 +127,7 @@ export default function ResumePage() {
                       )}
 
                       {section.id === "training" && (
-                        <ul className="space-y-1.5 text-[13px]">
+                        <ul className="space-y-1.5 text-[19.5px]">
                           <li>
                             <span className="font-semibold">Cedars-Sinai Medical Center</span>
                             {" — Internal Medicine Residency (2023–2026). Adult inpatient focus."}
@@ -131,7 +140,7 @@ export default function ResumePage() {
                       )}
 
                       {section.id === "research" && (
-                        <ul className="space-y-1.5 text-[13px]">
+                        <ul className="space-y-1.5 text-[19.5px]">
                           <li>
                             UCLA Dean&apos;s Leaders in Health and Science Research Fellow (2021–2022).
                           </li>
@@ -145,7 +154,7 @@ export default function ResumePage() {
                       )}
 
                       {section.id === "tech" && (
-                        <ul className="space-y-1.5 text-[13px]">
+                        <ul className="space-y-1.5 text-[19.5px]">
                           <li>
                             <span className="font-semibold">Serenity</span>, Clinical Cofounder
                             {" — 2023–present. Audience’s Choice and Genentech Diversity, Equity and Inclusion awards at the 2023 Nucleate Pitch Competition."}
@@ -166,7 +175,7 @@ export default function ResumePage() {
                       )}
 
                       {section.id === "skills" && (
-                        <ul className="space-y-1.5 text-[13px]">
+                        <ul className="space-y-1.5 text-[19.5px]">
                           <li>
                             10+ years of biomedical and public health research, with strengths in
                             study design, statistics, and presentation.
@@ -187,7 +196,7 @@ export default function ResumePage() {
                       )}
 
                       {section.id === "publications" && (
-                        <ul className="space-y-4 text-[13px]">
+                        <ul className="space-y-4 text-[19.5px]">
                           <li>
                             Rook, J. M., Hayashi, A., Salinas, D., <span className="font-semibold text-heading">Abbey, Y. C.</span>, et al.
                             (2025). Recent trends and risk factors for chemical and physical restraint of trauma patients during emergency
@@ -243,24 +252,24 @@ export default function ResumePage() {
                   )}
                 </article>
               );
-            })}
-          </div>
+          })}
+        </div>
 
-          <aside className="mt-2 flex flex-col gap-4 rounded-2xl card-surface p-5 text-sm text-body shadow-[0_16px_50px_rgba(0,0,0,0.45)] sm:p-6">
-            <div className="flex items-center gap-4">
-              <div className="h-16 w-16 overflow-hidden rounded-full border border-[color:var(--card-border)] bg-[color:var(--card-muted)]" />
-              <div>
-                <p className="text-xs uppercase tracking-[0.22em] text-muted-strong">
+        <aside className="mt-2 flex flex-col gap-4 rounded-2xl card-surface p-5 text-[1.3125rem] text-body shadow-[0_16px_50px_rgba(0,0,0,0.45)] sm:p-6">
+          <div className="flex items-center gap-4">
+            <div className="h-16 w-16 overflow-hidden rounded-full border border-[color:var(--card-border)] bg-[color:var(--card-muted)]" />
+            <div>
+                <p className="text-[1.125rem] uppercase tracking-[0.22em] text-muted-strong">
                   Yasmine C. Abbey, MD, MSc
                 </p>
-                <p className="mt-1 text-[13px] text-body">
+                <p className="mt-1 text-[19.5px] text-body">
                   Third-year Internal Medicine resident at Cedars-Sinai in Los
                   Angeles, building physician-made clinical tools.
                 </p>
               </div>
             </div>
 
-            <p className="text-[13px] leading-relaxed text-body">
+            <p className="text-[19.5px] leading-relaxed text-body">
               My work lives at the intersection of bedside medicine, clinical
               research, and software. I care about reducing cognitive load for
               clinicians so we can focus on the parts of the job that actually
@@ -270,7 +279,7 @@ export default function ResumePage() {
             <div className="mt-1 flex flex-wrap gap-2">
               <a
                 href="mailto:Yasmineabbey@gmail.com"
-                className="inline-flex items-center rounded-full border border-[color:var(--accent)] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-heading transition hover:bg-[color:var(--accent)] hover:text-[color:var(--neutral-text)]"
+                className="inline-flex items-center rounded-full border border-[color:var(--accent)] px-3 py-1.5 text-[16.5px] font-semibold uppercase tracking-[0.18em] text-heading transition hover:bg-[color:var(--accent)] hover:text-[color:var(--neutral-text)]"
               >
                 Email me
               </a>
@@ -278,12 +287,12 @@ export default function ResumePage() {
                 href="https://www.linkedin.com/in/yasmine-cheryl-abbey-503b3197/"
                 target="_blank"
                 rel="noreferrer"
-                className="inline-flex items-center rounded-full border border-[color:var(--card-border)] bg-[color:var(--pill-bg)]/70 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-heading transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
+                className="inline-flex items-center rounded-full border border-[color:var(--card-border)] bg-[color:var(--pill-bg)]/70 px-3 py-1.5 text-[16.5px] font-semibold uppercase tracking-[0.18em] text-heading transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
               >
                 View LinkedIn
               </a>
             </div>
-          </aside>
+        </aside>
         </section>
     </main>
   );

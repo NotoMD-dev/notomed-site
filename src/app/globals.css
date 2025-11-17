@@ -14,11 +14,11 @@
   --lacquer-top: rgba(255, 255, 255, 0.12);
   --lacquer-bottom: rgba(0, 0, 0, 0.5);
 
-  --text-primary: #f4f1ea;
-  --text-heading: #f9f6ef;
-  --text-body: #d0c8b9;
-  --text-muted: #989180;
-  --text-muted-strong: #a89f8f;
+  --text-primary: #fff9f0;
+  --text-heading: #fffdf7;
+  --text-body: #f2ece0;
+  --text-muted: #e0d7c8;
+  --text-muted-strong: #ede4d4;
 
   --card-from: #3f5143;
   --card-via: #475b4c;
