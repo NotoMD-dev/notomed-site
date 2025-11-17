@@ -14,6 +14,8 @@ import {
 } from "../utils/conversionLogic";
 
 const FREQ_OPTIONS = [2, 3, 4, 6, 8, 12];
+const numberInputClass =
+  "h-9 w-full rounded-lg border border-gray-200 bg-white px-2 text-sm text-gray-900 placeholder:text-gray-500 caret-gray-900 focus:outline-none focus:ring-1 focus:ring-gray-200";
 
 export function QuickConvert() {
   // FROM side
@@ -144,9 +146,10 @@ export function QuickConvert() {
                 type="number"
                 min={0}
                 step={0.1}
-                className="flex-1 h-9 rounded-lg border border-gray-200 bg-white px-2 text-sm text-gray-900 placeholder:text-gray-400"
+                className={`flex-1 ${numberInputClass}`}
                 value={fromDose}
                 onChange={(e) => setFromDose(Number(e.target.value) || 0)}
+                style={{ WebkitTextFillColor: "#111827" }}
               />
               <span className="text-xs text-gray-500">mg</span>
             </div>
@@ -196,9 +199,10 @@ export function QuickConvert() {
             </label>
             <input
               type="number"
-              className="mt-1 w-full h-9 rounded-lg border border-gray-200 bg-white px-2 text-sm text-gray-900"
+              className={`mt-1 ${numberInputClass}`}
               value={crossTol}
               onChange={(e) => setCrossTol(Number(e.target.value) || 0)}
+              style={{ WebkitTextFillColor: "#111827" }}
             />
           </div>
         </div>
