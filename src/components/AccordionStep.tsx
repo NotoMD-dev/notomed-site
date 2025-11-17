@@ -14,8 +14,10 @@ interface AccordionStepProps {
 }
 
 const statusClasses = {
-  complete: "bg-green-100 text-green-700",
-  incomplete: "bg-gray-100 text-gray-500",
+  complete:
+    "bg-[color:rgba(210,126,88,0.2)] text-[color:var(--accent)] border border-[color:rgba(210,126,88,0.35)]",
+  incomplete:
+    "bg-[color:rgba(67,84,71,0.35)] text-[color:var(--tool-panel-header-subtext)] border border-[color:rgba(122,137,123,0.35)]",
 };
 
 export function AccordionStep({
@@ -30,44 +32,46 @@ export function AccordionStep({
   const currentStatus = isComplete ? "complete" : "incomplete";
 
   return (
-    <div 
-      className={`bg-white rounded-xl shadow-lg border transition-all duration-300 overflow-hidden ${
-        isOpen ? 'border-indigo-400 shadow-indigo-200' : 'border-gray-200'
+    <div
+      className={`rounded-2xl border bg-white/95 shadow-lg transition-all duration-300 overflow-hidden ${
+        isOpen
+          ? 'border-[color:var(--tool-panel-header-border)] shadow-[0_18px_50px_rgba(12,18,15,0.35)]'
+          : 'border-[#d7e0d4]'
       }`}
     >
       {/* HEADER */}
       <button
         onClick={onToggle}
-        className={`w-full flex items-center justify-between p-6 transition-colors duration-200 ${
-          isOpen ? 'bg-indigo-50 hover:bg-indigo-100' : 'hover:bg-gray-50'
+        className={`tool-module-header w-full flex items-center justify-between p-6 transition-colors duration-200 ${
+          isOpen ? 'shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]' : ''
         }`}
         aria-expanded={isOpen}
       >
         <div className="flex items-center text-left">
           {/* STEP NUMBER & STATUS */}
-          <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold mr-4 shrink-0 ${statusClasses[currentStatus]}`}>
+          <div
+            className={`mr-4 flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-sm font-semibold ${statusClasses[currentStatus]}`}
+          >
             {isComplete ? <Check size={18} /> : step}
           </div>
-          
+
           <div>
-            <h2 className={`text-lg font-extrabold ${isOpen ? 'text-indigo-800' : 'text-gray-900'}`}>{title}</h2>
-            <p className="text-sm text-gray-500 mt-0.5">{subTitle}</p>
+            <h2 className="tool-module-title text-lg font-semibold">{title}</h2>
+            <p className="tool-module-subtext mt-0.5 text-sm">{subTitle}</p>
           </div>
         </div>
 
         {/* TOGGLE ICON */}
-        <ChevronDown 
-            className={`w-5 h-5 text-gray-500 transition-transform ${isOpen ? 'rotate-180 text-indigo-600' : ''}`}
+        <ChevronDown
+          className={`h-5 w-5 text-[color:var(--tool-panel-header-subtext)] transition-transform ${
+            isOpen ? 'rotate-180' : ''
+          }`}
         />
       </button>
 
       {/* CONTENT */}
       {/* Only render content if it's open */}
-      {isOpen && (
-        <div className="p-6 pt-4 border-t border-gray-100">
-          {children}
-        </div>
-      )}
+      {isOpen && <div className="border-t border-gray-100 bg-white/95 p-6 pt-4">{children}</div>}
     </div>
   );
 }

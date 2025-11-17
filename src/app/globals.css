@@ -44,6 +44,22 @@
   --pill-bg: #435447;
   --pill-border: #7a897b;
   --pill-text: #f0e5d7;
+
+  --tool-hero-border: rgba(107, 134, 115, 0.35);
+  --tool-hero-surface: #fdfbf7;
+  --tool-hero-title: #1f362c;
+  --tool-hero-text: #2c4233;
+  --tool-hero-muted: #4a5b50;
+  --tool-hero-eyebrow: rgba(31, 54, 44, 0.65);
+  --tool-hero-footnote-border: rgba(31, 54, 44, 0.08);
+  --tool-back-bg: rgba(67, 84, 71, 0.95);
+  --tool-back-border: #7a897b;
+  --tool-back-text: #f0e5d7;
+  --tool-panel-header-bg: #243428;
+  --tool-panel-header-hover: #2e4534;
+  --tool-panel-header-border: rgba(138, 162, 145, 0.55);
+  --tool-panel-header-text: #f9f6ef;
+  --tool-panel-header-subtext: rgba(233, 241, 232, 0.85);
 }
 
 :root[data-theme="light"] {
@@ -85,6 +101,22 @@
   --pill-bg: #d8c8b0;
   --pill-border: #b7a88f;
   --pill-text: #2f271d;
+
+  --tool-hero-border: rgba(63, 107, 83, 0.35);
+  --tool-hero-surface: #ffffff;
+  --tool-hero-title: #143223;
+  --tool-hero-text: #2d4133;
+  --tool-hero-muted: #4a4035;
+  --tool-hero-eyebrow: rgba(32, 46, 38, 0.65);
+  --tool-hero-footnote-border: rgba(32, 46, 38, 0.12);
+  --tool-back-bg: rgba(83, 101, 88, 0.15);
+  --tool-back-border: #748a78;
+  --tool-back-text: #2f271d;
+  --tool-panel-header-bg: #aec2b0;
+  --tool-panel-header-hover: #9ab39e;
+  --tool-panel-header-border: rgba(63, 107, 83, 0.45);
+  --tool-panel-header-text: #1f241e;
+  --tool-panel-header-subtext: rgba(32, 34, 30, 0.75);
 }
 
 @theme inline {
@@ -201,6 +233,138 @@ body {
 .btn-outline:hover {
   border-color: var(--accent);
   color: var(--accent-hover);
+}
+
+.tool-shell {
+  min-height: 100vh;
+  color: var(--text-primary);
+}
+
+.tool-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 999px;
+  border: 1px solid var(--tool-back-border);
+  background-color: var(--tool-back-bg);
+  padding: 0.4rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  color: var(--tool-back-text);
+  text-decoration: none;
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+  transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.tool-back-link:hover {
+  border-color: var(--accent);
+  color: var(--accent-hover);
+  transform: translateY(-1px);
+}
+
+
+.tool-hero {
+  border-radius: 28px;
+  border: 1px solid var(--tool-hero-border);
+  background: var(--tool-hero-surface);
+  padding: 2rem;
+  box-shadow: 0 35px 90px rgba(8, 12, 10, 0.28);
+  position: relative;
+  overflow: hidden;
+}
+
+.tool-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at 15% 20%,
+    rgba(255, 255, 255, 0.45),
+    transparent 45%
+  );
+  opacity: 0.65;
+}
+
+.tool-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.tool-hero--sage {
+  --tool-hero-surface: linear-gradient(135deg, #f8fdf9, #e2ede6);
+  --tool-hero-border: rgba(97, 138, 115, 0.45);
+  --tool-hero-title: #122a1d;
+  --tool-hero-text: #23382a;
+  --tool-hero-eyebrow: rgba(21, 66, 45, 0.7);
+  --tool-hero-footnote-border: rgba(41, 85, 61, 0.2);
+}
+
+.tool-hero--canvas {
+  --tool-hero-surface: linear-gradient(135deg, #fffdf9, #f3ebe1);
+  --tool-hero-border: rgba(191, 163, 133, 0.55);
+  --tool-hero-title: #2a1d14;
+  --tool-hero-text: #3f3126;
+  --tool-hero-eyebrow: rgba(73, 52, 37, 0.65);
+  --tool-hero-footnote-border: rgba(96, 69, 50, 0.18);
+}
+
+.tool-hero--mulberry {
+  --tool-hero-surface: linear-gradient(135deg, #f9f2f7, #edddeb);
+  --tool-hero-border: rgba(192, 150, 172, 0.55);
+  --tool-hero-title: #2e1323;
+  --tool-hero-text: #432234;
+  --tool-hero-eyebrow: rgba(110, 52, 78, 0.6);
+  --tool-hero-footnote-border: rgba(120, 66, 91, 0.22);
+}
+
+.tool-hero-title {
+  font-size: clamp(2rem, 4vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--tool-hero-title);
+}
+
+.tool-hero-eyebrow {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.25em;
+  color: var(--tool-hero-eyebrow);
+}
+
+.tool-hero-copy,
+.tool-hero-footnote {
+  color: var(--tool-hero-text);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.tool-hero-footnote {
+  margin-top: 1.5rem;
+  border-top: 1px solid var(--tool-hero-footnote-border);
+  padding-top: 1rem;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.tool-module-header {
+  background-color: var(--tool-panel-header-bg);
+  border-bottom: 1px solid var(--tool-panel-header-border);
+  color: var(--tool-panel-header-text);
+}
+
+button.tool-module-header:hover {
+  background-color: var(--tool-panel-header-hover);
+}
+
+.tool-module-title {
+  color: var(--tool-panel-header-text);
+}
+
+.tool-module-subtext,
+.tool-module-icon {
+  color: var(--tool-panel-header-subtext);
 }
 
 /* Light theme overrides for legacy utility classes still using fixed colors */
