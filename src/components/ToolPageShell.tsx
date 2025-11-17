@@ -29,13 +29,13 @@ export function ToolPageShell({
   backLabel = "Back to Tools",
   maxWidthClass = "max-w-6xl",
   bodyClassName = "",
-  heroTone = "sage",
-  panelTone,
+  heroTone = "pear",
+  panelTone = heroTone,
 }: ToolPageShellProps) {
   return (
     <div
       className="tool-shell theme-shell theme-grid theme-lacquer"
-      data-panel-tone={panelTone ?? undefined}
+      data-panel-tone={panelTone}
     >
       <div className={`relative z-10 px-4 pb-16 pt-6 sm:px-6 lg:px-10`}>
         <div className={`mx-auto w-full ${maxWidthClass} space-y-6`}>
