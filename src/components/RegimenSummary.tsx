@@ -126,24 +126,23 @@ export function RegimenSummary() { // Removed showPrnArea and setShowPrnArea fro
       <button
         type="button"
         onClick={handleCopy}
-        className="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-sm font-semibold mb-4 shadow-md transition-colors"
+        className="px-4 py-2 rounded-lg text-sm font-semibold mb-4 shadow-md transition-colors bg-[#2f4c3d] text-white hover:bg-[#253c30]"
       >
         {copied ? "Copied ✓" : "Copy Assessment & Plan"}
       </button>
 
       {/* Always show the output text, no longer toggleable */}
       {isMounted && (
-        <div className="bg-gray-50 border border-gray-100 rounded-xl p-4">
+        <div className="bg-[color:var(--hero-tone-sage-surface)] border border-[color:var(--hero-tone-sage-border)] rounded-xl p-4">
           <pre
-            className="w-full p-3 bg-gray-50 border border-gray-200 rounded-lg
-                       text-sm whitespace-pre-wrap font-mono text-gray-800"
+            className="w-full p-3 bg-white border border-[color:var(--hero-tone-sage-border)] rounded-lg text-sm whitespace-pre-wrap font-mono text-[color:var(--hero-tone-sage-title)]"
           >
             {planText}
           </pre>
         </div>
       )}
 
-      <p className="mt-4 text-xs text-gray-400">
+      <p className="mt-4 text-xs text-[color:var(--text-muted)]">
         Doses are rounded to practical units (tablet strengths / IV increments).
         Adjust for renal/hepatic impairment, frailty, and sedation risk.
       </p>
