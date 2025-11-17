@@ -5,6 +5,7 @@ import Link from "next/link";
 import React from "react";
 
 import ThemeToggle from "./ThemeToggle";
+import { PRIMARY_NAV_LINKS } from "@/config/navigation";
 
 export default function SiteHeader() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
@@ -31,15 +32,15 @@ export default function SiteHeader() {
         </Link>
 
         <nav className="hidden items-center gap-6 text-base text-muted md:flex">
-          <Link href="/tools" className="transition-colors hover:text-heading">
-            Tools
-          </Link>
-          <Link href="/#contact" className="transition-colors hover:text-heading">
-            Contact
-          </Link>
-          <Link href="/about" className="transition-colors hover:text-heading">
-            About
-          </Link>
+          {PRIMARY_NAV_LINKS.map((nav) => (
+            <Link
+              key={nav.href}
+              href={nav.href}
+              className="transition-colors hover:text-heading"
+            >
+              {nav.label}
+            </Link>
+          ))}
         </nav>
 
         <div className="flex items-center gap-3">
@@ -51,6 +52,7 @@ export default function SiteHeader() {
             className="inline-flex items-center gap-2 rounded-full border border-[color:var(--card-border)] bg-[color:var(--input-bg)] px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-heading transition-colors hover:border-[color:var(--accent)] md:hidden"
             aria-expanded={isMenuOpen}
             aria-controls="mobile-nav"
+            aria-label="Toggle navigation menu"
           >
             Menu
             <span aria-hidden>{isMenuOpen ? "✕" : "☰"}</span>
@@ -66,27 +68,16 @@ export default function SiteHeader() {
       >
         <div className="mx-4 mb-3 overflow-hidden rounded-2xl border border-[color:var(--card-border)] bg-[color:var(--card-muted)]/95 shadow-[0_18px_60px_rgba(0,0,0,0.45)]">
           <nav className="flex flex-col divide-y divide-[color:var(--card-outline)] text-base text-heading">
-            <Link
-              href="/tools"
-              className="px-5 py-3 transition-colors hover:text-accent"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Tools
-            </Link>
-            <Link
-              href="/#contact"
-              className="px-5 py-3 transition-colors hover:text-accent"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Contact
-            </Link>
-            <Link
-              href="/about"
-              className="px-5 py-3 transition-colors hover:text-accent"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              About
-            </Link>
+            {PRIMARY_NAV_LINKS.map((nav) => (
+              <Link
+                key={nav.href}
+                href={nav.href}
+                className="px-5 py-3 transition-colors hover:text-accent"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                {nav.label}
+              </Link>
+            ))}
           </nav>
         </div>
       </div>
