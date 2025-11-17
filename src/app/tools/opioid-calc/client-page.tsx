@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState } from "react";
-import ToolPageShell from "@/components/ToolPageShell";
+import ToolPageShell, { ToolHeroTone } from "@/components/ToolPageShell";
 import { RegimenProvider, useRegimenContext } from "@/context/RegimenContext";
 import { HomeRegimenInput } from "@/components/HomeRegimenInput";
 import { PRNSuggestionTable } from "@/components/PRNSuggestionTable";
@@ -11,6 +11,7 @@ import { QuickConvert } from "@/components/QuickConvert";
 import { Switch } from "@/components/ui/Switch";
 import { AccordionStep } from "@/components/AccordionStep";
 import { ChevronRight } from "lucide-react";
+import { HeroToneSelector } from "@/components/HeroToneSelector";
 
 // =========================================================
 // Opioid Regimen Builder - v5.0.0 (UX Rework)
@@ -118,6 +119,8 @@ function AppContent() {
 }
 
 export default function OpioidConversionPage() {
+  const [heroTone, setHeroTone] = useState<ToolHeroTone>("pear");
+
   return (
     <RegimenProvider>
       <ToolPageShell
@@ -133,6 +136,8 @@ export default function OpioidConversionPage() {
           </p>
         }
         bodyClassName="space-y-6"
+        heroTone={heroTone}
+        heroAside={<HeroToneSelector value={heroTone} onChange={setHeroTone} />}
       >
         <AppContent />
       </ToolPageShell>
