@@ -63,7 +63,7 @@ export default function ToolsDirectoryClient() {
               <span>Sort by</span>
               <select
                 value={sortKey}
-                onChange={(event) => setSortKey(event.target.value as SortKey)}
+                onChange={(event) => setSortKey(event.target.value as ToolSortKey)}
                 className="input-olive rounded-full px-3 py-1.5 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[var(--accent)]/60"
               >
                 {TOOL_SORT_OPTIONS.map((option) => (
