@@ -152,7 +152,7 @@ export default function ToolsDirectoryClient() {
         <div className="mb-4 text-xs">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 rounded-full border border-[#7a897b] bg-[#435447] px-4 py-2 text-sm font-medium text-[#f0e5d7] transition-colors hover:border-[#f0a46c] hover:text-[#f3b083]"
+            className="inline-flex items-center gap-2 rounded-full border border-[#7a897b] bg-[#050505] px-4 py-2 text-sm font-medium text-white transition-colors hover:border-[#f0a46c] hover:bg-[#171717]"
           >
             ← Back to NotoMed.dev
           </Link>
