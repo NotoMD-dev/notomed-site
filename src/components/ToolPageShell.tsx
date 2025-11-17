@@ -1,5 +1,6 @@
-import Link from "next/link";
 import type { ReactNode } from "react";
+
+import { BackButton } from "./BackButton";
 
 interface ToolPageShellProps {
   title: string;
@@ -30,11 +31,7 @@ export function ToolPageShell({
     <div className="tool-shell theme-shell theme-grid theme-lacquer">
       <div className={`relative z-10 px-4 pb-16 pt-6 sm:px-6 lg:px-10`}>
         <div className={`mx-auto w-full ${maxWidthClass} space-y-6`}>
-          <div>
-            <Link href={backHref} className="tool-back-link">
-              ← {backLabel}
-            </Link>
-          </div>
+          <BackButton href={backHref} label={backLabel} className="mb-0" />
 
           <section className="tool-header">
             <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">

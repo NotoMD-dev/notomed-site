@@ -6,71 +6,18 @@ import Link from "next/link";
 
 import SiteHeader from "@/components/SiteHeader";
 import { BackButton } from "@/components/BackButton";
-import { CONFIG } from "@/config/notomed-config";
-
-type ToolCategory = "Analgesia" | "Electrolytes" | "Peri-op" | "Endocrine";
-
-type Tool = {
-  id: string;
-  name: string;
-  description: string;
-  /**
-   * Leave the path undefined/null while an app is being built so the card
-   * automatically renders in a muted “Coming soon” state. As soon as a real
-   * route is wired up, provide its path and the live styling/linking is
-   * enabled.
-   */
-  path?: string | null;
-  category: ToolCategory;
-  createdAt: string;
-  lastUpdated: string;
-};
+import {
+  toolsData,
+  type ToolCategory,
+  type ToolDefinition,
+} from "@/config/tools-data";
 
 type SortKey = "alphabetical" | "recent" | "created";
 
-const TOOLS: Tool[] = [
-  {
-    id: "opioid-tool",
-    name: "Inpatient Opioid Regimen Builder",
-    description: "Build a custom inpatient opiate regimen with safety checks.",
-    path: CONFIG.opioidToolPath,
-    category: "Analgesia",
-    createdAt: "2023-08-15",
-    lastUpdated: "2025-11-10",
-  },
-  {
-    id: "hyponatremia-tool",
-    name: "Hyponatremia Calculator",
-    description: "Guided thinking for low sodium with safety in mind.",
-    path: CONFIG.hyponatremiaToolPath,
-    category: "Electrolytes",
-    createdAt: "2023-06-01",
-    lastUpdated: "2025-11-05",
-  },
-  {
-    id: "preop-tool",
-    name: "AI-powered Pre-op Risk Stratifier",
-    description: "Simple pre-op risk write-up you can paste into the EHR.",
-    path: CONFIG.preopToolPath,
-    category: "Peri-op",
-    createdAt: "2025-11-12",
-    lastUpdated: "2025-11-16",
-  },
-  {
-    id: "insulin-tool",
-    name: "Insulin Titration Helper (Beta)",
-    description: "Basal/bolus calculators with guardrails.",
-    path: null,
-    category: "Endocrine",
-    createdAt: "2024-05-01",
-    lastUpdated: "2025-11-01",
-  },
-];
-
-const CATEGORIES = [
+const categoryFilters: ("All" | ToolCategory)[] = [
   "All",
-  ...Array.from(new Set(TOOLS.map((tool) => tool.category))),
-] as const;
+  ...Array.from(new Set(toolsData.map((tool) => tool.category))),
+];
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: "alphabetical", label: "A–Z" },
@@ -103,7 +50,7 @@ function isNewTool(dateString: string): boolean {
   return daysAgo !== null && daysAgo <= 7;
 }
 
-function sortTools(tools: Tool[], sortKey: SortKey): Tool[] {
+function sortTools(tools: ToolDefinition[], sortKey: SortKey): ToolDefinition[] {
   const cloned = [...tools];
   switch (sortKey) {
     case "recent":
@@ -136,13 +83,13 @@ function sortTools(tools: Tool[], sortKey: SortKey): Tool[] {
 
 export default function ToolsDirectoryClient() {
   const [q, setQ] = useState("");
-  const [cat, setCat] = useState<(typeof CATEGORIES)[number]>("All");
+  const [cat, setCat] = useState<(typeof categoryFilters)[number]>("All");
   const [sortKey, setSortKey] = useState<SortKey>("alphabetical");
   const [showFiltersMobile, setShowFiltersMobile] = useState(false);
 
   const filteredAndSorted = useMemo(() => {
     const query = q.toLowerCase();
-    const matches = TOOLS.filter((tool) => {
+    const matches = toolsData.filter((tool) => {
       const matchesCat = cat === "All" || tool.category === cat;
       const matchesQuery =
         tool.name.toLowerCase().includes(query) ||
@@ -213,7 +160,7 @@ export default function ToolsDirectoryClient() {
             showFiltersMobile ? "max-h-40 opacity-100" : "max-h-0 opacity-0 md:max-h-none md:opacity-100"
           }`}
         >
-          {CATEGORIES.map((category) => (
+          {categoryFilters.map((category) => (
             <button
               key={category}
               onClick={() => setCat(category)}
@@ -243,11 +190,11 @@ export default function ToolsDirectoryClient() {
   );
 }
 
-function toolHasLiveRoute(path: Tool["path"]): path is string {
+function toolHasLiveRoute(path: ToolDefinition["path"]): path is string {
   return typeof path === "string" && path.trim().length > 0 && path !== "#";
 }
 
-function ToolCard({ tool }: { tool: Tool }) {
+function ToolCard({ tool }: { tool: ToolDefinition }) {
   const livePath = toolHasLiveRoute(tool.path) ? tool.path : null;
   const isLive = Boolean(livePath);
   const updatedLabel = formatUpdated(tool.lastUpdated);
