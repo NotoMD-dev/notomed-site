@@ -104,7 +104,13 @@ function AppContent() {
               Lightweight panel for one-off opioid conversions.
             </p>
           </div>
-          <Switch checked={showQuick} onChange={setShowQuick} />
+          <div
+            onClick={(event) => event.stopPropagation()}
+            onKeyDown={(event) => event.stopPropagation()}
+            className="flex items-center"
+          >
+            <Switch checked={showQuick} onChange={setShowQuick} />
+          </div>
         </div>
 
         {showQuick && (
