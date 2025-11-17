@@ -10,7 +10,6 @@ import { RegimenSummary } from "@/components/RegimenSummary";
 import { QuickConvert } from "@/components/QuickConvert";
 import { Switch } from "@/components/ui/Switch";
 import { AccordionStep } from "@/components/AccordionStep";
-import { BackButton } from "@/components/BackButton";
 import { ChevronRight } from "lucide-react";
 
 // =========================================================
