@@ -4,7 +4,7 @@
 import React, { useEffect, useMemo, useState, useCallback } from "react";
 
 import AiPlanPanel from "@/components/AiPlanPanel";
-import { BackButton } from "@/components/BackButton";
+import ToolPageShell from "@/components/ToolPageShell";
 import type {
   Antiplatelet,
   Anticoagulant,
@@ -413,7 +413,7 @@ function BinaryChipGroup({
 }
 
 // ===== Main Component (Guided Flow) =====
-export default function PreOpQuickNoteDemo() {
+function PreOpQuickNoteDemo() {
   const TOTAL_STEPS = 7;
   const [current, setCurrent] = useState(1);
   const [showExamples, setShowExamples] = useState(false);
@@ -1184,7 +1184,7 @@ export default function PreOpQuickNoteDemo() {
   // Sticky summary dock
   const SummaryDock = (
     <div className="fixed left-0 right-0 bottom-0 z-30 pb-4">
-      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
         <div className="rounded-2xl border border-[#d7e0d4]/70 bg-[#eef2ed]/70 shadow-lg backdrop-blur-sm px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div className="text-xs text-gray-800 text-pretty">
             <span className="mr-2 font-semibold text-[#3f6b53]">RCRI {rcriScore}</span>
@@ -1213,31 +1213,28 @@ export default function PreOpQuickNoteDemo() {
         </Link>
       </div>
 
-      <header className="max-w-5xl mx-auto px-4 mb-10 sm:px-6 lg:px-8">
-        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
-          Pre-Op QuickNote &amp; Risk Stratifier
-        </h1>
-        <p className="mt-2 text-base text-gray-600">
-          A guided workflow for perioperative risk assessment with copy-ready documentation.
-        </p>
-        <p className="text-xs text-gray-800 italic mt-2">
+      {current >= 3 && SummaryDock}
+    </>
+  );
+}
+
+export default function PreOpQuickNotePage() {
+  return (
+    <ToolPageShell
+      title="Pre-Op QuickNote & Risk Stratifier"
+      eyebrow="Perioperative"
+      description={
+        <p>A guided workflow for perioperative risk assessment with copy-ready documentation.</p>
+      }
+      footnote={
+        <p>
           This tool is a clinical aid and does not replace clinical judgement. Verify all recommendations with patient-specific factors.
         </p>
-      </header>
-
-      <main className="max-w-5xl mx-auto px-4 pb-32 sm:px-6 lg:px-8">
-        <div className="space-y-6">
-          {current === 1 && Step1}
-          {current === 2 && Step2}
-          {current === 3 && Step3}
-          {current === 4 && Step4}
-          {current === 5 && Step5}
-          {current === 6 && Step6}
-          {current === 7 && Step7}
-        </div>
-      </main>
-
-      {current >= 3 && SummaryDock}
-    </div>
+      }
+      maxWidthClass="max-w-6xl"
+      bodyClassName="mx-auto max-w-5xl pb-32"
+    >
+      <PreOpQuickNoteDemo />
+    </ToolPageShell>
   );
 }
