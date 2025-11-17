@@ -6,6 +6,7 @@ import type {
 
 export type ToolSortKey = "alphabetical" | "recent" | "created";
 export type ToolCategoryFilter = "All" | ToolCategory;
+export type LiveTool = ToolDefinition & { path: string };
 
 export const TOOL_SORT_OPTIONS: { key: ToolSortKey; label: string }[] = [
   { key: "alphabetical", label: "A–Z" },
@@ -27,9 +28,7 @@ function normalizePath(path: ToolDefinition["path"]): string | null {
   return trimmed.length ? trimmed : null;
 }
 
-export function isToolLive(
-  tool: ToolDefinition,
-): tool is ToolDefinition & { path: string } {
+export function isToolLive(tool: ToolDefinition): tool is LiveTool {
   const normalized = normalizePath(tool.path);
   return Boolean(normalized);
 }
@@ -38,7 +37,7 @@ export function getLivePath(tool: ToolDefinition): string | null {
   return normalizePath(tool.path);
 }
 
-export function getLiveTools(data: ToolDefinition[] = toolsData) {
+export function getLiveTools(data: ToolDefinition[] = toolsData): LiveTool[] {
   return data.filter(isToolLive);
 }
 
@@ -101,13 +100,13 @@ export function sortTools(
   }
 }
 
-export function filterTools(
-  tools: ToolDefinition[],
+export function filterTools<T extends ToolDefinition>(
+  tools: T[],
   {
     query = "",
     category = "All",
   }: { query?: string; category?: ToolCategoryFilter },
-) {
+): T[] {
   const lowered = query.toLowerCase();
   return tools.filter((tool) => {
     const matchesCategory = category === "All" || tool.category === category;
