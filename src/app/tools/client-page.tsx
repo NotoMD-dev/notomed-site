@@ -5,6 +5,7 @@ import React, { useMemo, useState } from "react";
 import Link from "next/link";
 
 import SiteHeader from "@/components/SiteHeader";
+import { BackButton } from "@/components/BackButton";
 import { CONFIG } from "@/config/notomed-config";
 
 type ToolCategory = "Analgesia" | "Electrolytes" | "Peri-op" | "Endocrine";
@@ -157,18 +158,10 @@ export default function ToolsDirectoryClient() {
       <SiteHeader />
 
       <main className="mx-auto max-w-6xl px-4 pb-16 pt-12">
-        <div className="mb-4 text-xs">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 rounded-full border border-[var(--pill-border)] bg-[var(--pill-bg)] px-4 py-2 text-sm font-medium text-[var(--pill-text)] transition-colors hover:border-[var(--accent-hover)]"
-          >
-            ← Back to NotoMed.dev
-          </Link>
-        </div>
-
         <header className="mb-10 space-y-2">
-          <p className="text-[11px] uppercase tracking-[0.26em] text-[var(--text-muted)]">Directory</p>
+          <BackButton href="/" />
           <h1 className="text-3xl font-semibold text-[var(--text-heading)]">Tools</h1>
+          <p className="text-[11px] uppercase tracking-[0.26em] text-[var(--text-muted)]">Directory</p>
           <p className="max-w-xl text-sm text-[var(--text-body)] md:text-base">
             Physician-built, evidence-minded utilities for inpatient workflows. New tools are added regularly.
           </p>

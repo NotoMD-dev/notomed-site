@@ -6,6 +6,7 @@ import type { Metadata } from "next";
 import { aboutMetadata, siteConfig } from "@/lib/seo";
 
 import SiteHeader from "@/components/SiteHeader";
+import { BackButton } from "@/components/BackButton";
 
 export const metadata: Metadata = aboutMetadata;
 
@@ -55,14 +56,7 @@ export default function AboutPage() {
       <SiteHeader />
 
       <div className="mx-auto max-w-6xl px-4 pb-20 pt-12 sm:px-6 lg:px-8">
-        <div className="mb-6">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 rounded-full border border-[color:var(--card-border)] bg-[#050505] px-4 py-2 text-sm font-medium text-white transition-colors hover:border-[color:var(--accent)] hover:bg-[#111]"
-          >
-            ← Back to NotoMed.dev
-          </Link>
-        </div>
+        <BackButton href="/" />
 
         <header className="mb-10 space-y-3 text-center sm:text-left">
           <h1 className="text-2xl font-semibold text-heading sm:text-3xl">

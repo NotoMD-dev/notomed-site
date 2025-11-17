@@ -1,7 +1,8 @@
 "use client";
 
-import Link from "next/link";
 import React, { useState } from "react";
+
+import { BackButton } from "@/components/BackButton";
 
 const sections = [
   {
@@ -58,20 +59,13 @@ export default function ResumePage() {
   return (
     <main className="mx-auto flex max-w-6xl flex-col gap-10 px-4 pb-20 pt-16 sm:px-6 lg:px-8">
       <section className="max-w-3xl space-y-4">
+        <BackButton href="/" />
+        <h1 className="text-[2.109375rem] font-semibold leading-tight text-heading sm:text-[2.53125rem]">
+          Resume & training overview
+        </h1>
         <p className="text-[12.375px] uppercase tracking-[0.35em] text-muted-strong">
           About the creator
         </p>
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <h1 className="text-[2.109375rem] font-semibold leading-tight text-heading sm:text-[2.53125rem]">
-            Resume & training overview
-          </h1>
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 rounded-full border border-[color:var(--card-border)] bg-[color:var(--pill-bg)]/80 px-4 py-2 text-[12.375px] font-semibold uppercase tracking-[0.18em] text-heading transition hover:border-[color:var(--accent)] hover:text-[color:var(--accent)]"
-          >
-            <span aria-hidden="true">←</span> Back to NotoMed.dev
-          </Link>
-        </div>
         <p className="text-[0.984375rem] leading-relaxed text-body sm:text-[1.125rem]">
           A more detailed look at my medical training, research background, and tech
           experience.

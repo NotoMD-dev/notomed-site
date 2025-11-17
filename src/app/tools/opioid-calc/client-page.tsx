@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
+
 import { RegimenProvider, useRegimenContext } from "@/context/RegimenContext";
 import { HomeRegimenInput } from "@/components/HomeRegimenInput";
 import { PRNSuggestionTable } from "@/components/PRNSuggestionTable";
@@ -10,6 +10,7 @@ import { RegimenSummary } from "@/components/RegimenSummary";
 import { QuickConvert } from "@/components/QuickConvert";
 import { Switch } from "@/components/ui/Switch";
 import { AccordionStep } from "@/components/AccordionStep";
+import { BackButton } from "@/components/BackButton";
 import { ChevronRight } from "lucide-react";
 
 // =========================================================
@@ -105,18 +106,8 @@ export default function OpioidConversionPage() {
   return (
     <RegimenProvider>
       <div className="min-h-screen bg-gray-50 p-4 sm:p-6 lg:p-8 font-sans text-gray-800">
-        {/* BACK BUTTON (top-left, like About) */}
-        <div className="mx-auto mb-4 max-w-6xl">
-          <Link
-            href="/tools"
-            className="inline-flex items-center gap-2 rounded-xl border border-[#c7d2c5] bg-[#050505] px-4 py-2 text-sm font-semibold tracking-tight text-white shadow-sm transition hover:border-[#9eb39f] hover:bg-[#171717]"
-          >
-            ← Back to Tools
-          </Link>
-        </div>
-
-        {/* HEADER */}
         <header className="max-w-6xl mx-auto mb-8">
+          <BackButton href="/tools" label="Back to Tools" />
           <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
             Opioid Conversion &amp; Regimen Builder
           </h1>
