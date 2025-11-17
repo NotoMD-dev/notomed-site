@@ -258,7 +258,7 @@ function ToolCard({ tool }: { tool: Tool }) {
   const livePath = toolHasLiveRoute(tool.path) ? tool.path : null;
   const isLive = Boolean(livePath);
   const updatedLabel = formatUpdated(tool.lastUpdated);
-  const isNew = isLive && isNewTool(tool.createdAt);
+  const isNew = isNewTool(tool.createdAt);
 
   const cardClasses = [
     "group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl p-6 shadow-[0_22px_70px_rgba(0,0,0,0.7)] transition-transform duration-200",
