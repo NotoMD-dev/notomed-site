@@ -3,6 +3,7 @@
 import React, { useMemo, useState } from "react";
 import ToolPageShell from "@/components/ToolPageShell";
 import AiPlanPanel from "@/components/AiPlanPanel";
+import { BackButton } from "@/components/BackButton";
 import type { StructuredData } from "@/lib/getAIPlan";
 import {
   TestTube,

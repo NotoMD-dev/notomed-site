@@ -158,7 +158,7 @@ export function QuickConvert() {
               type="checkbox"
               checked={includeFreq}
               onChange={(e) => setIncludeFreq(e.target.checked)}
-              className="rounded border-gray-300 text-indigo-500"
+              className="rounded border-[#d7e0d4] text-[#3f6b53] focus:ring-[#c1d1c3]"
             />
             <label
               htmlFor="includeFreq"
@@ -257,14 +257,14 @@ export function QuickConvert() {
           )}
 
           <div className="mt-3">
-            <div className="bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-3 flex items-center justify-between gap-4">
-              <p className="text-indigo-900 font-mono text-sm truncate">
+            <div className="rounded-xl border border-[color:var(--hero-tone-pear-border)] bg-[color:var(--hero-tone-pear-surface)] px-4 py-3 flex items-center justify-between gap-4">
+              <p className="text-[color:var(--hero-tone-pear-title)] font-mono text-sm truncate">
                 {result ? result.displayText : "—"}
               </p>
               <button
                 type="button"
                 onClick={() => result && copyToClipboard(result.displayText)}
-                className="text-xs font-semibold text-indigo-700 hover:text-indigo-900"
+                className="text-xs font-semibold text-[#2f4c3d] hover:text-[#1f362c] disabled:text-[#a4ae9f]"
                 disabled={!result}
               >
                 Copy
