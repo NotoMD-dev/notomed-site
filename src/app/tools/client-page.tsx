@@ -13,9 +13,13 @@ type Tool = {
   id: string;
   name: string;
   description: string;
-  path: string;
+  /**
+   * Tools that are not wired up to an actual app page omit the `path` field so we can
+   * automatically render the card in a "coming soon" state. Once a valid path is provided,
+   * the card will adopt the live styling without any additional flags.
+   */
+  path?: string | null;
   category: ToolCategory;
-  isPlaceholder?: boolean;
   createdAt: string;
   lastUpdated: string;
 };
@@ -54,9 +58,8 @@ const TOOLS: Tool[] = [
     id: "insulin-tool",
     name: "Insulin Titration Helper (Beta)",
     description: "Basal/bolus calculators with guardrails.",
-    path: "#",
+    path: null,
     category: "Endocrine",
-    isPlaceholder: true,
     createdAt: "2024-05-01",
     lastUpdated: "2025-11-01",
   },
@@ -246,14 +249,19 @@ export default function ToolsDirectoryClient() {
   );
 }
 
+function hasLivePath(path?: string | null): path is string {
+  return Boolean(path && path !== "#");
+}
+
 function ToolCard({ tool }: { tool: Tool }) {
-  const isLive = !tool.isPlaceholder && tool.path !== "#";
+  const isLive = hasLivePath(tool.path);
+  const isComingSoon = !isLive;
   const updatedLabel = formatUpdated(tool.lastUpdated);
-  const isNew = !tool.isPlaceholder && isNewTool(tool.createdAt);
+  const isNew = isLive && isNewTool(tool.createdAt);
 
   const cardClasses = [
     "group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl p-6 shadow-[0_22px_70px_rgba(0,0,0,0.7)] transition-transform duration-200",
-    tool.isPlaceholder
+    isComingSoon
       ? "card-muted opacity-80"
       : "card-surface hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(0,0,0,0.9)]",
   ].join(" ");
@@ -283,14 +291,14 @@ function ToolCard({ tool }: { tool: Tool }) {
           <span className="text-[11px] text-[var(--text-muted-strong)]">{updatedLabel}</span>
         </div>
 
-        {tool.isPlaceholder ? (
+        {isComingSoon ? (
           <span className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--text-muted-strong)] group-hover:text-[var(--text-heading)]">
             Coming soon
             <span aria-hidden>→</span>
           </span>
         ) : (
           <span className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--accent)] transition-colors group-hover:text-[var(--accent-hover)]">
-            {isLive ? "Open tool" : "Coming soon"}
+            Open tool
             <span aria-hidden>→</span>
           </span>
         )}
