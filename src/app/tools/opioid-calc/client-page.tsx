@@ -134,6 +134,7 @@ export default function OpioidConversionPage() {
           </p>
         }
         bodyClassName="space-y-6"
+        heroVariant="mulberry"
       >
         <AppContent />
       </ToolPageShell>
