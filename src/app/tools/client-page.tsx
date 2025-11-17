@@ -190,7 +190,7 @@ export default function ToolsDirectoryClient() {
   );
 }
 
-function toolHasLiveRoute(path: Tool["path"]): path is string {
+function toolHasLiveRoute(path: ToolDefinition["path"]): path is string {
   return typeof path === "string" && path.trim().length > 0 && path !== "#";
 }
 
