@@ -2,8 +2,8 @@
 "use client";
 
 import React, { useEffect, useMemo, useState, useCallback } from "react";
+import Link from "next/link";
 import AiPlanPanel from "@/components/AiPlanPanel";
-import ToolPageShell from "@/components/ToolPageShell";
 import type {
   Antiplatelet,
   Anticoagulant,
@@ -314,11 +314,11 @@ function composeNote(inputs: InputState) {
 // Keep these shared tokens aligned with the other calculators so the palette stays
 // consistent even if this file is re-merged later.
 const primaryButtonClass =
-  "rounded-xl bg-[#3f6b53] text-white px-4 py-2 text-sm font-semibold shadow-md transition hover:bg-[#4f7f64] focus:outline-none focus:ring-2 focus:ring-[#eadfcd] focus:ring-offset-1";
+  "rounded-xl bg-[#3f6b53] text-white px-4 py-2 text-sm font-semibold shadow-md transition hover:bg-[#4f7f64] focus:outline-none focus:ring-2 focus:ring-[#c7d8c7]/80 focus:ring-offset-1";
 const secondaryButtonClass =
-  "rounded-xl border border-[color:var(--hero-tone-pear-border)] bg-white px-4 py-2 text-sm font-semibold text-[color:var(--hero-tone-pear-title)] shadow-sm transition hover:bg-[color:var(--hero-tone-pear-surface)] focus:outline-none focus:ring-2 focus:ring-[#eadfcd] focus:ring-offset-1";
+  "rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-800 shadow-sm transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-1";
 const fieldInputClass =
-  "w-full rounded-xl border border-[color:var(--hero-tone-pear-border)] bg-white px-3 py-2 text-sm text-[color:var(--hero-tone-pear-title)] transition focus:outline-none focus:ring-2 focus:ring-[#eadfcd] focus:border-[color:var(--hero-tone-pear-border)]";
+  "w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 transition focus:outline-none focus:ring-2 focus:ring-gray-200 focus:border-gray-400";
 
 function StepHeader({
   step,
@@ -334,15 +334,15 @@ function StepHeader({
   return (
     <div className="mb-4">
       <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <div className="text-[11px] font-semibold uppercase tracking-wide text-[color:var(--hero-tone-pear-muted)]">
+        <div className="text-[11px] font-semibold uppercase tracking-wide text-[#5d7d6a]">
           Step {step} of {total}
         </div>
-        <div className="inline-flex items-center rounded-full border border-[color:var(--hero-tone-pear-border)] bg-[color:var(--hero-tone-pear-surface)] text-[10px] font-semibold text-[color:var(--hero-tone-pear-title)] px-3 py-1 shadow-sm">
+        <div className="inline-flex items-center rounded-full border border-[#d7e0d4]/70 bg-[#eef2ed]/70 text-[10px] font-semibold text-[#3f6b53] px-3 py-1 shadow-sm">
           Pre-Op QuickNote
         </div>
       </div>
-      <h2 className="text-xl font-semibold text-[color:var(--hero-tone-pear-title)] tracking-tight">{title}</h2>
-      {hint && <p className="mt-1 text-xs text-[color:var(--hero-tone-pear-body)]">{hint}</p>}
+      <h2 className="text-xl font-semibold text-gray-900 tracking-tight">{title}</h2>
+      {hint && <p className="mt-1 text-xs text-gray-600">{hint}</p>}
     </div>
   );
 }
@@ -359,12 +359,14 @@ function Chip({
   disabled?: boolean;
 }) {
   const base = "px-3 py-2 rounded-xl border text-sm font-semibold transition focus:outline-none";
-  const focus = disabled ? "" : "focus:ring-2 focus:ring-[#eadfcd] focus:ring-offset-1";
+  const focus = disabled
+    ? ""
+    : "focus:ring-2 focus:ring-gray-200 focus:ring-offset-1";
   const palette = disabled
-    ? "bg-[#f2ece2] text-[#b4a594] border-[#e4d6c2] cursor-not-allowed shadow-none"
+    ? "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed shadow-none"
     : active
-    ? "bg-[#2f4c3d] text-white border-[#2f4c3d] shadow-md hover:bg-[#253c30]"
-    : "bg-white text-[color:var(--hero-tone-pear-title)] border-[color:var(--hero-tone-pear-border)] hover:bg-[color:var(--hero-tone-pear-surface)] hover:border-[color:var(--hero-tone-pear-border)] shadow-sm";
+    ? "bg-gray-900 text-white border-gray-900 shadow-md hover:bg-gray-800"
+    : "bg-white text-gray-800 border-gray-300 hover:bg-gray-50 hover:border-gray-400 shadow-sm";
   return (
     <button
       type="button"
@@ -379,7 +381,7 @@ function Chip({
 
 function Box({ children }: { children: React.ReactNode }) {
   return (
-    <div className="rounded-2xl border border-[color:var(--hero-tone-pear-border)] bg-[color:var(--hero-tone-pear-surface)] shadow-[0_25px_65px_-35px_rgba(58,47,34,0.55)] p-4 sm:p-6">
+    <div className="rounded-2xl border border-[#d7e0d4]/70 bg-white shadow-[0_18px_45px_-32px_rgba(79,70,229,0.25)] p-4 sm:p-6">
       {children}
     </div>
   );
@@ -396,7 +398,7 @@ function BinaryChipGroup({
 }) {
   return (
     <div className="mb-2 flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-2">
-      <div className="text-sm font-medium text-[color:var(--hero-tone-pear-title)] sm:w-48 sm:shrink-0">{label}</div>
+      <div className="text-sm font-medium text-gray-800 sm:w-48 sm:shrink-0">{label}</div>
       <div className="flex flex-wrap gap-2">
         <Chip active={value} onClick={() => onChange(true)}>
           Taking
@@ -1121,14 +1123,14 @@ export default function PreOpQuickNoteDemo() {
       />
   
       {/* Big decision banner */}
-      <div className="rounded-2xl border border-[color:var(--hero-tone-pear-border)] bg-[color:var(--hero-tone-pear-surface)] px-5 py-4 mb-5 shadow-[0_25px_65px_-35px_rgba(58,47,34,0.55)]">
-        <div className="text-[11px] font-semibold uppercase tracking-wide text-[color:var(--hero-tone-pear-muted)]">
+      <div className="rounded-2xl border border-[#d7e0d4]/70 bg-gradient-to-r from-[#4f6b5b]/90 via-[#6c8877]/90 to-[#4f6b5b]/90 text-white px-5 py-4 mb-5 shadow-xl">
+        <div className="text-[11px] font-semibold uppercase tracking-wide text-[#eef2ed]/90">
           Cardiac clearance decision
         </div>
-        <div className="text-xl font-semibold tracking-tight mt-1 text-[color:var(--hero-tone-pear-title)]">
+        <div className="text-xl font-semibold tracking-tight mt-1">
           {decision.decision}
         </div>
-        <div className="text-xs mt-1 text-[color:var(--hero-tone-pear-body)]">
+        <div className="text-xs mt-1 text-[#eef2ed]/80">
           RCRI {rcriScore} ({rcriRiskTable(rcriScore)})
           {typeof state.extras.vocalPennPct === "number" && (
             <> · VOCAL-Penn {state.extras.vocalPennPct.toFixed(1)}%</>
@@ -1166,10 +1168,10 @@ export default function PreOpQuickNoteDemo() {
         </div>
       </div>
   
-      <p className="mt-3 text-[11px] text-[color:var(--hero-tone-pear-body)]">
+      <p className="mt-3 text-[11px] text-gray-500">
         Tip: you can fill as much or as little as you want in earlier steps; the AI plan will still generate based on what&apos;s provided.
       </p>
-      <p className="mt-2 text-[10px] text-[color:var(--hero-tone-pear-muted)]">
+      <p className="mt-2 text-[10px] text-gray-400">
         References: 2024 AHA/ACC perioperative guideline; Modha and Whinney 2022
         (Ann Intern Med); Perioperative Medication Management reference; JAMA
         Review 2022 (PMID 36343344).
@@ -1181,16 +1183,16 @@ export default function PreOpQuickNoteDemo() {
   // Sticky summary dock
   const SummaryDock = (
     <div className="fixed left-0 right-0 bottom-0 z-30 pb-4">
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 lg:px-8">
-        <div className="rounded-2xl border border-[color:var(--hero-tone-pear-border)] bg-[color:var(--hero-tone-pear-surface)]/90 shadow-[0_18px_40px_rgba(20,34,26,0.35)] backdrop-blur-sm px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
-          <div className="text-xs text-[color:var(--hero-tone-pear-title)] text-pretty">
-            <span className="mr-2 font-semibold">RCRI {rcriScore}</span>
-            <span className="mr-2 text-[color:var(--hero-tone-pear-body)]">({rcriRiskTable(rcriScore)})</span>
-            <span className="text-[color:var(--hero-tone-pear-body)]">Decision: {decision.decision}</span>
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="rounded-2xl border border-[#d7e0d4]/70 bg-[#eef2ed]/70 shadow-lg backdrop-blur-sm px-4 py-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+          <div className="text-xs text-gray-800 text-pretty">
+            <span className="mr-2 font-semibold text-[#3f6b53]">RCRI {rcriScore}</span>
+            <span className="mr-2 text-gray-700">({rcriRiskTable(rcriScore)})</span>
+            <span className="text-gray-700">Decision: {decision.decision}</span>
           </div>
           <button
             onClick={() => setCurrent(TOTAL_STEPS)}
-            className="text-xs font-semibold text-[color:var(--hero-tone-pear-title)] hover:text-[#2f4c3d]"
+            className="text-xs font-medium text-[#3f6b53] hover:text-[#355a45]"
           >
             Jump to note
           </button>
@@ -1200,21 +1202,29 @@ export default function PreOpQuickNoteDemo() {
   );
 
   return (
-    <>
-      <ToolPageShell
-        title="Pre-Op QuickNote & Risk Stratifier"
-        eyebrow="Perioperative AI"
-        description={
-          <p>A guided workflow for perioperative risk assessment with copy-ready documentation.</p>
-        }
-        footnote={
-          <p>
-            This tool is a clinical aid and does not replace clinical judgement. Verify all recommendations with patient-specific factors.
-          </p>
-        }
-        maxWidthClass="max-w-5xl"
-        bodyClassName="space-y-6"
-      >
+    <div className="min-h-screen font-sans text-gray-800 tool-shell theme-shell theme-grid theme-lacquer">
+      <div className="mx-auto max-w-6xl px-4 pt-6 sm:px-6 lg:px-8">
+        <Link
+          href="/tools"
+          className="inline-flex items-center gap-2 rounded-xl border border-[#c7d2c5] bg-white px-4 py-2 text-sm font-semibold tracking-tight text-[#2f4c3d] shadow-sm transition hover:border-[#9eb39f] hover:bg-[#eef2ed]"
+        >
+          ← Back to Tools
+        </Link>
+      </div>
+
+      <header className="max-w-5xl mx-auto px-4 mb-10 sm:px-6 lg:px-8">
+        <h1 className="text-3xl font-extrabold text-gray-900 tracking-tight">
+          Pre-Op QuickNote &amp; Risk Stratifier
+        </h1>
+        <p className="mt-2 text-base text-gray-600">
+          A guided workflow for perioperative risk assessment with copy-ready documentation.
+        </p>
+        <p className="text-xs text-gray-800 italic mt-2">
+          This tool is a clinical aid and does not replace clinical judgement. Verify all recommendations with patient-specific factors.
+        </p>
+      </header>
+
+      <main className="max-w-5xl mx-auto px-4 pb-32 sm:px-6 lg:px-8">
         <div className="space-y-6">
           {current === 1 && Step1}
           {current === 2 && Step2}
@@ -1224,9 +1234,9 @@ export default function PreOpQuickNoteDemo() {
           {current === 6 && Step6}
           {current === 7 && Step7}
         </div>
-      </ToolPageShell>
+      </main>
 
       {current >= 3 && SummaryDock}
-    </>
+    </div>
   );
 }
