@@ -153,6 +153,16 @@ body {
   border: 1px dashed var(--card-border);
 }
 
+.card-divider {
+  border-color: var(--card-outline);
+}
+
+.chip-new {
+  background-color: var(--accent);
+  border: 1px solid var(--accent-hover);
+  color: var(--neutral-text);
+}
+
 .header-surface {
   background-color: var(--header-bg);
   border-bottom: 1px solid var(--header-border);

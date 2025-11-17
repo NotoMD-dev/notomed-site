@@ -13,10 +13,13 @@ type Tool = {
   id: string;
   name: string;
   description: string;
-  path: string;
+  /**
+   * Tools that are not wired up to an actual app page omit the `path` field so we can
+   * automatically render the card in a "coming soon" state. Once a valid path is provided,
+   * the card will adopt the live styling without any additional flags.
+   */
+  path?: string | null;
   category: ToolCategory;
-  isPlaceholder?: boolean;
-  isNew?: boolean;
   createdAt: string;
   lastUpdated: string;
 };
@@ -55,9 +58,8 @@ const TOOLS: Tool[] = [
     id: "insulin-tool",
     name: "Insulin Titration Helper (Beta)",
     description: "Basal/bolus calculators with guardrails.",
-    path: "#",
+    path: null,
     category: "Endocrine",
-    isPlaceholder: true,
     createdAt: "2024-05-01",
     lastUpdated: "2025-11-01",
   },
@@ -92,6 +94,11 @@ function formatUpdated(dateString: string): string {
   const months = Math.floor(days / 30);
   if (months === 1) return "Updated 1 month ago";
   return `Updated ${months} months ago`;
+}
+
+function isNewTool(dateString: string): boolean {
+  const daysAgo = getDaysAgo(dateString);
+  return daysAgo !== null && daysAgo <= 7;
 }
 
 function sortTools(tools: Tool[], sortKey: SortKey): Tool[] {
@@ -152,16 +159,16 @@ export default function ToolsDirectoryClient() {
         <div className="mb-4 text-xs">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 rounded-full border border-[#7a897b] bg-[#435447] px-4 py-2 text-sm font-medium text-[#f0e5d7] transition-colors hover:border-[#f0a46c] hover:text-[#f3b083]"
+            className="inline-flex items-center gap-2 rounded-full border border-[var(--pill-border)] bg-[var(--pill-bg)] px-4 py-2 text-sm font-medium text-[var(--pill-text)] transition-colors hover:border-[var(--accent-hover)]"
           >
             ← Back to NotoMed.dev
           </Link>
         </div>
 
         <header className="mb-10 space-y-2">
-          <p className="text-[11px] uppercase tracking-[0.26em] text-[#989180]">Directory</p>
-          <h1 className="text-3xl font-semibold text-[#f9f6ef]">Tools</h1>
-          <p className="max-w-xl text-sm text-[#d0c8b9] md:text-base">
+          <p className="text-[11px] uppercase tracking-[0.26em] text-[var(--text-muted)]">Directory</p>
+          <h1 className="text-3xl font-semibold text-[var(--text-heading)]">Tools</h1>
+          <p className="max-w-xl text-sm text-[var(--text-body)] md:text-base">
             Physician-built, evidence-minded utilities for inpatient workflows. New tools are added regularly.
           </p>
         </header>
@@ -176,17 +183,17 @@ export default function ToolsDirectoryClient() {
               value={q}
               onChange={(event) => setQ(event.target.value)}
               placeholder="Search (e.g. sodium, pre-op, opioids)…"
-              className="w-full rounded-xl border border-[#788878] bg-[#405247]/90 px-4 py-2.5 text-sm text-[#f6f2eb] placeholder-[#989180] shadow-[0_12px_36px_rgba(0,0,0,0.55)] focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[#d27e58]/70"
+              className="input-olive w-full rounded-xl px-4 py-2.5 text-sm shadow-[0_12px_36px_rgba(0,0,0,0.25)] focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[var(--accent)]/60"
             />
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-3 md:justify-end">
-            <div className="flex items-center gap-2 text-xs text-[#d0c8b9]">
+            <div className="flex items-center gap-2 text-xs text-[var(--text-body)]">
               <span>Sort by</span>
               <select
                 value={sortKey}
                 onChange={(event) => setSortKey(event.target.value as SortKey)}
-                className="rounded-full border border-[#788878] bg-[#405247]/90 px-3 py-1.5 text-xs font-medium text-[#f6f2eb] focus:outline-none focus:ring-1 focus:ring-[#d27e58]/70"
+                className="input-olive rounded-full px-3 py-1.5 text-xs font-medium focus:outline-none focus:ring-1 focus:ring-[var(--accent)]/60"
               >
                 {SORT_OPTIONS.map((option) => (
                   <option key={option.key} value={option.key}>
@@ -198,7 +205,7 @@ export default function ToolsDirectoryClient() {
 
             <button
               type="button"
-              className="inline-flex items-center gap-1 rounded-full border border-[#7a897b] bg-[#435447] px-3 py-1 text-[11px] text-[#f0e5d7] transition-colors hover:border-[#f0a46c] hover:text-[#f3b083] md:hidden"
+              className="inline-flex items-center gap-1 rounded-full border border-[var(--pill-border)] bg-[var(--pill-bg)] px-3 py-1 text-[11px] text-[var(--pill-text)] transition-colors hover:border-[var(--accent-hover)] md:hidden"
               onClick={() => setShowFiltersMobile((prev) => !prev)}
             >
               Filters
@@ -219,8 +226,8 @@ export default function ToolsDirectoryClient() {
               className={[
                 "rounded-full border px-3 py-1 text-sm transition-colors",
                 cat === category
-                  ? "border-[#f0a46c] bg-[#d27e58] text-[#2b1811]"
-                  : "border-[#7a897b] bg-[#435447] text-[#f0e5d7] hover:border-[#f0a46c]",
+                  ? "border-[var(--accent-hover)] bg-[var(--accent)] text-[var(--neutral-text)]"
+                  : "border-[var(--pill-border)] bg-[var(--pill-bg)] text-[var(--pill-text)] hover:border-[var(--accent-hover)]",
               ].join(" ")}
             >
               {category}
@@ -229,7 +236,7 @@ export default function ToolsDirectoryClient() {
         </section>
 
         {filteredAndSorted.length === 0 ? (
-          <p className="mt-8 text-sm text-[#d0c8b9]">No tools match your search.</p>
+          <p className="mt-8 text-sm text-[var(--text-body)]">No tools match your search.</p>
         ) : (
           <section className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">
             {filteredAndSorted.map((tool) => (
@@ -242,15 +249,21 @@ export default function ToolsDirectoryClient() {
   );
 }
 
+function hasLivePath(path?: string | null): path is string {
+  return Boolean(path && path !== "#");
+}
+
 function ToolCard({ tool }: { tool: Tool }) {
-  const isLive = !tool.isPlaceholder && tool.path !== "#";
+  const isLive = hasLivePath(tool.path);
+  const isComingSoon = !isLive;
   const updatedLabel = formatUpdated(tool.lastUpdated);
+  const isNew = isLive && isNewTool(tool.createdAt);
 
   const cardClasses = [
-    "group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl border p-6 shadow-[0_22px_70px_rgba(0,0,0,0.7)] transition-transform duration-200",
-    tool.isPlaceholder
-      ? "border-[#7b8378] bg-gradient-to-br from-[#3a413b] via-[#414941] to-[#4a534b] opacity-75"
-      : "border-[#7a897b] bg-gradient-to-br from-[#3f5143] via-[#475b4c] to-[#506656] hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(0,0,0,0.9)]",
+    "group relative flex h-full flex-col justify-between overflow-hidden rounded-2xl p-6 shadow-[0_22px_70px_rgba(0,0,0,0.7)] transition-transform duration-200",
+    isComingSoon
+      ? "card-muted opacity-80"
+      : "card-surface hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(0,0,0,0.9)]",
   ].join(" ");
 
   const content = (
@@ -260,32 +273,32 @@ function ToolCard({ tool }: { tool: Tool }) {
       </div>
       <div className="relative flex flex-1 flex-col gap-3">
         <div className="flex items-start justify-between gap-3">
-          <h2 className="text-lg font-semibold text-[#f9f6ef] md:text-xl">{tool.name}</h2>
-          {tool.isNew && !tool.isPlaceholder && (
-            <span className="shrink-0 rounded-full border border-[#7a897b] bg-[#435447] px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-[#f0e5d7]">
+          <h2 className="text-lg font-semibold text-[var(--text-heading)] md:text-xl">{tool.name}</h2>
+          {isNew && (
+            <span className="chip-new shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide">
               NEW
             </span>
           )}
         </div>
-        <p className="flex-1 text-sm leading-relaxed text-[#d4cbba] md:text-[15px]">{tool.description}</p>
+        <p className="flex-1 text-sm leading-relaxed text-[var(--text-body)] md:text-[15px]">{tool.description}</p>
       </div>
 
-      <div className="relative mt-6 flex items-center justify-between border-t border-[#485347] pt-4 text-[12px] text-[#d0c8b9]">
+      <div className="relative mt-6 flex items-center justify-between border-t card-divider pt-4 text-[12px] text-[var(--text-body)]">
         <div className="flex flex-col gap-1.5">
-          <span className="inline-flex items-center rounded-full border border-[#7a897b] bg-[#435447] px-2.5 py-0.5 text-[11px] uppercase tracking-wide text-[#f0e5d7]">
+          <span className="pill-outline inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] uppercase tracking-wide">
             {tool.category}
           </span>
-          <span className="text-[11px] text-[#a89f8f]">{updatedLabel}</span>
+          <span className="text-[11px] text-[var(--text-muted-strong)]">{updatedLabel}</span>
         </div>
 
-        {tool.isPlaceholder ? (
-          <span className="inline-flex items-center gap-1 text-sm font-semibold text-[#a89f8f] group-hover:text-[#f0e5d7]">
+        {isComingSoon ? (
+          <span className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--text-muted-strong)] group-hover:text-[var(--text-heading)]">
             Coming soon
             <span aria-hidden>→</span>
           </span>
         ) : (
-          <span className="inline-flex items-center gap-1 text-sm font-semibold text-[#f0a46c] transition-colors group-hover:text-[#f3b083]">
-            {isLive ? "Open tool" : "Coming soon"}
+          <span className="inline-flex items-center gap-1 text-sm font-semibold text-[var(--accent)] transition-colors group-hover:text-[var(--accent-hover)]">
+            Open tool
             <span aria-hidden>→</span>
           </span>
         )}
