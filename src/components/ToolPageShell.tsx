@@ -1,8 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 
-export type ToolHeroTone = "sage" | "pear" | "rose" | "dusk";
-
 interface ToolPageShellProps {
   title: string;
   eyebrow?: string;
@@ -14,8 +12,6 @@ interface ToolPageShellProps {
   backLabel?: string;
   maxWidthClass?: string;
   bodyClassName?: string;
-  heroTone?: ToolHeroTone;
-  panelTone?: ToolHeroTone;
 }
 
 export function ToolPageShell({
@@ -29,14 +25,9 @@ export function ToolPageShell({
   backLabel = "Back to Tools",
   maxWidthClass = "max-w-6xl",
   bodyClassName = "",
-  heroTone = "pear",
-  panelTone = heroTone,
 }: ToolPageShellProps) {
   return (
-    <div
-      className="tool-shell theme-shell theme-grid theme-lacquer"
-      data-panel-tone={panelTone}
-    >
+    <div className="tool-shell theme-shell theme-grid theme-lacquer">
       <div className={`relative z-10 px-4 pb-16 pt-6 sm:px-6 lg:px-10`}>
         <div className={`mx-auto w-full ${maxWidthClass} space-y-6`}>
           <div>
@@ -45,7 +36,7 @@ export function ToolPageShell({
             </Link>
           </div>
 
-          <section className="tool-hero" data-tone={heroTone}>
+          <section className="tool-hero">
             <div className="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
               <div className="space-y-3">
                 {eyebrow ? <p className="tool-hero-eyebrow">{eyebrow}</p> : null}

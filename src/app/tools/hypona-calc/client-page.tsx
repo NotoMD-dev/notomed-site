@@ -1,10 +1,9 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import ToolPageShell, { ToolHeroTone } from "@/components/ToolPageShell";
+import ToolPageShell from "@/components/ToolPageShell";
 import AiPlanPanel from "@/components/AiPlanPanel";
 import type { StructuredData } from "@/lib/getAIPlan";
-import { HeroToneSelector } from "@/components/HeroToneSelector";
 import {
   TestTube,
   Droplets,
@@ -993,8 +992,6 @@ function HyponatremiaAppContent() {
    ========================= */
 
 export default function HyponatremiaPage() {
-  const [heroTone, setHeroTone] = useState<ToolHeroTone>("pear");
-
   return (
     <ToolPageShell
       title="Hyponatremia Calculator — v4.1"
@@ -1010,9 +1007,6 @@ export default function HyponatremiaPage() {
       }
       maxWidthClass="max-w-5xl"
       bodyClassName="mx-auto max-w-5xl"
-      heroTone={heroTone}
-      panelTone={heroTone}
-      heroAside={<HeroToneSelector value={heroTone} onChange={setHeroTone} />}
     >
       <HyponatremiaAppContent />
     </ToolPageShell>
