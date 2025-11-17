@@ -1,5 +1,8 @@
 import type { ReactNode } from "react";
 
+import { cn } from "@/lib/cn";
+import { THEME_SHELL_CLASS } from "@/lib/design-system";
+
 import { BackButton } from "./BackButton";
 
 interface ToolPageShellProps {
@@ -28,9 +31,9 @@ export function ToolPageShell({
   bodyClassName = "",
 }: ToolPageShellProps) {
   return (
-    <div className="tool-shell theme-shell theme-grid theme-lacquer">
+    <div className={cn("tool-shell theme-grid theme-lacquer", THEME_SHELL_CLASS)}>
       <div className={`relative z-10 px-4 pb-16 pt-6 sm:px-6 lg:px-10`}>
-        <div className={`mx-auto w-full ${maxWidthClass} space-y-6`}>
+        <div className={cn("mx-auto w-full space-y-6", maxWidthClass)}>
           <BackButton href={backHref} label={backLabel} className="mb-0" />
 
           <section className="tool-header">

@@ -2,20 +2,16 @@
 "use client";
 
 import Link from "next/link";
-import { Heart, Mail, Search } from "lucide-react";
+import { Heart, Mail } from "lucide-react";
 import React from "react";
 
 import SiteHeader from "@/components/SiteHeader";
+import { GlowCard } from "@/components/cards/GlowCard";
+import { SearchInput } from "@/components/SearchInput";
 import { CONFIG } from "@/config/notomed-config";
-import { toolsData, type ToolDefinition } from "@/config/tools-data";
+import { filterTools, getLiveTools, FEATURED_TOOL_LIMIT } from "@/lib/tools";
 
-function isLiveTool(
-  tool: ToolDefinition,
-): tool is ToolDefinition & { path: string } {
-  return typeof tool.path === "string" && tool.path.length > 0;
-}
-
-const LIVE_TOOLS = toolsData.filter(isLiveTool);
+const LIVE_TOOLS = getLiveTools();
 
 export default function NotoMedLandingPage() {
   const [submitStatus, setSubmitStatus] = React.useState<"idle" | "success" | "error">("idle");
@@ -23,10 +19,10 @@ export default function NotoMedLandingPage() {
   const [supportLoading, setSupportLoading] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState("");
 
-  const filteredTools = LIVE_TOOLS.filter((tool) =>
-    tool.name.toLowerCase().includes(searchTerm.toLowerCase()),
-  );
-  const displayedTools = searchTerm ? filteredTools : LIVE_TOOLS.slice(0, 2);
+  const filteredTools = filterTools(LIVE_TOOLS, { query: searchTerm });
+  const displayedTools = searchTerm
+    ? filteredTools
+    : LIVE_TOOLS.slice(0, FEATURED_TOOL_LIMIT);
 
   const handleInternalFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -126,18 +122,13 @@ export default function NotoMedLandingPage() {
           <p className="text-xs text-muted-strong">All tools built by {CONFIG.creatorName}</p>
 
           <div className="relative mx-auto mt-8 max-w-2xl px-2 sm:px-0">
-            <div className="relative flex items-center rounded-xl shadow-[0_16px_45px_rgba(0,0,0,0.35)]">
-              <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted">
-                <Search className="h-4 w-4" />
-              </span>
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(event) => setSearchTerm(event.target.value)}
-                placeholder="Search tools (e.g. opioid, sodium)..."
-                className="input-olive w-full rounded-xl py-3 pl-10 pr-4 text-sm shadow-[0_16px_45px_rgba(0,0,0,0.15)] focus:border-transparent focus:outline-none focus:ring-2 focus:ring-[color:var(--accent)]/70 transition-all sm:text-base"
-              />
-            </div>
+            <SearchInput
+              id="landing-tool-search"
+              label="Search all clinical tools"
+              value={searchTerm}
+              onChange={(event) => setSearchTerm(event.target.value)}
+              placeholder="Search tools (e.g. opioid, sodium)..."
+            />
             <div className="pointer-events-none mt-2 flex justify-center text-[11px] text-muted">
               <span className="pill-outline rounded-full px-2 py-1 shadow-[0_10px_32px_rgba(0,0,0,0.15)]">
                 Try: opioid regimen • hyponatremia
@@ -149,61 +140,53 @@ export default function NotoMedLandingPage() {
         <section id="tools" className="scroll-mt-24">
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             {displayedTools.map((tool) => (
-              <Link
-                key={tool.id}
-                href={tool.path}
-                className="group relative overflow-hidden rounded-2xl card-surface p-6 shadow-[0_22px_70px_rgba(0,0,0,0.7)] transition-transform duration-200 hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(0,0,0,0.9)]"
-              >
-                <div className="absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                  <div className="pointer-events-none absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(214,129,88,0.4),transparent_65%)] blur-3xl" />
-                </div>
-                <div className="relative">
-                  <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.2em] text-muted-strong">Tool</p>
+              <Link key={tool.id} href={tool.path} className="block focus-visible:outline-none">
+                <GlowCard className="min-h-[230px]" aria-label={`Open ${tool.name}`}>
+                  <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.2em] text-muted-strong">
+                    Tool
+                  </p>
                   <h3 className="mb-2 text-lg font-semibold text-heading">{tool.name}</h3>
                   <p className="mb-6 text-sm text-body">{tool.description}</p>
                   <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.18em] text-accent transition-transform group-hover:translate-x-1">
                     Open Tool →
                   </span>
-                </div>
+                </GlowCard>
               </Link>
             ))}
 
-            <Link
-              href="/tools"
-              className="group relative flex flex-col justify-between overflow-hidden rounded-2xl card-surface p-6 shadow-[0_22px_70px_rgba(0,0,0,0.7)] transition-transform duration-200 hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(0,0,0,0.9)]"
-            >
-              <div className="absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                <div className="pointer-events-none absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(214,129,88,0.4),transparent_65%)] blur-3xl" />
-              </div>
-              <div className="relative">
-                <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.2em] text-muted-strong">Directory</p>
-                <h3 className="mb-2 text-lg font-semibold text-heading">Browse all tools</h3>
-                <p className="mb-6 text-sm text-body">
-                  See every workflow, including the AI pre-op risk stratifier and upcoming utilities.
-                </p>
+            <Link href="/tools" className="block focus-visible:outline-none">
+              <GlowCard className="flex h-full flex-col justify-between">
+                <div>
+                  <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.2em] text-muted-strong">
+                    Directory
+                  </p>
+                  <h3 className="mb-2 text-lg font-semibold text-heading">Browse all tools</h3>
+                  <p className="mb-6 text-sm text-body">
+                    See every workflow, including the AI pre-op risk stratifier and upcoming utilities.
+                  </p>
+                </div>
                 <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.18em] text-accent transition-transform group-hover:translate-x-1">
                   Go to tools →
                 </span>
-              </div>
+              </GlowCard>
             </Link>
 
-            <div className="group relative flex flex-col items-center justify-center rounded-2xl card-dashed p-6 text-center shadow-[0_20px_70px_rgba(0,0,0,0.7)] transition-transform duration-200 hover:-translate-y-1 hover:shadow-[0_28px_80px_rgba(0,0,0,0.9)]">
-              <div className="absolute inset-0 opacity-0 transition-opacity duration-200 group-hover:opacity-100">
-                <div className="pointer-events-none absolute left-1/2 top-1/2 h-52 w-52 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[radial-gradient(circle_at_center,rgba(214,129,88,0.4),transparent_65%)] blur-3xl" />
-              </div>
-              <div className="relative">
-                <h3 className="mb-2 text-lg font-semibold text-heading">Missing something?</h3>
-                <p className="mb-4 max-w-xs text-sm text-body">
-                  Suggest a new workflow, calculator, or builder you wish existed on rounds.
-                </p>
-                <Link
-                  href="#contact"
-                  className="inline-flex items-center rounded-full px-4 py-1.5 text-xs font-medium uppercase tracking-[0.18em] btn-outline"
-                >
-                  Send Feedback
-                </Link>
-              </div>
-            </div>
+            <GlowCard
+              variant="dashed"
+              interactive
+              className="flex flex-col items-center justify-center text-center"
+            >
+              <h3 className="mb-2 text-lg font-semibold text-heading">Missing something?</h3>
+              <p className="mb-4 max-w-xs text-sm text-body">
+                Suggest a new workflow, calculator, or builder you wish existed on rounds.
+              </p>
+              <Link
+                href="#contact"
+                className="inline-flex items-center rounded-full px-4 py-1.5 text-xs font-medium uppercase tracking-[0.18em] btn-outline"
+              >
+                Send Feedback
+              </Link>
+            </GlowCard>
           </div>
         </section>
 

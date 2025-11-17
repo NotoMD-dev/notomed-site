@@ -3,7 +3,8 @@ import type { Metadata } from "next";
 import { defaultMetadata } from "@/lib/seo";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
-import { Analytics } from "@vercel/analytics/next"; // 👈 add this
+import { cn } from "@/lib/cn";
+import { THEME_OVERLAYS, THEME_SHELL_CLASS } from "@/lib/design-system";
 
 export const metadata: Metadata = defaultMetadata;
 
@@ -16,12 +17,12 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased font-sans">
         <ThemeProvider>
-          <div className="relative min-h-screen theme-shell">
-            <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.32]">
-              <div className="h-full w-full theme-grid" />
+          <div className={cn("relative min-h-screen", THEME_SHELL_CLASS)}>
+            <div className={THEME_OVERLAYS.grid}>
+              <div className={THEME_OVERLAYS.gridInner} />
             </div>
-            <div className="pointer-events-none fixed inset-0 z-0 opacity-[0.5] mix-blend-soft-light">
-              <div className="h-full w-full theme-lacquer" />
+            <div className={THEME_OVERLAYS.lacquer}>
+              <div className={THEME_OVERLAYS.lacquerInner} />
             </div>
             <div className="relative z-10 min-h-screen">{children}</div>
           </div>
