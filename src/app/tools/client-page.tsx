@@ -191,7 +191,10 @@ export default function ToolsDirectoryClient() {
 }
 
 function toolHasLiveRoute(path: ToolDefinition["path"]): path is string {
-  return typeof path === "string" && path.trim().length > 0 && path !== "#";
+  if (typeof path !== "string") return false;
+
+  const trimmed = path.trim();
+  return trimmed.length > 0 && trimmed !== "#";
 }
 
 function ToolCard({ tool }: { tool: ToolDefinition }) {
