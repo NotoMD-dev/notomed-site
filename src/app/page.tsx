@@ -9,6 +9,7 @@ import SiteHeader from "@/components/SiteHeader";
 import { GlowCard } from "@/components/cards/GlowCard";
 import { SearchInput } from "@/components/SearchInput";
 import { CONFIG } from "@/config/notomed-config";
+import { cn } from "@/lib/cn";
 import { filterTools, getLiveTools, FEATURED_TOOL_LIMIT } from "@/lib/tools";
 
 const LIVE_TOOLS = getLiveTools();
@@ -19,10 +20,15 @@ export default function NotoMedLandingPage() {
   const [supportLoading, setSupportLoading] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState("");
 
-  const filteredTools = filterTools(LIVE_TOOLS, { query: searchTerm });
-  const displayedTools = searchTerm
-    ? filteredTools
-    : LIVE_TOOLS.slice(0, FEATURED_TOOL_LIMIT);
+  const featuredTools = LIVE_TOOLS.filter((tool) => tool.tags?.includes("FEATURED"));
+  const nonFeaturedTools = LIVE_TOOLS.filter((tool) => !tool.tags?.includes("FEATURED"));
+  const prioritizedTools = [...featuredTools, ...nonFeaturedTools];
+
+  const listForDisplay = searchTerm
+    ? filterTools(prioritizedTools, { query: searchTerm })
+    : prioritizedTools;
+
+  const displayedTools = listForDisplay.slice(0, FEATURED_TOOL_LIMIT);
 
   const handleInternalFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -141,10 +147,28 @@ export default function NotoMedLandingPage() {
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             {displayedTools.map((tool) => (
               <Link key={tool.id} href={tool.path} className="block focus-visible:outline-none">
-                <GlowCard className="min-h-[230px]" aria-label={`Open ${tool.name}`}>
-                  <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.2em] text-muted-strong">
-                    Tool
-                  </p>
+                <GlowCard
+                  className={cn(
+                    "min-h-[230px] border border-[color:var(--card-border)] transition-shadow",
+                    tool.tags?.includes("FEATURED") &&
+                      "border-[color:var(--accent)] shadow-[0_24px_100px_rgba(0,0,0,0.55)]",
+                  )}
+                  aria-label={`Open ${tool.name}`}
+                >
+                  <div className="mb-3 flex flex-wrap items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-strong">
+                    <span>Tool</span>
+                    {tool.tags?.includes("FEATURED") && (
+                      <span className="rounded-full border border-[color:var(--accent-hover)] bg-[color:var(--accent)] px-2 py-0.5 text-[10px] font-semibold text-[color:var(--neutral-text)] shadow-[0_10px_24px_rgba(0,0,0,0.18)]">
+                        Featured
+                      </span>
+                    )}
+                    {tool.tags?.includes("NEW") && (
+                      <span className="chip-new rounded-full px-2 py-0.5 text-[10px] font-semibold text-[color:var(--neutral-text)]">
+                        New
+                      </span>
+                    )}
+                  </div>
+
                   <h3 className="mb-2 text-lg font-semibold text-heading">{tool.name}</h3>
                   <p className="mb-6 text-sm text-body">{tool.description}</p>
                   <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.18em] text-accent transition-transform group-hover:translate-x-1">
