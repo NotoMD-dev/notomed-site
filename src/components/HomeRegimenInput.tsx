@@ -39,18 +39,18 @@ export function HomeRegimenInput() {
 
   return (
     <> {/* Replaced outer section and its classes with a fragment */}
-      <div className="flex justify-between items-center gap-3 mb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
         {/* Removed redundant <h3> header */}
-        <div className="flex items-center gap-4 ml-auto">
-          <label className="flex items-center gap-2 text-base font-semibold text-[color:var(--hero-tone-pear-title)] cursor-pointer">
-            <input
-              type="checkbox"
-              className="form-checkbox h-5 w-5 rounded focus:ring-[#c1d1c3] text-[#3f6b53]"
-              checked={opioidNaive}
-              onChange={(e) => setOpioidNaive(e.target.checked)}
-            />
-            Opioid-naïve
-          </label>
+        <label className="flex items-center gap-2 text-base font-semibold text-[color:var(--hero-tone-pear-title)] cursor-pointer">
+          <input
+            type="checkbox"
+            className="form-checkbox h-5 w-5 rounded focus:ring-[#c1d1c3] text-[#3f6b53]"
+            checked={opioidNaive}
+            onChange={(e) => setOpioidNaive(e.target.checked)}
+          />
+          Opioid-naïve
+        </label>
+        <div className="flex items-center gap-2 sm:justify-end w-full sm:w-auto">
           <button
             type="button"
             className={`${buttonStyle} ${opioidNaive
@@ -74,7 +74,7 @@ export function HomeRegimenInput() {
           <div className="min-w-[900px]">
             {/* LABELS */}
             <div
-              className="grid gap-3 text-xs font-semibold text-gray-600 uppercase mb-2 px-1"
+              className="grid gap-3 text-xs font-semibold text-gray-600 uppercase mb-1 px-1"
               style={rowGridStyle}
             >
               <div>Drug</div>
@@ -94,7 +94,7 @@ export function HomeRegimenInput() {
               return (
                 <div
                   key={r.id}
-                  className="grid gap-3 items-start p-2 mb-2 border-b border-gray-100 last:border-b-0"
+                  className="grid gap-3 items-start px-2 py-1.5 mb-1 border-b border-gray-100 last:border-b-0"
                   style={rowGridStyle}
                 >
                   {/* ... Row Content ... (omitted for brevity, it is unchanged) */}
