@@ -9,7 +9,14 @@ import SiteHeader from "@/components/SiteHeader";
 import { GlowCard } from "@/components/cards/GlowCard";
 import { SearchInput } from "@/components/SearchInput";
 import { CONFIG } from "@/config/notomed-config";
-import { filterTools, getLiveTools, FEATURED_TOOL_LIMIT } from "@/lib/tools";
+import type { ToolTag } from "@/config/tools-data";
+import { cn } from "@/lib/cn";
+import {
+  FEATURED_TOOL_LIMIT,
+  filterTools,
+  getLiveTools,
+  isNewTool,
+} from "@/lib/tools";
 
 const LIVE_TOOLS = getLiveTools();
 
@@ -23,13 +30,14 @@ export default function NotoMedLandingPage() {
   const featuredNoteSummarizer = featuredTools.find(
     (tool) => tool.id === "note-summarizer-tool",
   );
-  const listForDisplay = searchTerm
-    ? filterTools(LIVE_TOOLS, { query: searchTerm })
-    : featuredTools.length > 0
-      ? featuredTools
-      : LIVE_TOOLS;
-  const displayedTools = listForDisplay.slice(0, FEATURED_TOOL_LIMIT);
-  const featuredCtaTarget = featuredNoteSummarizer ?? listForDisplay[0];
+  const baseTools = searchTerm ? filterTools(LIVE_TOOLS, { query: searchTerm }) : LIVE_TOOLS;
+  const primaryTool = featuredNoteSummarizer ?? featuredTools[0] ?? baseTools[0];
+  const displayedTools = [
+    primaryTool,
+    ...baseTools.filter((tool) => tool.id !== primaryTool?.id),
+  ]
+    .filter(Boolean)
+    .slice(0, FEATURED_TOOL_LIMIT);
 
   const handleInternalFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -128,29 +136,6 @@ export default function NotoMedLandingPage() {
           </p>
           <p className="text-xs text-muted-strong">All tools built by {CONFIG.creatorName}</p>
 
-          {featuredCtaTarget && (
-            <div className="mx-auto mt-10 max-w-3xl text-left">
-              <GlowCard className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div className="space-y-2 md:max-w-xl">
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.26em] text-muted">
-                    Featured tool
-                  </p>
-                  <h2 className="text-xl font-semibold text-heading md:text-2xl">
-                    {featuredCtaTarget.name}
-                  </h2>
-                  <p className="text-sm text-body md:text-base">{featuredCtaTarget.description}</p>
-                </div>
-
-                <Link
-                  href={featuredCtaTarget.path}
-                  className="btn-primary inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition-colors"
-                >
-                  Open {featuredCtaTarget.name}
-                </Link>
-              </GlowCard>
-            </div>
-          )}
-
           <div className="relative mx-auto mt-8 max-w-2xl px-2 sm:px-0">
             <SearchInput
               id="landing-tool-search"
@@ -169,20 +154,43 @@ export default function NotoMedLandingPage() {
 
         <section id="tools" className="scroll-mt-24">
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-            {displayedTools.map((tool) => (
-              <Link key={tool.id} href={tool.path} className="block focus-visible:outline-none">
-                <GlowCard className="min-h-[230px]" aria-label={`Open ${tool.name}`}>
-                  <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.2em] text-muted-strong">
-                    Tool
-                  </p>
-                  <h3 className="mb-2 text-lg font-semibold text-heading">{tool.name}</h3>
-                  <p className="mb-6 text-sm text-body">{tool.description}</p>
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.18em] text-accent transition-transform group-hover:translate-x-1">
-                    Open Tool →
-                  </span>
-                </GlowCard>
-              </Link>
-            ))}
+            {displayedTools.map((tool) => {
+              const tags = buildTags(tool.tags, tool.createdAt);
+              const isFeatured = tags.includes("FEATURED");
+
+              return (
+                <Link key={tool.id} href={tool.path} className="block focus-visible:outline-none">
+                  <GlowCard
+                    className={cn(
+                      "min-h-[230px]",
+                      isFeatured &&
+                        "border-2 border-[var(--accent)] shadow-[0_28px_80px_rgba(0,0,0,0.6)] ring-2 ring-[var(--accent)]/40",
+                    )}
+                    aria-label={`Open ${tool.name}`}
+                  >
+                    <div className="mb-4 flex items-start justify-between gap-3">
+                      <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-strong">
+                        Tool
+                      </p>
+                      {tags.length > 0 && (
+                        <div className="flex flex-wrap justify-end gap-1.5">
+                          {tags.map((tag) => (
+                            <span key={tag} className={getHeroTagClasses(tag)}>
+                              {tag === "FEATURED" ? "Featured" : tag === "NEW" ? "New" : tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <h3 className="mb-2 text-lg font-semibold text-heading">{tool.name}</h3>
+                    <p className="mb-6 text-sm text-body">{tool.description}</p>
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.18em] text-accent transition-transform group-hover:translate-x-1">
+                      Open Tool →
+                    </span>
+                  </GlowCard>
+                </Link>
+              );
+            })}
 
             <Link href="/tools" className="block focus-visible:outline-none">
               <GlowCard className="flex h-full flex-col justify-between">
@@ -312,4 +320,28 @@ export default function NotoMedLandingPage() {
       </main>
     </div>
   );
+}
+
+function buildTags(tags: ToolTag[] | undefined, createdAt: string): ToolTag[] {
+  const mergedTags: ToolTag[] = [...(tags ?? [])];
+  if (isNewTool(createdAt) && !mergedTags.includes("NEW")) {
+    mergedTags.push("NEW");
+  }
+  return mergedTags;
+}
+
+function getHeroTagClasses(tag: ToolTag) {
+  const base =
+    "shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide";
+
+  switch (tag) {
+    case "FEATURED":
+      return `${base} border border-[var(--accent-hover)] bg-[var(--accent)] text-[var(--neutral-text)] shadow-[0_12px_30px_rgba(0,0,0,0.22)]`;
+    case "NEW":
+      return `${base} chip-new`;
+    case "BETA":
+    case "COMING_SOON":
+    default:
+      return `${base} border border-[var(--pill-border)] bg-[var(--pill-bg)] text-[var(--pill-text)]`;
+  }
 }
