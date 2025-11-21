@@ -13,14 +13,12 @@ import { CitationBar } from "./CitationBar";
 interface NoteSummarizerWorkspaceProps {
   notes: NoteInput[];
   summary: SummaryResult;
-  onBackToInput: () => void;
   onReset: () => void;
 }
 
 export function NoteSummarizerWorkspace({
   notes,
   summary,
-  onBackToInput,
   onReset,
 }: NoteSummarizerWorkspaceProps) {
   const [activeSectionId, setActiveSectionId] = useState<string | null>(
