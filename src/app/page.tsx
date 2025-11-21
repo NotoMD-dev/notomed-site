@@ -19,10 +19,23 @@ export default function NotoMedLandingPage() {
   const [supportLoading, setSupportLoading] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState("");
 
-  const filteredTools = filterTools(LIVE_TOOLS, { query: searchTerm });
-  const displayedTools = searchTerm
-    ? filteredTools
-    : LIVE_TOOLS.slice(0, FEATURED_TOOL_LIMIT);
+  const featuredNoteSummarizer = LIVE_TOOLS.find(
+    (tool) => tool.id === "note-summarizer-tool",
+  );
+  const prioritizedTools = React.useMemo(() => {
+    const remaining = LIVE_TOOLS.filter(
+      (tool) => tool.id !== featuredNoteSummarizer?.id,
+    );
+    const ordered = featuredNoteSummarizer
+      ? [featuredNoteSummarizer, ...remaining]
+      : remaining;
+    return ordered.slice(0, FEATURED_TOOL_LIMIT);
+  }, [featuredNoteSummarizer]);
+
+  const listForDisplay = searchTerm
+    ? filterTools(LIVE_TOOLS, { query: searchTerm })
+    : prioritizedTools;
+  const displayedTools = listForDisplay.slice(0, FEATURED_TOOL_LIMIT);
 
   const handleInternalFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -139,20 +152,37 @@ export default function NotoMedLandingPage() {
 
         <section id="tools" className="scroll-mt-24">
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-            {displayedTools.map((tool) => (
-              <Link key={tool.id} href={tool.path} className="block focus-visible:outline-none">
-                <GlowCard className="min-h-[230px]" aria-label={`Open ${tool.name}`}>
-                  <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.2em] text-muted-strong">
-                    Tool
-                  </p>
-                  <h3 className="mb-2 text-lg font-semibold text-heading">{tool.name}</h3>
-                  <p className="mb-6 text-sm text-body">{tool.description}</p>
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.18em] text-accent transition-transform group-hover:translate-x-1">
-                    Open Tool →
-                  </span>
-                </GlowCard>
-              </Link>
-            ))}
+            {displayedTools.map((tool) => {
+              const isFeatured = tool.tags?.includes("FEATURED");
+              return (
+                <Link key={tool.id} href={tool.path} className="block focus-visible:outline-none">
+                  <GlowCard
+                    className={`min-h-[230px] ${
+                      isFeatured
+                        ? "ring-2 ring-[color:var(--accent)]/70 shadow-[0_16px_48px_rgba(0,0,0,0.28)]"
+                        : ""
+                    }`}
+                    aria-label={`Open ${tool.name}`}
+                  >
+                    <div className="mb-2 flex items-center justify-between gap-3">
+                      <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-strong">
+                        Tool
+                      </p>
+                      {isFeatured && (
+                        <span className="pill-outline inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-[var(--accent)]">
+                          Featured
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="mb-2 text-lg font-semibold text-heading">{tool.name}</h3>
+                    <p className="mb-6 text-sm text-body">{tool.description}</p>
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.18em] text-accent transition-transform group-hover:translate-x-1">
+                      Open Tool →
+                    </span>
+                  </GlowCard>
+                </Link>
+              );
+            })}
 
             <Link href="/tools" className="block focus-visible:outline-none">
               <GlowCard className="flex h-full flex-col justify-between">
