@@ -208,12 +208,10 @@ export function NoteSummarizerInput({
         <p className="mt-2 text-[0.7rem] md:text-xs text-amber-900/90 dark:text-amber-100/90">
           <span className="opacity-80">Read more:&nbsp;</span>
           <Link
-            href="/privacy/patient-privacy-phi-policy.pdf"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="/privacy"
             className="underline underline-offset-2 font-medium"
           >
-            Patient Privacy &amp; PHI De-Identification Policy (PDF)
+            Patient Privacy &amp; PHI De-Identification Policy
           </Link>
         </p>
       </div>
