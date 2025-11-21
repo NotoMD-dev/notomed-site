@@ -7,7 +7,10 @@ import type {
   QARequestBody,
 } from "@/lib/note-summarizer/types";
 
-import { scrubNotes, scrubObject } from "@/lib/note-summarizer/phi";
+import {
+  containsLikelyPHI,
+  notesContainLikelyPHI,
+} from "@/lib/note-summarizer/phi";
 import {
   summarizeNotesWithLLM,
   answerQuestionWithLLM,
@@ -58,17 +61,25 @@ export async function POST(req: NextRequest) {
 
   let bodyUnknown: unknown;
   try {
-    const raw = await req.json();
-    bodyUnknown = scrubObject(raw);
+    bodyUnknown = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
   /* ---------- SUMMARY ---------- */
   if (isSummaryBody(bodyUnknown)) {
+    if (notesContainLikelyPHI(bodyUnknown.notes)) {
+      return NextResponse.json(
+        {
+          error:
+            "Request appears to contain patient identifiers. Please de-identify notes in your browser before submitting.",
+        },
+        { status: 400 },
+      );
+    }
+
     try {
-      const redactedNotes = scrubNotes(bodyUnknown.notes);
-      const summary = await summarizeNotesWithLLM(redactedNotes);
+      const summary = await summarizeNotesWithLLM(bodyUnknown.notes);
       return NextResponse.json(summary, { status: 200 });
     } catch (error) {
       return NextResponse.json(
@@ -89,11 +100,19 @@ export async function POST(req: NextRequest) {
     };
 
     try {
-      const redactedNotes = scrubNotes(body.notes);
+      if (notesContainLikelyPHI(body.notes)) {
+        return NextResponse.json(
+          {
+            error:
+              "Request appears to contain patient identifiers. Please de-identify notes in your browser before submitting.",
+          },
+          { status: 400 },
+        );
+      }
 
       const active =
         body.activeSourceId &&
-        redactedNotes.find((n) => n.id === body.activeSourceId);
+        body.notes.find((n) => n.id === body.activeSourceId);
 
       const scopeLabel = active ? active.title : undefined;
 
@@ -109,13 +128,27 @@ export async function POST(req: NextRequest) {
               .join("\n")
           : "";
 
+      if (containsLikelyPHI(body.question) || containsLikelyPHI(historyText)) {
+        return NextResponse.json(
+          {
+            answer:
+              "This information was removed during client-side de-identification before processing.",
+            citations: [
+              "Protected health information (PHI) is intentionally scrubbed and deleted.",
+            ],
+            snippet: null,
+          },
+          { status: 200 },
+        );
+      }
+
       const enrichedQuestion =
         historyText.length > 0
           ? `Prior conversation:\n${historyText}\n\nCurrent question:\n${body.question}`
           : body.question;
 
       const qa = await answerQuestionWithLLM({
-        notes: active ? [active] : redactedNotes,
+        notes: active ? [active] : body.notes,
         question: enrichedQuestion,
         activeSourceLabel: scopeLabel,
       });
