@@ -129,10 +129,13 @@ export function NoteSummarizerInput({
   function addNote() {
     setNotes((prev) => {
       const id = `note-${prev.length + 1}`;
-      const nextNotes = [
-        ...prev,
-        { id, title: `Note ${prev.length + 1}`, text: "", kind: "unknown" },
-      ];
+      const newNote: NoteInput = {
+        id,
+        title: `Note ${prev.length + 1}`,
+        text: "",
+        kind: "unknown",
+      };
+      const nextNotes = [...prev, newNote];
       setActiveNoteId(id);
       return nextNotes;
     });
