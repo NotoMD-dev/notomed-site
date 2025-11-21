@@ -204,6 +204,10 @@ ${n.text}
 }
 
 // Normalizes text for comparison (strips punctuation/whitespace, lowers case)
+function escapeRegExp(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
 function parseSummaryText(raw: string): SummaryResult {
   const sectionOrder: {
     id: SummaryResult["sections"][number]["id"];
@@ -225,9 +229,14 @@ function parseSummaryText(raw: string): SummaryResult {
 
   for (let i = 0; i < sectionOrder.length; i++) {
     const { id, title } = sectionOrder[i];
-    const heading = `# ${title}`;
-    const start = raw.indexOf(heading);
-    if (start === -1) {
+    const nextTitle = sectionOrder[i + 1]?.title;
+    const headingPattern = new RegExp(
+      `^#\s*${escapeRegExp(title)}\s*$`,
+      "im",
+    );
+    const match = headingPattern.exec(raw);
+
+    if (!match) {
       sections.push({
         id,
         title,
@@ -235,15 +244,19 @@ function parseSummaryText(raw: string): SummaryResult {
       });
       continue;
     }
-    const afterHeading = start + heading.length;
-    const end =
-      i + 1 < sectionOrder.length
-        ? raw.indexOf(`# ${sectionOrder[i + 1].title}`, afterHeading)
-        : raw.length;
+
+    const startIndex = match.index + match[0].length;
+    const nextPattern = nextTitle
+      ? new RegExp(`^#\s*${escapeRegExp(nextTitle)}\s*$`, "im")
+      : null;
+    const endMatch = nextPattern?.exec(raw.slice(startIndex));
+    const endIndex = endMatch ? startIndex + endMatch.index : raw.length;
+
     const content = raw
-      .slice(afterHeading, end === -1 ? raw.length : end)
+      .slice(startIndex, endIndex)
       .trim()
       .replace(/^\s+|\s+$/g, "");
+
     sections.push({
       id,
       title,
