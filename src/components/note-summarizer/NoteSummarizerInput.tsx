@@ -139,11 +139,10 @@ export function NoteSummarizerInput({
 
       const safeNotes = scrubNotesClientSide(withRedacted);
 
-      const resp = await fetch("/api/note-summarizer", {
+      const resp = await fetch("/api/note-summarizer/summary", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          mode: "summary",
           notes: safeNotes,
         }),
       });
@@ -151,11 +150,13 @@ export function NoteSummarizerInput({
       const json = (await resp.json()) as {
         sections?: SummaryResult["sections"];
         rawText?: string;
+        error?: string;
       };
 
-      if (!Array.isArray(json.sections) || json.sections.length === 0) {
+      if (!resp.ok || !Array.isArray(json.sections) || json.sections.length === 0) {
         throw new Error(
-          "Could not build structured summary from notes. Please try again.",
+          json.error ??
+            "Could not build structured summary from notes. Please try again.",
         );
       }
 

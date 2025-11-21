@@ -1,10 +1,10 @@
-// src/lib/note-summarizer/llm.ts
+import "server-only";
+
 import type {
   NoteInput,
-  SummaryResult,
-  QAResult,
   SummaryResponseBody,
-} from "./types";
+  QAResult,
+} from "../types";
 
 /* ---------------- House styles ---------------- */
 
@@ -59,7 +59,6 @@ Rules:
 - Do NOT output JSON. Output plain text only.
 `.trim();
 
-// ⬇️ Replace your existing QA_STYLE with this
 const QA_STYLE = `
 You are a careful clinical note summarization assistant.
 
@@ -118,7 +117,7 @@ Safety & Privacy rules:
 
 VERY IMPORTANT – SOURCE TRACKING:
 - You MUST track which note(s) you use as evidence.
-- Each note appears as: <note id="note-1" title="..."> ... </note>.
+- Each note appears as: <note id="..." title="..."> ... </note>.
 - When you quote evidence in the snippet, you MUST know which note id(s)
   that evidence came from.
 
@@ -141,9 +140,6 @@ Rules for "source_ids":
 Do NOT wrap the JSON in backticks.
 Do NOT add any explanation before or after the JSON.
 `.trim();
-
-
-/* ---------------- Shared OpenAI caller ---------------- */
 
 async function callOpenAI({
   system,
@@ -181,8 +177,6 @@ async function callOpenAI({
   return content;
 }
 
-/* ---------------- Helpers ---------------- */
-
 function notesToText(notes: NoteInput[]): string {
   return notes
     .map(
@@ -203,14 +197,9 @@ ${n.text}
     .join("\n\n");
 }
 
-// Normalizes text for comparison (strips punctuation/whitespace, lowers case)
-function normalizeForMatch(str: string): string {
-  return str.toLowerCase().replace(/[\s\p{P}]+/gu, "");
-}
-
-function parseSummaryText(raw: string): SummaryResult {
+function parseSummaryText(raw: string): SummaryResponseBody {
   const sectionOrder: {
-    id: SummaryResult["sections"][number]["id"];
+    id: SummaryResponseBody["sections"][number]["id"];
     title: string;
   }[] = [
     { id: "chiefComplaint", title: "Chief Complaint" },
@@ -225,7 +214,7 @@ function parseSummaryText(raw: string): SummaryResult {
     { id: "changesBetweenNotes", title: "Changes Between Notes" },
   ];
 
-  const sections: SummaryResult["sections"] = [];
+  const sections: SummaryResponseBody["sections"] = [];
 
   for (let i = 0; i < sectionOrder.length; i++) {
     const { id, title } = sectionOrder[i];
@@ -299,8 +288,6 @@ function isPHIQuestion(q: string): boolean {
   return all.some((frag) => lower.includes(frag));
 }
 
-/* ---------------- Public API ---------------- */
-
 export async function summarizeNotesWithLLM(
   notes: NoteInput[],
 ): Promise<SummaryResponseBody> {
@@ -334,7 +321,6 @@ export async function answerQuestionWithLLM(args: {
 }): Promise<QAResult> {
   const { notes, question, activeSourceLabel } = args;
 
-  // PHI safety shortcut
   if (isPHIQuestion(question)) {
     return {
       answer:
@@ -346,7 +332,6 @@ export async function answerQuestionWithLLM(args: {
     };
   }
 
-  // Wrap notes with IDs for the model
   const notesText = qaNotesToTaggedText(notes);
 
   const user = `
@@ -373,16 +358,20 @@ ${activeSourceLabel ?? "Use all notes; if multiple notes conflict, describe the 
     user,
   });
 
-  // Try to extract a JSON object from the model's response
-  let parsed: any = null;
+  type ModelQAResponse = {
+    answer?: unknown;
+    snippet?: unknown;
+    source_ids?: unknown;
+  };
+
+  let parsed: ModelQAResponse | null = null;
   try {
     const start = raw.indexOf("{");
     const end = raw.lastIndexOf("}");
     const jsonText =
       start !== -1 && end !== -1 && end > start ? raw.slice(start, end + 1) : raw;
-    parsed = JSON.parse(jsonText);
+    parsed = JSON.parse(jsonText) as ModelQAResponse;
   } catch {
-    // Hard fallback: treat the whole thing as a plain-text answer
     return {
       answer: raw.trim(),
       citations: ["Answer grounded in uploaded notes."],
@@ -391,20 +380,21 @@ ${activeSourceLabel ?? "Use all notes; if multiple notes conflict, describe the 
   }
 
   const answer =
-    typeof parsed.answer === "string" && parsed.answer.trim().length > 0
+    parsed && typeof parsed.answer === "string" && parsed.answer.trim().length > 0
       ? parsed.answer.trim()
       : raw.trim();
 
   const snippet =
-    typeof parsed.snippet === "string" && parsed.snippet.trim().length > 0
+    parsed && typeof parsed.snippet === "string" && parsed.snippet.trim().length > 0
       ? parsed.snippet.trim()
       : "";
 
-  const candidateIds: string[] = Array.isArray(parsed.source_ids)
-    ? parsed.source_ids.filter(
-        (id: unknown) => typeof id === "string" && id.trim().length > 0,
-      )
-    : [];
+  const candidateIds: string[] =
+    parsed && Array.isArray(parsed.source_ids)
+      ? parsed.source_ids.filter(
+          (id: unknown) => typeof id === "string" && id.trim().length > 0,
+        )
+      : [];
 
   const validNoteIds = new Set(notes.map((n) => n.id));
   const filteredIds = candidateIds.filter((id) => validNoteIds.has(id));

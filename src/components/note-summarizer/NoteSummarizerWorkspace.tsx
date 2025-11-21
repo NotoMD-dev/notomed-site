@@ -20,7 +20,7 @@ interface NoteSummarizerWorkspaceProps {
 export function NoteSummarizerWorkspace({
   notes,
   summary,
-  onBackToInput,
+  onBackToInput: _onBackToInput,
   onReset,
 }: NoteSummarizerWorkspaceProps) {
   const [activeSectionId, setActiveSectionId] = useState<string | null>(
@@ -28,6 +28,8 @@ export function NoteSummarizerWorkspace({
   );
   const [citations, setCitations] = useState<string[] | null>(null);
   const [snippet, setSnippet] = useState<string | null>(null); // ⭐ NEW
+
+  void _onBackToInput;
 
   return (
     <div className="space-y-6">
