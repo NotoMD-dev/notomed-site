@@ -74,7 +74,7 @@ export function HomeRegimenInput() {
           <div className="min-w-[900px]">
             {/* LABELS */}
             <div
-              className="grid gap-3 text-xs font-semibold text-gray-600 uppercase mb-2 px-1"
+              className="grid gap-3 text-xs font-semibold text-gray-600 uppercase mb-1 px-1"
               style={rowGridStyle}
             >
               <div>Drug</div>
@@ -94,7 +94,7 @@ export function HomeRegimenInput() {
               return (
                 <div
                   key={r.id}
-                  className="grid gap-3 items-start p-2 mb-2 border-b border-gray-100 last:border-b-0"
+                  className="grid gap-3 items-start px-2 py-1.5 mb-1 border-b border-gray-100 last:border-b-0"
                   style={rowGridStyle}
                 >
                   {/* ... Row Content ... (omitted for brevity, it is unchanged) */}
