@@ -53,6 +53,11 @@ export interface QAResult {
 
 export type NoteSummarizerMode = "summary" | "qa";
 
+export interface ChatHistoryMessage {
+  role: "user" | "assistant";
+  text: string;
+}
+
 export interface SummaryRequestBody {
   mode: "summary";
   notes: NoteInput[];
@@ -63,6 +68,7 @@ export interface QARequestBody {
   notes: NoteInput[];
   question: string;
   activeSourceId?: string; // "all" or one of notes[].id
+  history?: ChatHistoryMessage[];
 }
 
 export type NoteSummarizerRequestBody = SummaryRequestBody | QARequestBody;
