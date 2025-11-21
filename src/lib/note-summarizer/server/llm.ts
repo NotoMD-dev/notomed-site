@@ -1,10 +1,12 @@
-// src/lib/note-summarizer/llm.ts
+// src/lib/note-summarizer/server/llm.ts
+import "server-only";
+
 import type {
   NoteInput,
   SummaryResult,
   QAResult,
   SummaryResponseBody,
-} from "./types";
+} from "../types";
 
 /* ---------------- House styles ---------------- */
 
@@ -203,10 +205,11 @@ ${n.text}
     .join("\n\n");
 }
 
-// Normalizes text for comparison (strips punctuation/whitespace, lowers case)
-function normalizeForMatch(str: string): string {
-  return str.toLowerCase().replace(/[\s\p{P}]+/gu, "");
-}
+type ModelQAJson = {
+  answer?: unknown;
+  snippet?: unknown;
+  source_ids?: unknown;
+};
 
 function parseSummaryText(raw: string): SummaryResult {
   const sectionOrder: {
@@ -374,13 +377,13 @@ ${activeSourceLabel ?? "Use all notes; if multiple notes conflict, describe the 
   });
 
   // Try to extract a JSON object from the model's response
-  let parsed: any = null;
+  let parsed: ModelQAJson | null = null;
   try {
     const start = raw.indexOf("{");
     const end = raw.lastIndexOf("}");
     const jsonText =
       start !== -1 && end !== -1 && end > start ? raw.slice(start, end + 1) : raw;
-    parsed = JSON.parse(jsonText);
+    parsed = JSON.parse(jsonText) as ModelQAJson;
   } catch {
     // Hard fallback: treat the whole thing as a plain-text answer
     return {

@@ -23,6 +23,8 @@ export function NoteSummarizerWorkspace({
   onBackToInput,
   onReset,
 }: NoteSummarizerWorkspaceProps) {
+  // Retained for compatibility with the parent flow; UI navigation currently relies on reset.
+  void onBackToInput;
   const [activeSectionId, setActiveSectionId] = useState<string | null>(
     summary.sections[0]?.id ?? null,
   );
