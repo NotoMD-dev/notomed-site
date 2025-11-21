@@ -204,10 +204,6 @@ ${n.text}
 }
 
 // Normalizes text for comparison (strips punctuation/whitespace, lowers case)
-function normalizeForMatch(str: string): string {
-  return str.toLowerCase().replace(/[\s\p{P}]+/gu, "");
-}
-
 function parseSummaryText(raw: string): SummaryResult {
   const sectionOrder: {
     id: SummaryResult["sections"][number]["id"];
@@ -301,6 +297,13 @@ function isPHIQuestion(q: string): boolean {
 
 /* ---------------- Public API ---------------- */
 
+type ParsedQAResponse = {
+  answer?: unknown;
+  snippet?: unknown;
+  source_ids?: unknown;
+  citations?: unknown;
+};
+
 export async function summarizeNotesWithLLM(
   notes: NoteInput[],
 ): Promise<SummaryResponseBody> {
@@ -374,13 +377,13 @@ ${activeSourceLabel ?? "Use all notes; if multiple notes conflict, describe the 
   });
 
   // Try to extract a JSON object from the model's response
-  let parsed: any = null;
+  let parsed: unknown = null;
   try {
     const start = raw.indexOf("{");
     const end = raw.lastIndexOf("}");
     const jsonText =
       start !== -1 && end !== -1 && end > start ? raw.slice(start, end + 1) : raw;
-    parsed = JSON.parse(jsonText);
+    parsed = JSON.parse(jsonText) as ParsedQAResponse;
   } catch {
     // Hard fallback: treat the whole thing as a plain-text answer
     return {
@@ -390,18 +393,21 @@ ${activeSourceLabel ?? "Use all notes; if multiple notes conflict, describe the 
     };
   }
 
+  const parsedObject: ParsedQAResponse =
+    parsed && typeof parsed === "object" ? (parsed as ParsedQAResponse) : {};
+
   const answer =
-    typeof parsed.answer === "string" && parsed.answer.trim().length > 0
-      ? parsed.answer.trim()
+    typeof parsedObject.answer === "string" && parsedObject.answer.trim().length > 0
+      ? parsedObject.answer.trim()
       : raw.trim();
 
   const snippet =
-    typeof parsed.snippet === "string" && parsed.snippet.trim().length > 0
-      ? parsed.snippet.trim()
+    typeof parsedObject.snippet === "string" && parsedObject.snippet.trim().length > 0
+      ? parsedObject.snippet.trim()
       : "";
 
-  const candidateIds: string[] = Array.isArray(parsed.source_ids)
-    ? parsed.source_ids.filter(
+  const candidateIds: string[] = Array.isArray(parsedObject.source_ids)
+    ? parsedObject.source_ids.filter(
         (id: unknown) => typeof id === "string" && id.trim().length > 0,
       )
     : [];
