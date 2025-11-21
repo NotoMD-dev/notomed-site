@@ -5,9 +5,14 @@ import { RateLimiterMemory } from "rate-limiter-flexible";
 import type {
   SummaryRequestBody,
   QARequestBody,
+  ChatHistoryMessage,
+  NoteInput,
 } from "@/lib/note-summarizer/types";
 
-import { scrubNotes, scrubObject } from "@/lib/note-summarizer/phi";
+import {
+  containsLikelyPHI,
+  notesContainLikelyPHI,
+} from "@/lib/note-summarizer/phi";
 import {
   summarizeNotesWithLLM,
   answerQuestionWithLLM,
@@ -17,31 +22,55 @@ import {
 const limiter = new RateLimiterMemory({ points: 20, duration: 60 });
 
 /* ---------------- Type guards ---------------- */
+function isNoteInput(note: unknown): note is NoteInput {
+  if (typeof note !== "object" || note === null) return false;
+  const n = note as { id?: unknown; title?: unknown; text?: unknown };
+  return (
+    typeof n.id === "string" &&
+    n.id.trim().length > 0 &&
+    typeof n.title === "string" &&
+    typeof n.text === "string"
+  );
+}
+
+function isHistoryMessage(message: unknown): message is ChatHistoryMessage {
+  if (typeof message !== "object" || message === null) return false;
+  const m = message as { role?: unknown; text?: unknown };
+  return (
+    (m.role === "user" || m.role === "assistant") &&
+    typeof m.text === "string" &&
+    m.text.trim().length > 0
+  );
+}
+
 function isSummaryBody(body: unknown): body is SummaryRequestBody {
   if (typeof body !== "object" || body === null) return false;
   const b = body as { mode?: unknown; notes?: unknown };
   return (
     b.mode === "summary" &&
     Array.isArray(b.notes) &&
-    b.notes.every((n): n is SummaryRequestBody["notes"][number] => {
-      const note = n as { text?: unknown };
-      return typeof note?.text === "string";
-    })
+    b.notes.every(isNoteInput)
   );
 }
 
 function isQABody(body: unknown): body is QARequestBody {
   if (typeof body !== "object" || body === null) return false;
-  const b = body as { mode?: unknown; notes?: unknown; question?: unknown };
+  const b = body as {
+    mode?: unknown;
+    notes?: unknown;
+    question?: unknown;
+    activeSourceId?: unknown;
+    history?: unknown;
+  };
   return (
     b.mode === "qa" &&
     typeof b.question === "string" &&
     b.question.trim().length > 0 &&
+    (b.activeSourceId === undefined || typeof b.activeSourceId === "string") &&
     Array.isArray(b.notes) &&
-    b.notes.every((n): n is QARequestBody["notes"][number] => {
-      const note = n as { text?: unknown };
-      return typeof note?.text === "string";
-    })
+    b.notes.every(isNoteInput) &&
+    (b.history === undefined ||
+      (Array.isArray(b.history) && b.history.every(isHistoryMessage)))
   );
 }
 
@@ -58,17 +87,25 @@ export async function POST(req: NextRequest) {
 
   let bodyUnknown: unknown;
   try {
-    const raw = await req.json();
-    bodyUnknown = scrubObject(raw);
+    bodyUnknown = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
   /* ---------- SUMMARY ---------- */
   if (isSummaryBody(bodyUnknown)) {
+    if (notesContainLikelyPHI(bodyUnknown.notes)) {
+      return NextResponse.json(
+        {
+          error:
+            "Request appears to contain patient identifiers. Please de-identify the note in your browser before submitting.",
+        },
+        { status: 400 },
+      );
+    }
+
     try {
-      const redactedNotes = scrubNotes(bodyUnknown.notes);
-      const summary = await summarizeNotesWithLLM(redactedNotes);
+      const summary = await summarizeNotesWithLLM(bodyUnknown.notes);
       return NextResponse.json(summary, { status: 200 });
     } catch (error) {
       return NextResponse.json(
@@ -83,48 +120,46 @@ export async function POST(req: NextRequest) {
 
   /* ---------- Q&A ---------- */
   if (isQABody(bodyUnknown)) {
-    const body = bodyUnknown as QARequestBody & {
-      history?: { role: "user" | "assistant"; text: string }[];
-      activeSourceId?: string | null;
-    };
+    const body = bodyUnknown as QARequestBody;
+
+    if (notesContainLikelyPHI(body.notes)) {
+      return NextResponse.json(
+        {
+          error:
+            "Request appears to contain patient identifiers. Please de-identify the note in your browser before submitting.",
+        },
+        { status: 400 },
+      );
+    }
+
+    if (containsLikelyPHI(body.question)) {
+      return NextResponse.json(
+        {
+          answer:
+            "This information was removed during client-side de-identification before processing.",
+          citations: [
+            "Protected health information (PHI) is intentionally scrubbed and deleted.",
+          ],
+          snippet:
+            "Protected health information (PHI) is intentionally scrubbed and deleted.",
+        },
+        { status: 200 },
+      );
+    }
 
     try {
-      const redactedNotes = scrubNotes(body.notes);
-
-      const active =
-        body.activeSourceId &&
-        redactedNotes.find((n) => n.id === body.activeSourceId);
-
-      const scopeLabel = active ? active.title : undefined;
-
-      const history = Array.isArray(body.history) ? body.history.slice(-6) : [];
-
-      const historyText =
-        history.length > 0
-          ? history
-              .map(
-                (m) =>
-                  `${m.role === "user" ? "User" : "Assistant"}: ${m.text}`,
-              )
-              .join("\n")
-          : "";
-
-      const enrichedQuestion =
-        historyText.length > 0
-          ? `Prior conversation:\n${historyText}\n\nCurrent question:\n${body.question}`
-          : body.question;
-
       const qa = await answerQuestionWithLLM({
-        notes: active ? [active] : redactedNotes,
-        question: enrichedQuestion,
-        activeSourceLabel: scopeLabel,
+        notes: body.notes,
+        question: body.question,
+        activeSourceId: body.activeSourceId,
+        history: body.history,
       });
 
       return NextResponse.json(
         {
           answer: qa.answer,
           citations: qa.citations,
-          snippet: qa.snippet ?? null,   // ⭐ NEW
+          snippet: qa.snippet ?? null,
         },
         { status: 200 },
       );

@@ -1,107 +1,63 @@
 import type { NoteInput } from "./types";
 
 /**
- * Shallow key scrub (like /api/ai-plan).
- * This removes obviously sensitive fields from top-level JSON objects
- * (e.g., name, dob) before your handlers process them.
+ * Light PHI heuristics for server-side validation.
+ *
+ * These helpers are intentionally conservative: they only detect obvious
+ * identifiers or PHI-seeking questions so the backend can reject risky
+ * requests without attempting to scrub or mutate the text.
  */
-export function scrubObject<T>(obj: T): T {
-  const banned = new Set([
-    "name",
-    "fullName",
-    "firstName",
-    "lastName",
-    "dob",
-    "dateOfBirth",
-    "mrn",
-    "ssn",
-    "address",
-    "phone",
-    "email",
-    "accountNumber",
-  ]);
+const HARD_IDENTIFIER_PATTERNS: RegExp[] = [
+  /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i, // email
+  /\bhttps?:\/\/[^\s]+/i, // URLs
+  /(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/, // phone/fax
+  /\b\d{3}-\d{2}-\d{4}\b/, // SSN-like
+  /\b(?:MRN|Med(?:ical)?\s*Record|Chart\s*Number|Account\s*Number)\s*[:#]?[ \t]*[A-Za-z0-9-]+\b/i, // MRN labels
+  /\b\d{7,10}\b/, // bare IDs
+  /\b(?:DOB|Date of Birth|Birthdate)\b[^\n]*\d{2,4}/i, // DOB lines with digits
+  /\b\d{1,5}\s+[A-Za-z0-9.\-]+\s+(?:St|Street|Ave|Avenue|Rd|Road|Blvd|Boulevard|Dr|Drive|Ln|Lane|Ct|Court|Way|Terrace|Ter|Place|Pl|Circle|Cir|Hwy|Highway)\b/i, // street addresses
+];
 
-  return JSON.parse(
-    JSON.stringify(obj, (k, v) => (banned.has(k) ? undefined : v)),
-  ) as T;
+const PHI_REQUEST_KEYWORDS = [
+  "patient's name",
+  "patients name",
+  "full name",
+  "first name",
+  "last name",
+  "mrn",
+  "medical record number",
+  "account number",
+  "social security",
+  "ssn",
+  "date of birth",
+  "dob",
+  "phone number",
+  "telephone",
+  "email address",
+  "home address",
+  "street address",
+  "where do they live",
+];
+
+export function containsLikelyPHI(text: string | undefined | null): boolean {
+  if (!text) return false;
+  const trimmed = text.trim();
+  if (!trimmed) return false;
+
+  for (const pattern of HARD_IDENTIFIER_PATTERNS) {
+    if (pattern.test(trimmed)) return true;
+  }
+
+  const lower = trimmed.toLowerCase();
+  const looksLikeQuestion = /\?|^\s*(what|who|where|when|how)\b/i.test(trimmed);
+
+  return looksLikeQuestion
+    ? PHI_REQUEST_KEYWORDS.some((frag) => lower.includes(frag))
+    : false;
 }
 
-/**
- * Server-side text-level PHI scrubber.
- *
- * IMPORTANT:
- * - This is now a *lightweight safety net*.
- * - It only removes hard identifiers (emails, phones, MRN/ID labels,
- *   SSN-like patterns, DOB lines, addresses, facility names).
- * - It does NOT touch:
- *    - patient or provider names,
- *    - generic clinical dates or date ranges,
- *    - core clinical content.
- *
- * The main, opinionated de-identification logic (patient names, etc.)
- * now lives in the client-side scrubber: clientPhi.ts.
- */
-export function scrubText(text: string): string {
-  if (!text) return text;
-
-  let out = text;
-
-  /* ---------------- Hard identifiers only ---------------- */
-
-  // Emails
-  out = out.replace(
-    /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi,
-    "[REDACTED_EMAIL]",
+export function notesContainLikelyPHI(notes: NoteInput[]): boolean {
+  return notes.some((note) =>
+    containsLikelyPHI(note.text) || containsLikelyPHI(note.title),
   );
-
-  // URLs
-  out = out.replace(
-    /\bhttps?:\/\/[^\s]+/gi,
-    "[REDACTED_URL]",
-  );
-
-  // Phone / fax numbers (US-ish)
-  out = out.replace(
-    /(?:\+?1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g,
-    "[REDACTED_PHONE]",
-  );
-
-  // SSN-like: 123-45-6789
-  out = out.replace(/\b\d{3}-\d{2}-\d{4}\b/g, "[REDACTED_ID]",);
-
-  // MRN / account / chart labels with values
-  out = out.replace(
-    /\b(?:MRN|Med(?:ical)?\s*Record|Chart\s*Number|Account\s*Number)\s*[:#]?[ \t]*[A-Za-z0-9-]+\b/gi,
-    "[REDACTED_ID]",
-  );
-
-  // Bare 7–10 digit IDs (often MRN / account)
-  out = out.replace(/\b\d{7,10}\b/g, "[REDACTED_ID]");
-
-  // DOB lines (but NOT all dates elsewhere)
-  out = out.replace(
-    /\b(?:DOB|Date of Birth|Birthdate)\b[^\n]*/gi,
-    "[REDACTED_DOB_LINE]",
-  );
-
-  // Simple US-style addresses "123 Main St", "2500 Wilshire Blvd"
-  out = out.replace(
-    /\b\d{1,5}\s+[A-Za-z0-9.\-]+(?:\s+(?:St|Street|Ave|Avenue|Rd|Road|Blvd|Boulevard|Dr|Drive|Ln|Lane|Ct|Court|Way|Terrace|Ter|Place|Pl|Circle|Cir|Hwy|Highway))\.?\b/gi,
-    "[REDACTED_ADDRESS]",
-  );
-
-
-  // NOTE: We deliberately DO NOT scrub generic dates or names here.
-  // Clinical dates (admission ranges, surgery dates, imaging dates) and
-  // provider/patient names are handled at the client level.
-
-  return out;
-}
-
-export function scrubNotes(notes: NoteInput[]): NoteInput[] {
-  return notes.map((note) => ({
-    ...note,
-    text: scrubText(note.text ?? ""),
-    title: scrubText(note.title ?? ""),
-  }));
 }
