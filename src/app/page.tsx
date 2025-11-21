@@ -9,7 +9,14 @@ import SiteHeader from "@/components/SiteHeader";
 import { GlowCard } from "@/components/cards/GlowCard";
 import { SearchInput } from "@/components/SearchInput";
 import { CONFIG } from "@/config/notomed-config";
-import { filterTools, getLiveTools, FEATURED_TOOL_LIMIT } from "@/lib/tools";
+import type { ToolTag } from "@/config/tools-data";
+import { cn } from "@/lib/cn";
+import {
+  FEATURED_TOOL_LIMIT,
+  filterTools,
+  getLiveTools,
+  isNewTool,
+} from "@/lib/tools";
 
 const LIVE_TOOLS = getLiveTools();
 
@@ -19,10 +26,18 @@ export default function NotoMedLandingPage() {
   const [supportLoading, setSupportLoading] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState("");
 
-  const filteredTools = filterTools(LIVE_TOOLS, { query: searchTerm });
-  const displayedTools = searchTerm
-    ? filteredTools
-    : LIVE_TOOLS.slice(0, FEATURED_TOOL_LIMIT);
+  const featuredTools = LIVE_TOOLS.filter((tool) => tool.tags?.includes("FEATURED"));
+  const featuredNoteSummarizer = featuredTools.find(
+    (tool) => tool.id === "note-summarizer-tool",
+  );
+  const baseTools = searchTerm ? filterTools(LIVE_TOOLS, { query: searchTerm }) : LIVE_TOOLS;
+  const primaryTool = featuredNoteSummarizer ?? featuredTools[0] ?? baseTools[0];
+  const displayedTools = [
+    primaryTool,
+    ...baseTools.filter((tool) => tool.id !== primaryTool?.id),
+  ]
+    .filter(Boolean)
+    .slice(0, FEATURED_TOOL_LIMIT);
 
   const handleInternalFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -139,20 +154,44 @@ export default function NotoMedLandingPage() {
 
         <section id="tools" className="scroll-mt-24">
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-            {displayedTools.map((tool) => (
-              <Link key={tool.id} href={tool.path} className="block focus-visible:outline-none">
-                <GlowCard className="min-h-[230px]" aria-label={`Open ${tool.name}`}>
-                  <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.2em] text-muted-strong">
-                    Tool
-                  </p>
-                  <h3 className="mb-2 text-lg font-semibold text-heading">{tool.name}</h3>
-                  <p className="mb-6 text-sm text-body">{tool.description}</p>
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.18em] text-accent transition-transform group-hover:translate-x-1">
-                    Open Tool →
-                  </span>
-                </GlowCard>
-              </Link>
-            ))}
+            {displayedTools.map((tool) => {
+              const tags = buildTags(tool.tags, tool.createdAt);
+              const isFeatured = tags.includes("FEATURED");
+
+              return (
+                <Link key={tool.id} href={tool.path} className="block focus-visible:outline-none">
+                  <GlowCard
+                    className={cn(
+                      "min-h-[230px]",
+                      isFeatured &&
+                        "featured-card-glow border-2 border-[var(--accent)] shadow-[0_35px_110px_rgba(210,126,88,0.45)] ring-2 ring-[var(--accent)]/50 transition-transform duration-500 hover:-translate-y-2 hover:scale-[1.03]",
+                    )}
+                    contentClassName={isFeatured ? "relative z-[1]" : undefined}
+                    aria-label={`Open ${tool.name}`}
+                  >
+                    <div className="mb-4 flex items-start justify-between gap-3">
+                      <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-strong">
+                        Tool
+                      </p>
+                      {tags.length > 0 && (
+                        <div className="flex flex-wrap justify-end gap-1.5">
+                          {tags.map((tag) => (
+                            <span key={tag} className={getHeroTagClasses(tag)}>
+                              {tag === "FEATURED" ? "Featured" : tag === "NEW" ? "New" : tag}
+                            </span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                    <h3 className="mb-3 text-xl font-semibold text-heading">{tool.name}</h3>
+                    <p className="mb-7 text-base text-body">{tool.description}</p>
+                    <span className="inline-flex items-center gap-1 text-sm font-semibold uppercase tracking-[0.18em] text-accent transition-transform group-hover:translate-x-1">
+                      Open Tool →
+                    </span>
+                  </GlowCard>
+                </Link>
+              );
+            })}
 
             <Link href="/tools" className="block focus-visible:outline-none">
               <GlowCard className="flex h-full flex-col justify-between">
@@ -160,12 +199,12 @@ export default function NotoMedLandingPage() {
                   <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.2em] text-muted-strong">
                     Directory
                   </p>
-                  <h3 className="mb-2 text-lg font-semibold text-heading">Browse all tools</h3>
-                  <p className="mb-6 text-sm text-body">
+                  <h3 className="mb-3 text-xl font-semibold text-heading">Browse all tools</h3>
+                  <p className="mb-7 text-base text-body">
                     See every workflow, including the AI pre-op risk stratifier and upcoming utilities.
                   </p>
                 </div>
-                <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.18em] text-accent transition-transform group-hover:translate-x-1">
+                <span className="inline-flex items-center gap-1 text-sm font-semibold uppercase tracking-[0.18em] text-accent transition-transform group-hover:translate-x-1">
                   Go to tools →
                 </span>
               </GlowCard>
@@ -176,13 +215,13 @@ export default function NotoMedLandingPage() {
               interactive
               className="flex flex-col items-center justify-center text-center"
             >
-              <h3 className="mb-2 text-lg font-semibold text-heading">Missing something?</h3>
-              <p className="mb-4 max-w-xs text-sm text-body">
+              <h3 className="mb-3 text-xl font-semibold text-heading">Missing something?</h3>
+              <p className="mb-6 max-w-xs text-base text-body">
                 Suggest a new workflow, calculator, or builder you wish existed on rounds.
               </p>
               <Link
                 href="#contact"
-                className="inline-flex items-center rounded-full px-4 py-1.5 text-xs font-medium uppercase tracking-[0.18em] btn-outline"
+                className="inline-flex items-center rounded-full px-4 py-2 text-sm font-semibold uppercase tracking-[0.18em] btn-outline"
               >
                 Send Feedback
               </Link>
@@ -282,4 +321,28 @@ export default function NotoMedLandingPage() {
       </main>
     </div>
   );
+}
+
+function buildTags(tags: ToolTag[] | undefined, createdAt: string): ToolTag[] {
+  const mergedTags: ToolTag[] = [...(tags ?? [])];
+  if (isNewTool(createdAt) && !mergedTags.includes("NEW")) {
+    mergedTags.push("NEW");
+  }
+  return mergedTags;
+}
+
+function getHeroTagClasses(tag: ToolTag) {
+  const base =
+    "shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide";
+
+  switch (tag) {
+    case "FEATURED":
+      return `${base} border border-[var(--hero-tone-pear-border)] bg-[var(--hero-tone-pear-surface)] text-[var(--hero-tone-pear-title)] shadow-[0_12px_30px_rgba(0,0,0,0.16)]`;
+    case "NEW":
+      return `${base} chip-new`;
+    case "BETA":
+    case "COMING_SOON":
+    default:
+      return `${base} border border-[var(--pill-border)] bg-[var(--pill-bg)] text-[var(--pill-text)]`;
+  }
 }
