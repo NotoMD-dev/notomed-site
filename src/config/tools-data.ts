@@ -2,7 +2,8 @@
 
 import { CONFIG } from "./notomed-config";
 
-export type ToolCategory = "Analgesia" | "Electrolytes" | "Peri-op" | "Endocrine" | "Documentation"; // ✅ NEW 
+export type ToolTag = "NEW" | "BETA" | "COMING_SOON" | "FEATURED";
+export type ToolCategory = "Analgesia" | "Electrolytes" | "Peri-op" | "Endocrine" | "Documentation"; // ✅ NEW
 
 export interface ToolDefinition {
   id: string;
@@ -12,6 +13,7 @@ export interface ToolDefinition {
   category: ToolCategory;
   createdAt: string;
   lastUpdated: string;
+  tags?: ToolTag[];
 }
 
 export const toolsData: ToolDefinition[] = [
@@ -51,8 +53,8 @@ export const toolsData: ToolDefinition[] = [
     createdAt: "2024-05-01",
     lastUpdated: "2025-11-01",
   },
-   // ✅ NEW NOTE SUMMARIZER TOOL
-   {
+  // ✅ NEW NOTE SUMMARIZER TOOL
+  {
     id: "note-summarizer-tool",
     name: "Note Summarizer",
     description:
@@ -61,5 +63,6 @@ export const toolsData: ToolDefinition[] = [
     category: "Documentation",
     createdAt: "2025-11-18",
     lastUpdated: "2025-11-18",
-   }
+    tags: ["FEATURED"],
+  },
 ];

@@ -9,9 +9,19 @@ import SiteHeader from "@/components/SiteHeader";
 import { GlowCard } from "@/components/cards/GlowCard";
 import { SearchInput } from "@/components/SearchInput";
 import { CONFIG } from "@/config/notomed-config";
-import { filterTools, getLiveTools, FEATURED_TOOL_LIMIT } from "@/lib/tools";
+import {
+  FEATURED_TOOL_LIMIT,
+  filterTools,
+  getFeaturedTools,
+  getLivePath,
+  getLiveTools,
+} from "@/lib/tools";
 
 const LIVE_TOOLS = getLiveTools();
+const FEATURED_TOOLS = getFeaturedTools(LIVE_TOOLS);
+const PRIMARY_FEATURED_TOOL = FEATURED_TOOLS[0];
+const PRIMARY_FEATURED_PATH =
+  PRIMARY_FEATURED_TOOL && getLivePath(PRIMARY_FEATURED_TOOL);
 
 export default function NotoMedLandingPage() {
   const [submitStatus, setSubmitStatus] = React.useState<"idle" | "success" | "error">("idle");
@@ -20,9 +30,17 @@ export default function NotoMedLandingPage() {
   const [searchTerm, setSearchTerm] = React.useState("");
 
   const filteredTools = filterTools(LIVE_TOOLS, { query: searchTerm });
+
+  const prioritizedTools = FEATURED_TOOLS.length
+    ? [
+        ...FEATURED_TOOLS,
+        ...LIVE_TOOLS.filter((tool) => !FEATURED_TOOLS.includes(tool)),
+      ]
+    : LIVE_TOOLS;
+
   const displayedTools = searchTerm
     ? filteredTools
-    : LIVE_TOOLS.slice(0, FEATURED_TOOL_LIMIT);
+    : prioritizedTools.slice(0, FEATURED_TOOL_LIMIT);
 
   const handleInternalFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -121,6 +139,30 @@ export default function NotoMedLandingPage() {
           </p>
           <p className="text-xs text-muted-strong">All tools built by {CONFIG.creatorName}</p>
 
+          {PRIMARY_FEATURED_TOOL && PRIMARY_FEATURED_PATH && (
+            <div className="mx-auto mt-10 max-w-3xl">
+              <GlowCard className="flex flex-col gap-4 text-left sm:flex-row sm:items-center sm:justify-between">
+                <div className="space-y-2">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-strong">
+                    Featured tool
+                  </p>
+                  <h2 className="text-xl font-semibold text-heading sm:text-2xl">
+                    {PRIMARY_FEATURED_TOOL.name}
+                  </h2>
+                  <p className="text-sm text-body sm:text-base">
+                    {PRIMARY_FEATURED_TOOL.description}
+                  </p>
+                </div>
+                <Link
+                  href={PRIMARY_FEATURED_PATH}
+                  className="btn-primary inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold uppercase tracking-[0.14em] shadow-[0_12px_32px_rgba(0,0,0,0.12)] transition-colors"
+                >
+                  Open tool <span aria-hidden>→</span>
+                </Link>
+              </GlowCard>
+            </div>
+          )}
+
           <div className="relative mx-auto mt-8 max-w-2xl px-2 sm:px-0">
             <SearchInput
               id="landing-tool-search"
@@ -139,20 +181,25 @@ export default function NotoMedLandingPage() {
 
         <section id="tools" className="scroll-mt-24">
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
-            {displayedTools.map((tool) => (
-              <Link key={tool.id} href={tool.path} className="block focus-visible:outline-none">
-                <GlowCard className="min-h-[230px]" aria-label={`Open ${tool.name}`}>
-                  <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.2em] text-muted-strong">
-                    Tool
-                  </p>
-                  <h3 className="mb-2 text-lg font-semibold text-heading">{tool.name}</h3>
-                  <p className="mb-6 text-sm text-body">{tool.description}</p>
-                  <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.18em] text-accent transition-transform group-hover:translate-x-1">
-                    Open Tool →
-                  </span>
-                </GlowCard>
-              </Link>
-            ))}
+            {displayedTools.map((tool) => {
+              const livePath = getLivePath(tool);
+              if (!livePath) return null;
+
+              return (
+                <Link key={tool.id} href={livePath} className="block focus-visible:outline-none">
+                  <GlowCard className="min-h-[230px]" aria-label={`Open ${tool.name}`}>
+                    <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.2em] text-muted-strong">
+                      Tool
+                    </p>
+                    <h3 className="mb-2 text-lg font-semibold text-heading">{tool.name}</h3>
+                    <p className="mb-6 text-sm text-body">{tool.description}</p>
+                    <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.18em] text-accent transition-transform group-hover:translate-x-1">
+                      Open Tool →
+                    </span>
+                  </GlowCard>
+                </Link>
+              );
+            })}
 
             <Link href="/tools" className="block focus-visible:outline-none">
               <GlowCard className="flex h-full flex-col justify-between">

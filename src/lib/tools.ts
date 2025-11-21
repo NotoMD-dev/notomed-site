@@ -4,6 +4,7 @@ import { toolsData } from "@/config/tools-data";
 import type {
   ToolCategory,
   ToolDefinition,
+  ToolTag,
 } from "@/config/tools-data";
 
 export type ToolSortKey = "alphabetical" | "recent" | "created";
@@ -41,6 +42,16 @@ export function getLivePath(tool: ToolDefinition): string | null {
 
 export function getLiveTools(data: ToolDefinition[] = toolsData): LiveTool[] {
   return data.filter(isToolLive);
+}
+
+export function hasToolTag(tool: ToolDefinition, tag: ToolTag): boolean {
+  return Boolean(tool.tags?.includes(tag));
+}
+
+export function getFeaturedTools(
+  data: ToolDefinition[] = toolsData,
+): ToolDefinition[] {
+  return data.filter((tool) => hasToolTag(tool, "FEATURED"));
 }
 
 function getDaysAgo(dateString: string): number | null {
