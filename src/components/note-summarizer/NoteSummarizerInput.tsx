@@ -94,9 +94,14 @@ export function NoteSummarizerInput({
   ]);
   const [activeNoteId, setActiveNoteId] = useState("note-1");
   const [mode, setMode] = useState<NoteInputMode>("paste");
+  const [inputSource, setInputSource] = useState<NoteInputMode | null>(null);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [lastAddedNoteId, setLastAddedNoteId] = useState<string | null>(
+    "note-1",
+  );
 
   // Redaction + view state
   const [redactedById, setRedactedById] = useState<Record<string, string>>({});
@@ -106,6 +111,25 @@ export function NoteSummarizerInput({
 
   // Hidden file input for future upload parsing
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const noteCounterRef = useRef(1);
+
+  function changeMode(nextMode: NoteInputMode) {
+    if (nextMode === mode) return;
+    if (
+      inputSource &&
+      inputSource !== nextMode &&
+      notes.some((n) => n.text.trim().length > 0)
+    ) {
+      setError(
+        "You can only use one input method at a time. Clear notes to switch modes.",
+      );
+      return;
+    }
+    setMode(nextMode);
+    if (notes.some((n) => n.text.trim().length > 0)) {
+      setInputSource(nextMode);
+    }
+  }
 
   function updateNoteKind(id: string, kind: NoteKind) {
     setNotes((prev) => prev.map((n) => (n.id === id ? { ...n, kind } : n)));
@@ -115,6 +139,16 @@ export function NoteSummarizerInput({
     notes.find((n) => n.id === activeNoteId) ?? notes[0] ?? null;
 
   function updateNoteText(id: string, text: string) {
+    if (inputSource && inputSource !== mode) {
+      setError(
+        "You can only use one input method at a time. Clear notes to switch modes.",
+      );
+      return;
+    }
+    if (!inputSource) {
+      setInputSource(mode);
+    }
+
     setNotes((prev) => prev.map((n) => (n.id === id ? { ...n, text } : n)));
     // If the user edits the original note, any previous redaction for that
     // note is now stale; drop it so they can re-run auto-redact.
@@ -127,29 +161,24 @@ export function NoteSummarizerInput({
   }
 
   function addNote() {
+    noteCounterRef.current += 1;
+    const id = `note-${noteCounterRef.current}`;
     setNotes((prev) => {
-      const id = `note-${prev.length + 1}`;
-      const newNote: NoteInput = {
-        id,
-        title: `Note ${prev.length + 1}`,
-        text: "",
-        kind: "unknown",
-      };
-      const nextNotes = [...prev, newNote];
-      setActiveNoteId(id);
-      return nextNotes;
+      const next = [
+        ...prev,
+        { id, title: `Note ${noteCounterRef.current}`, text: "", kind: "unknown" } as NoteInput,
+      ];
+      return next.map(
+        (note, idx): NoteInput => ({
+          ...note,
+          title: `Note ${idx + 1}`,
+          kind: note.kind ?? "unknown",
+        }),
+      );
     });
+    setActiveNoteId(id);
+    setLastAddedNoteId(id);
     setViewMode("original");
-  }
-
-  function resetForModeChange(nextMode: NoteInputMode) {
-    if (nextMode === mode) return;
-    setMode(nextMode);
-    setNotes([{ id: "note-1", title: "Note 1", text: "", kind: "admission" }]);
-    setActiveNoteId("note-1");
-    setRedactedById({});
-    setViewMode("original");
-    setShowDiff(false);
   }
 
   async function loadExternalScript(src: string) {
@@ -249,60 +278,94 @@ export function NoteSummarizerInput({
 
   async function handleFilesSelected(files: FileList | null) {
     if (!files || files.length === 0) return;
+    if (
+      inputSource &&
+      inputSource !== "upload" &&
+      notes.some((n) => n.text.trim().length > 0)
+    ) {
+      setError("You can either paste notes or upload files. Clear notes to switch modes.");
+      return;
+    }
+
     setUploading(true);
     setError(null);
-    try {
-      const parsedNotes: NoteInput[] = [];
-      const existing =
-        mode === "upload" ? notes.filter((n) => n.text.trim().length > 0) : [];
+    setUploadError(null);
+    setMode("upload");
 
-      for (const file of Array.from(files)) {
+    const parsedNotes: NoteInput[] = [];
+    const existing = inputSource === "upload" ? notes.filter((n) => n.text.trim().length > 0) : [];
+
+    for (const file of Array.from(files)) {
+      try {
         const extracted = await extractTextFromFile(file);
-        const id = `note-${existing.length + parsedNotes.length + 1}`;
+        noteCounterRef.current += 1;
+        const id = `note-${noteCounterRef.current}`;
         parsedNotes.push({
           id,
-          title: file.name,
+          title: `Note ${noteCounterRef.current}`,
           text: extracted,
           kind: "unknown",
         });
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Unable to read file.";
+        setUploadError(msg);
       }
-
-      const nextNotes = [...existing, ...parsedNotes];
-
-      const scrubbed = scrubNotesClientSide(nextNotes);
-      const redactedMap = scrubbed.reduce<Record<string, string>>((acc, note) => {
-        acc[note.id] = note.text;
-        return acc;
-      }, {});
-
-      setNotes(nextNotes);
-      setRedactedById(redactedMap);
-      const latestId = nextNotes[nextNotes.length - 1]?.id ?? "note-1";
-      setActiveNoteId(latestId);
-      setViewMode("redacted");
-      setShowDiff(true);
-    } catch (err) {
-      const msg =
-        err instanceof Error
-          ? err.message
-          : "Failed to read uploaded file(s). Please try again.";
-      setError(msg);
-    } finally {
-      if (fileInputRef.current) fileInputRef.current.value = "";
-      setUploading(false);
     }
+
+    if (parsedNotes.length > 0) {
+      setInputSource("upload");
+      setNotes((prev) => {
+        const retained = inputSource === "upload" ? prev.filter((n) => n.text.trim().length > 0) : [];
+        const merged = [...retained, ...parsedNotes];
+        return merged.map(
+          (note, idx): NoteInput => ({
+            ...note,
+            title: `Note ${idx + 1}`,
+            kind: note.kind ?? "unknown",
+          }),
+        );
+      });
+
+      const scrubbed = scrubNotesClientSide(parsedNotes);
+      setRedactedById((prev) => {
+        const next = { ...prev };
+        for (const note of scrubbed) {
+          if (note.text.trim().length > 0) {
+            next[note.id] = note.text;
+          }
+        }
+        return next;
+      });
+
+      const latestId = parsedNotes[parsedNotes.length - 1]?.id;
+      if (latestId) {
+        setActiveNoteId(latestId);
+        setLastAddedNoteId(latestId);
+        setViewMode("redacted");
+        setShowDiff(true);
+      }
+    }
+
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    setUploading(false);
   }
 
   function deleteNote(id: string) {
     if (notes.length === 1) return;
     setNotes((prev) => {
       const filtered = prev.filter((note) => note.id !== id);
+      const retitled = filtered.map((note, idx) => ({
+        ...note,
+        title: `Note ${idx + 1}`,
+        kind: note.kind ?? "unknown",
+      })) as NoteInput[];
       const nextActive =
         activeNoteId === id
-          ? filtered[filtered.length - 1]?.id ?? filtered[0]?.id
+          ? retitled[Math.max(0, retitled.length - 1)]?.id ?? retitled[0]?.id
           : activeNoteId;
       setActiveNoteId(nextActive ?? "note-1");
-      return filtered;
+      setLastAddedNoteId(nextActive ?? retitled[0]?.id ?? null);
+      return retitled;
     });
     setRedactedById((prev) => {
       const copy = { ...prev };
@@ -339,7 +402,7 @@ export function NoteSummarizerInput({
     setError(null);
     if (!notes.some((n) => n.text.trim().length > 0)) {
       setError(
-        "Please add at least one de-identified note (pasted or uploaded) before continuing.",
+        "Please add at least one de-identified note by pasting or uploading before continuing.",
       );
       return;
     }
@@ -498,6 +561,15 @@ export function NoteSummarizerInput({
         </div>
       )}
 
+      {activeNote && lastAddedNoteId === activeNote.id && (
+        <div className="rounded-xl bg-emerald-900/25 border border-emerald-500/60 text-emerald-50 px-4 py-3 text-xs md:text-sm">
+          <p className="font-semibold">{activeNote.title} is selected.</p>
+          <p className="opacity-90">
+            Choose the correct note type and {mode === "upload" ? "review your uploaded text" : "paste your note"} for this entry.
+          </p>
+        </div>
+      )}
+
       {/* Note type pill + mode toggle pill */}
       <div className="flex flex-wrap items-center gap-3 mt-2">
         {activeNote && (
@@ -530,7 +602,7 @@ export function NoteSummarizerInput({
         <div className="inline-flex items-center rounded-full bg-white/5 p-1 text-xs md:text-sm">
           <button
             type="button"
-            onClick={() => resetForModeChange("paste")}
+            onClick={() => changeMode("paste")}
             className={`px-4 py-1.5 rounded-full font-medium transition ${
               mode === "paste"
                 ? "bg-white/15 border border-white/80 text-white shadow-sm"
@@ -541,7 +613,7 @@ export function NoteSummarizerInput({
           </button>
           <button
             type="button"
-            onClick={() => resetForModeChange("upload")}
+            onClick={() => changeMode("upload")}
             className={`px-4 py-1.5 rounded-full font-medium transition ${
               mode === "upload"
                 ? "bg-white/15 border border-white/80 text-white shadow-sm"
@@ -729,6 +801,13 @@ export function NoteSummarizerInput({
                 {uploading ? "Reading files…" : "Choose files…"}
               </button>
             </div>
+
+            {uploading && (
+              <p className="mt-2 text-xs text-amber-100">Reading files and applying PHI scrub…</p>
+            )}
+            {uploadError && (
+              <p className="mt-2 text-xs text-red-100">{uploadError}</p>
+            )}
           </div>
 
           {notes.filter((n) => n.text.trim().length > 0).length > 0 && (
@@ -746,7 +825,7 @@ export function NoteSummarizerInput({
 
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div className="text-[0.7rem] md:text-[0.75rem] text-white/80 max-w-xl">
-              Upload-only mode is active. To switch back to pasting, use the toggle above (this will clear uploaded files).
+              Upload-only mode is active. To switch back to pasting, clear your notes first so you don&apos;t mix input methods.
             </div>
             <div className="flex gap-2">
               <button
