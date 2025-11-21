@@ -4,6 +4,7 @@ import type {
   SummaryResult,
   QAResult,
   SummaryResponseBody,
+  ChatHistoryMessage,
 } from "./types";
 
 /* ---------------- House styles ---------------- */
@@ -203,6 +204,22 @@ ${n.text}
     .join("\n\n");
 }
 
+function buildHistoryContext(history: ChatHistoryMessage[] | undefined): string {
+  if (!Array.isArray(history) || history.length === 0) return "";
+
+  const recent = history
+    .filter(
+      (h) => h && (h.role === "user" || h.role === "assistant") && h.text,
+    )
+    .slice(-6);
+
+  if (recent.length === 0) return "";
+
+  return recent
+    .map((m) => `${m.role === "user" ? "User" : "Assistant"}: ${m.text}`)
+    .join("\n");
+}
+
 // Normalizes text for comparison (strips punctuation/whitespace, lowers case)
 function parseSummaryText(raw: string): SummaryResult {
   const sectionOrder: {
@@ -254,47 +271,6 @@ function parseSummaryText(raw: string): SummaryResult {
   return { sections };
 }
 
-function isPHIQuestion(q: string): boolean {
-  const lower = q.toLowerCase();
-
-  const namePatterns = [
-    "patient's name",
-    "patients name",
-    "what is the name",
-    "full name",
-    "first name",
-    "last name",
-  ];
-
-  const dobPatterns = ["dob", "date of birth", "birth date", "birthday"];
-
-  const idPatterns = [
-    "mrn",
-    "medical record number",
-    "account number",
-    "social security",
-    "ssn",
-  ];
-
-  const contactPatterns = [
-    "phone number",
-    "telephone",
-    "email address",
-    "home address",
-    "street address",
-    "where do they live",
-  ];
-
-  const all = [
-    ...namePatterns,
-    ...dobPatterns,
-    ...idPatterns,
-    ...contactPatterns,
-  ];
-
-  return all.some((frag) => lower.includes(frag));
-}
-
 /* ---------------- Public API ---------------- */
 
 type ParsedQAResponse = {
@@ -333,24 +309,21 @@ Generate the structured summary now.
 export async function answerQuestionWithLLM(args: {
   notes: NoteInput[];
   question: string;
-  activeSourceLabel?: string;
+  activeSourceId?: string | null;
+  history?: ChatHistoryMessage[];
 }): Promise<QAResult> {
-  const { notes, question, activeSourceLabel } = args;
+  const { notes, question, activeSourceId, history } = args;
 
-  // PHI safety shortcut
-  if (isPHIQuestion(question)) {
-    return {
-      answer:
-        "This information was removed during client-side de-identification before processing.",
-      citations: [
-        "Protected health information (PHI) is intentionally scrubbed and deleted.",
-      ],
-      snippet: undefined,
-    };
-  }
+  const scopedNote =
+    activeSourceId && activeSourceId !== "all"
+      ? notes.find((n) => n.id === activeSourceId)
+      : undefined;
 
-  // Wrap notes with IDs for the model
-  const notesText = qaNotesToTaggedText(notes);
+  const scopedNotes = scopedNote ? [scopedNote] : notes;
+  const scopeLabel = scopedNote?.title;
+
+  const notesText = qaNotesToTaggedText(scopedNotes);
+  const historyText = buildHistoryContext(history);
 
   const user = `
 <<STYLE>>
@@ -366,8 +339,13 @@ ${question}
 <</QUESTION>>
 
 <<SCOPE>>
-${activeSourceLabel ?? "Use all notes; if multiple notes conflict, describe the differences."}
+${
+    scopeLabel ??
+    "Use all notes; if multiple notes conflict, describe the differences."
+  }
 <</SCOPE>>
+
+${historyText ? `\n<<HISTORY>>\n${historyText}\n<</HISTORY>>` : ""}
 `.trim();
 
   const raw = await callOpenAI({
