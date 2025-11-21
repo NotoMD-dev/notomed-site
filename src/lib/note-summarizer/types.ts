@@ -51,21 +51,16 @@ export interface QAResult {
   snippet?: string;
 }
 
-export type NoteSummarizerMode = "summary" | "qa";
-
 export interface SummaryRequestBody {
-  mode: "summary";
   notes: NoteInput[];
 }
 
 export interface QARequestBody {
-  mode: "qa";
   notes: NoteInput[];
   question: string;
-  activeSourceId?: string; // "all" or one of notes[].id
+  activeSourceId?: string | null; // "all" or one of notes[].id
+  history?: { role: "user" | "assistant"; text: string }[];
 }
-
-export type NoteSummarizerRequestBody = SummaryRequestBody | QARequestBody;
 
 export interface SummaryResponseBody extends SummaryResult {
   // surfaced for debugging if you want later
