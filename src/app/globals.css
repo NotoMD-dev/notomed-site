@@ -465,6 +465,11 @@ button.tool-module-header:hover {
   border-radius: 22px;
   z-index: 0;
   pointer-events: none;
+  opacity: 0;
+  transform: scale(0.985);
+  transition:
+    opacity 220ms ease,
+    transform 420ms cubic-bezier(0.21, 0.76, 0.35, 0.99);
 }
 
 .featured-card-glow::before {
@@ -474,8 +479,8 @@ button.tool-module-header:hover {
     0 0 24px 12px rgba(201, 213, 200, 0.42),
     0 0 48px 18px rgba(210, 126, 88, 0.25);
   filter: blur(6px);
-  opacity: 0.85;
-  animation: featuredHaloSweep 5s ease-in-out infinite;
+  animation: featuredHaloSweep 4.5s ease-in-out infinite;
+  animation-play-state: paused;
 }
 
 .featured-card-glow::after {
@@ -487,7 +492,19 @@ button.tool-module-header:hover {
     0 0 36px 15px rgba(201, 213, 200, 0.46),
     0 0 60px 24px rgba(210, 126, 88, 0.22);
   background: transparent;
-  animation: featuredHaloFrame 6s ease-in-out infinite;
+  animation: featuredHaloFrame 5.2s ease-in-out infinite;
+  animation-play-state: paused;
+}
+
+.featured-card-glow:hover::before,
+.featured-card-glow:focus-visible::before,
+.featured-card-glow:hover::after,
+.featured-card-glow:focus-visible::after,
+.featured-card-glow:focus-within::before,
+.featured-card-glow:focus-within::after {
+  opacity: 1;
+  transform: scale(1);
+  animation-play-state: running;
 }
 
 @keyframes featuredHaloSweep {
