@@ -19,23 +19,29 @@ const limiter = new RateLimiterMemory({ points: 20, duration: 60 });
 /* ---------------- Type guards ---------------- */
 function isSummaryBody(body: unknown): body is SummaryRequestBody {
   if (typeof body !== "object" || body === null) return false;
-  const b = body as any;
+  const b = body as { mode?: unknown; notes?: unknown };
   return (
     b.mode === "summary" &&
     Array.isArray(b.notes) &&
-    b.notes.every((n: any) => typeof n?.text === "string")
+    b.notes.every((n): n is SummaryRequestBody["notes"][number] => {
+      const note = n as { text?: unknown };
+      return typeof note?.text === "string";
+    })
   );
 }
 
 function isQABody(body: unknown): body is QARequestBody {
   if (typeof body !== "object" || body === null) return false;
-  const b = body as any;
+  const b = body as { mode?: unknown; notes?: unknown; question?: unknown };
   return (
     b.mode === "qa" &&
     typeof b.question === "string" &&
     b.question.trim().length > 0 &&
     Array.isArray(b.notes) &&
-    b.notes.every((n: any) => typeof n?.text === "string")
+    b.notes.every((n): n is QARequestBody["notes"][number] => {
+      const note = n as { text?: unknown };
+      return typeof note?.text === "string";
+    })
   );
 }
 
