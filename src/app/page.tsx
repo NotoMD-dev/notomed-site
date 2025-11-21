@@ -166,6 +166,7 @@ export default function NotoMedLandingPage() {
                       isFeatured &&
                         "featured-card-glow border-2 border-[var(--accent)] shadow-[0_35px_110px_rgba(210,126,88,0.45)] ring-2 ring-[var(--accent)]/50 transition-transform duration-500 hover:-translate-y-2 hover:scale-[1.03]",
                     )}
+                    disableGlow={isFeatured}
                     contentClassName={isFeatured ? "relative z-[1]" : undefined}
                     aria-label={`Open ${tool.name}`}
                   >
