@@ -435,33 +435,45 @@ export function NoteSummarizerInput({
       {/* Note tabs */}
       <div className="flex flex-wrap items-center gap-2">
         {notes.map((note, idx) => (
-          <div key={note.id} className="flex items-center gap-1">
-            <button
-              type="button"
-              onClick={() => {
-                setActiveNoteId(note.id);
-                // When switching notes, keep whatever view mode the user last chose.
-              }}
-              className={`px-4 py-2 rounded-xl text-xs md:text-sm font-medium border transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400
+          <button
+            key={note.id}
+            type="button"
+            onClick={() => {
+              setActiveNoteId(note.id);
+              // When switching notes, keep whatever view mode the user last chose.
+            }}
+            className={`group relative inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs md:text-sm font-medium border transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400
               ${
                 activeNoteId === note.id
                   ? "bg-white dark:bg-zinc-900 shadow-md border-pearl-400/60 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50 ring-2 ring-emerald-400/70"
                   : "bg-transparent border border-white/70 text-white/90 hover:bg-white/10"
               }`}
-            >
+          >
+            <span className="truncate max-w-[12ch] md:max-w-[16ch]">
               {note.title || `Note ${idx + 1}`}
-            </button>
+            </span>
             {notes.length > 1 && (
-              <button
-                type="button"
+              <span
+                role="button"
+                tabIndex={0}
                 aria-label={`Delete ${note.title || `Note ${idx + 1}`}`}
-                onClick={() => deleteNote(note.id)}
-                className="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white/15 text-white/80 hover:bg-red-500/20 hover:text-red-50 border border-white/30"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteNote(note.id);
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    deleteNote(note.id);
+                  }
+                }}
+                className="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white/10 text-white/80 border border-white/20 hover:bg-red-500/25 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-red-300"
               >
                 ×
-              </button>
+              </span>
             )}
-          </div>
+          </button>
         ))}
 
         {mode === "paste" ? (
