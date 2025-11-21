@@ -94,7 +94,7 @@ export function sortTools(
           return a.name.localeCompare(b.name);
         }
 
-        return aTime - bTime;
+        return bTime - aTime;
       });
     case "alphabetical":
     default:

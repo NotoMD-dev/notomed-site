@@ -24,7 +24,7 @@ import {
 export default function ToolsDirectoryClient() {
   const [q, setQ] = useState("");
   const [cat, setCat] = useState<ToolCategoryFilter>("All");
-  const [sortKey, setSortKey] = useState<ToolSortKey>("alphabetical");
+  const [sortKey, setSortKey] = useState<ToolSortKey>("created");
   const [showFiltersMobile, setShowFiltersMobile] = useState(false);
 
   const filteredAndSorted = useMemo(() => {
