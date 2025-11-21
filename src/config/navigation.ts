@@ -1,3 +1,5 @@
+//src/config/navigation.ts
+
 export interface NavLink {
   href: string;
   label: string;

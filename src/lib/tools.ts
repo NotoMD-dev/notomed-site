@@ -1,3 +1,5 @@
+//src/lib/tools.ts
+
 import { toolsData } from "@/config/tools-data";
 import type {
   ToolCategory,

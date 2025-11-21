@@ -1,6 +1,8 @@
+//src/config/tools-data.ts
+
 import { CONFIG } from "./notomed-config";
 
-export type ToolCategory = "Analgesia" | "Electrolytes" | "Peri-op" | "Endocrine";
+export type ToolCategory = "Analgesia" | "Electrolytes" | "Peri-op" | "Endocrine" | "Documentation"; // ✅ NEW 
 
 export interface ToolDefinition {
   id: string;
@@ -49,4 +51,15 @@ export const toolsData: ToolDefinition[] = [
     createdAt: "2024-05-01",
     lastUpdated: "2025-11-01",
   },
+   // ✅ NEW NOTE SUMMARIZER TOOL
+   {
+    id: "note-summarizer-tool",
+    name: "Note Summarizer",
+    description:
+      "AI-assisted reader that turns de-identified inpatient notes into a structured summary and supports grounded Q&A.",
+    path: CONFIG.noteSummarizerToolPath, // "/tools/note-summarizer"
+    category: "Documentation",
+    createdAt: "2025-11-18",
+    lastUpdated: "2025-11-18",
+   }
 ];

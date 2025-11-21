@@ -179,11 +179,55 @@ textarea {
   -webkit-text-fill-color: var(--form-field-text);
   caret-color: var(--form-field-text);
 }
+/* Force white text for the note-type pill */
+/* Softer theme-aware pill style for note type selector */
+.note-type-select {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+  border: 1px solid rgba(212, 212, 216, 0.8); /* zinc-300-ish */
+  color: #111827 !important;                  /* slate/zinc-900 */
+  -webkit-text-fill-color: #111827 !important;
+  padding: 0.35rem 0.9rem;
+  font-weight: 500;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+:root[data-theme="light"] .note-type-select {
+  background-color: rgba(255, 255, 255, 0.9);
+  border-color: rgba(212, 212, 216, 0.8);
+  color: #111827 !important;
+  -webkit-text-fill-color: #111827 !important;
+}
+
+:root[data-theme="dark"] .note-type-select {
+  background-color: rgba(9, 9, 11, 0.85);     /* zinc-950-ish */
+  border-color: rgba(63, 63, 70, 0.8);        /* zinc-700-ish */
+  color: #f9fafb !important;
+  -webkit-text-fill-color: #f9fafb !important;
+}
+
 
 input::placeholder,
 textarea::placeholder {
   color: var(--form-field-placeholder);
 }
+
+/* Force readable text in the big note textarea in both themes */
+.note-textarea {
+  color: #f9fafb;
+  -webkit-text-fill-color: #f9fafb;
+  caret-color: #f9fafb;
+}
+
+/* In light theme, switch it back to dark text */
+:root[data-theme="light"] .note-textarea {
+  color: #111827;
+  -webkit-text-fill-color: #111827;
+  caret-color: #111827;
+}
+
 
 .theme-shell {
   background: linear-gradient(to bottom, var(--bg-from), var(--bg-via), var(--bg-to));
