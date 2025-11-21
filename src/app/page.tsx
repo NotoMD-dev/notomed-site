@@ -164,29 +164,36 @@ export default function NotoMedLandingPage() {
                     className={cn(
                       "min-h-[230px]",
                       isFeatured &&
-                        "border-2 border-[var(--accent)] shadow-[0_28px_80px_rgba(0,0,0,0.6)] ring-2 ring-[var(--accent)]/40",
+                        "featured-hero-card overflow-visible border-2 border-[var(--accent)] shadow-[0_32px_110px_rgba(0,0,0,0.72)] ring-4 ring-[var(--accent)]/70",
                     )}
                     aria-label={`Open ${tool.name}`}
                   >
-                    <div className="mb-4 flex items-start justify-between gap-3">
-                      <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-strong">
-                        Tool
-                      </p>
-                      {tags.length > 0 && (
-                        <div className="flex flex-wrap justify-end gap-1.5">
-                          {tags.map((tag) => (
-                            <span key={tag} className={getHeroTagClasses(tag)}>
-                              {tag === "FEATURED" ? "Featured" : tag === "NEW" ? "New" : tag}
-                            </span>
-                          ))}
-                        </div>
-                      )}
+                    {isFeatured ? (
+                      <div className="featured-hero-spotlight" aria-hidden />
+                    ) : null}
+                    <div className="relative z-[1] space-y-4">
+                      <div className="flex items-start justify-between gap-3">
+                        <p className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-strong">
+                          Tool
+                        </p>
+                        {tags.length > 0 && (
+                          <div className="flex flex-wrap justify-end gap-1.5">
+                            {tags.map((tag) => (
+                              <span key={tag} className={getHeroTagClasses(tag)}>
+                                {tag === "FEATURED" ? "Featured" : tag === "NEW" ? "New" : tag}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      <div className="space-y-2">
+                        <h3 className="text-lg font-semibold text-heading">{tool.name}</h3>
+                        <p className="text-sm text-body">{tool.description}</p>
+                      </div>
+                      <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.18em] text-accent transition-transform duration-300 group-hover:translate-x-1 group-hover:scale-[1.02]">
+                        Open Tool →
+                      </span>
                     </div>
-                    <h3 className="mb-2 text-lg font-semibold text-heading">{tool.name}</h3>
-                    <p className="mb-6 text-sm text-body">{tool.description}</p>
-                    <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.18em] text-accent transition-transform group-hover:translate-x-1">
-                      Open Tool →
-                    </span>
                   </GlowCard>
                 </Link>
               );

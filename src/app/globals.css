@@ -452,3 +452,48 @@ button.tool-module-header:hover {
 :root[data-theme="light"] .text-\[\#f4f1ea\] {
   color: var(--text-heading) !important;
 }
+
+.featured-hero-card {
+  isolation: isolate;
+  overflow: visible;
+  transition: transform 320ms ease, box-shadow 320ms ease;
+}
+
+.featured-hero-card:hover {
+  transform: translateY(-10px) scale(1.02);
+}
+
+.featured-hero-spotlight {
+  position: absolute;
+  inset: -28px;
+  border-radius: 26px;
+  background: radial-gradient(circle at 30% 28%, var(--accent) 0%, transparent 55%),
+    radial-gradient(circle at 70% 70%, var(--accent-hover) 0%, transparent 60%);
+  filter: blur(24px) saturate(1.15);
+  opacity: 0.7;
+  mix-blend-mode: screen;
+  animation: featured-pulse 3.8s ease-in-out infinite;
+  transition: opacity 260ms ease, transform 260ms ease, filter 260ms ease;
+}
+
+.featured-hero-card:hover .featured-hero-spotlight {
+  opacity: 1;
+  filter: blur(16px) saturate(1.25);
+  transform: scale(1.05);
+  animation-duration: 2.6s;
+}
+
+@keyframes featured-pulse {
+  0% {
+    opacity: 0.55;
+    transform: scale(0.96);
+  }
+  45% {
+    opacity: 0.95;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 0.55;
+    transform: scale(0.96);
+  }
+}
