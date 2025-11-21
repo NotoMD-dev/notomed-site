@@ -13,14 +13,12 @@ import { CitationBar } from "./CitationBar";
 interface NoteSummarizerWorkspaceProps {
   notes: NoteInput[];
   summary: SummaryResult;
-  onBackToInput: () => void;
   onReset: () => void;
 }
 
 export function NoteSummarizerWorkspace({
   notes,
   summary,
-  onBackToInput,
   onReset,
 }: NoteSummarizerWorkspaceProps) {
   const [activeSectionId, setActiveSectionId] = useState<string | null>(
@@ -47,13 +45,6 @@ export function NoteSummarizerWorkspace({
         </div>
 
         <div className="flex gap-2 mt-1 md:mt-0">
-          <button
-            type="button"
-            onClick={onBackToInput}
-            className="px-3 py-2 rounded-xl text-xs md:text-sm font-medium border border-white/70 text-white bg-white/10 hover:bg-white/20"
-          >
-            Back to note input
-          </button>
           <button
             type="button"
             onClick={onReset}
