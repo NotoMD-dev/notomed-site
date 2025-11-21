@@ -100,14 +100,11 @@ export async function POST(req: NextRequest) {
     };
 
     try {
-      if (
-        notesContainLikelyPHI(body.notes) ||
-        containsLikelyPHI(body.question)
-      ) {
+      if (notesContainLikelyPHI(body.notes)) {
         return NextResponse.json(
           {
             error:
-              "Request appears to contain patient identifiers. Please de-identify content in your browser before submitting.",
+              "Request appears to contain patient identifiers. Please de-identify notes in your browser before submitting.",
           },
           { status: 400 },
         );
@@ -130,6 +127,20 @@ export async function POST(req: NextRequest) {
               )
               .join("\n")
           : "";
+
+      if (containsLikelyPHI(body.question) || containsLikelyPHI(historyText)) {
+        return NextResponse.json(
+          {
+            answer:
+              "This information was removed during client-side de-identification before processing.",
+            citations: [
+              "Protected health information (PHI) is intentionally scrubbed and deleted.",
+            ],
+            snippet: null,
+          },
+          { status: 200 },
+        );
+      }
 
       const enrichedQuestion =
         historyText.length > 0
