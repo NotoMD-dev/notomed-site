@@ -139,11 +139,10 @@ export function NoteSummarizerInput({
 
       const safeNotes = scrubNotesClientSide(withRedacted);
 
-      const resp = await fetch("/api/note-summarizer", {
+      const resp = await fetch("/api/note-summarizer/summary", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          mode: "summary",
           notes: safeNotes,
         }),
       });

@@ -168,11 +168,10 @@ export function ChatPanel({
     }));
 
     try {
-      const resp = await fetch("/api/note-summarizer", {
+      const resp = await fetch("/api/note-summarizer/question", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          mode: "qa",
           notes,
           question: trimmed,
           activeSourceId,
@@ -218,7 +217,7 @@ export function ChatPanel({
       onSnippetChange(snippet);
 
       setQuestion("");
-    } catch (error) {
+    } catch {
       setMessages((prev) => [
         ...prev,
         {
