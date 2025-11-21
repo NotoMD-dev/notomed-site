@@ -461,8 +461,8 @@ button.tool-module-header:hover {
 .featured-card-glow::after {
   content: "";
   position: absolute;
-  inset: -32px;
-  border-radius: 40px;
+  inset: -14px;
+  border-radius: 28px;
   z-index: 0;
   pointer-events: none;
 }
@@ -470,52 +470,52 @@ button.tool-module-header:hover {
 .featured-card-glow::before {
   background: transparent;
   box-shadow:
-    0 0 0 18px rgba(244, 241, 234, 0.65),
-    0 0 70px 28px rgba(201, 213, 200, 0.65),
-    0 0 110px 42px rgba(210, 126, 88, 0.35);
-  filter: blur(18px);
-  opacity: 0.95;
-  animation: featuredHaloSweep 3.6s ease-in-out infinite;
+    0 0 0 8px rgba(244, 241, 234, 0.6),
+    0 0 22px 12px rgba(201, 213, 200, 0.55),
+    0 0 36px 18px rgba(210, 126, 88, 0.25);
+  filter: blur(10px);
+  opacity: 0.9;
+  animation: featuredHaloSweep 4.2s ease-in-out infinite;
 }
 
 .featured-card-glow::after {
-  inset: -24px;
-  border-radius: 32px;
-  border: 1px solid rgba(201, 213, 200, 0.9);
+  inset: -10px;
+  border-radius: 24px;
+  border: 1px solid rgba(201, 213, 200, 0.82);
   box-shadow:
-    0 0 28px 10px rgba(244, 241, 234, 0.55),
-    0 0 64px 26px rgba(201, 213, 200, 0.6),
-    0 0 120px 48px rgba(210, 126, 88, 0.32);
+    0 0 18px 8px rgba(244, 241, 234, 0.48),
+    0 0 38px 18px rgba(201, 213, 200, 0.52),
+    0 0 70px 26px rgba(210, 126, 88, 0.28);
   background: transparent;
-  animation: featuredHaloFrame 4.4s ease-in-out infinite;
+  animation: featuredHaloFrame 4.8s ease-in-out infinite;
 }
 
 @keyframes featuredHaloSweep {
   0% {
-    transform: scale(0.96);
-    opacity: 0.85;
+    transform: scale(0.97);
+    opacity: 0.82;
   }
   35% {
-    transform: scale(1.04);
-    opacity: 1;
+    transform: scale(1.02);
+    opacity: 0.95;
   }
   100% {
-    transform: scale(1.1);
-    opacity: 0.7;
+    transform: scale(1.05);
+    opacity: 0.72;
   }
 }
 
 @keyframes featuredHaloFrame {
   0% {
-    transform: scale(0.94);
-    opacity: 0.7;
+    transform: scale(0.96);
+    opacity: 0.72;
   }
   50% {
-    transform: scale(1.08);
-    opacity: 1;
+    transform: scale(1.03);
+    opacity: 0.95;
   }
   100% {
-    transform: scale(1.14);
-    opacity: 0.72;
+    transform: scale(1.06);
+    opacity: 0.75;
   }
 }

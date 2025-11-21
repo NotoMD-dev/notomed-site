@@ -164,7 +164,7 @@ export default function NotoMedLandingPage() {
                     className={cn(
                       "min-h-[230px]",
                       isFeatured &&
-                        "featured-card-glow border-2 border-[var(--accent)] shadow-[0_35px_110px_rgba(210,126,88,0.45)] ring-2 ring-[var(--accent)]/50 transition-transform duration-500 hover:-translate-y-2 hover:scale-[1.03]",
+                        "featured-card-glow border-2 border-[var(--accent)] shadow-[0_18px_56px_rgba(210,126,88,0.38)] ring-2 ring-[var(--accent)]/45 transition-transform duration-500 hover:-translate-y-2 hover:scale-[1.03]",
                     )}
                     contentClassName={isFeatured ? "relative z-[1]" : undefined}
                     aria-label={`Open ${tool.name}`}
