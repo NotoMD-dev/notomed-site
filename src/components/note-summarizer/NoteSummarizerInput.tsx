@@ -24,6 +24,11 @@ const NOTE_KIND_OPTIONS: { value: NoteKind; label: string }[] = [
 type NoteInputMode = "paste" | "upload";
 type ViewMode = "original" | "redacted";
 
+type UploadStatus =
+  | { kind: "success"; message: string }
+  | { kind: "warning"; message: string }
+  | { kind: "error"; message: string };
+
 interface NoteSummarizerInputProps {
   onSummaryReady: (args: {
     notes: NoteInput[];
@@ -60,6 +65,7 @@ export function NoteSummarizerInput({
   const [mode, setMode] = useState<NoteInputMode>("paste");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [uploadStatus, setUploadStatus] = useState<UploadStatus | null>(null);
 
   // Redaction + view state
   const [redactedById, setRedactedById] = useState<Record<string, string>>({});
@@ -277,7 +283,10 @@ export function NoteSummarizerInput({
         <div className="inline-flex items-center rounded-full bg-white/5 p-1 text-xs md:text-sm">
           <button
             type="button"
-            onClick={() => setMode("paste")}
+            onClick={() => {
+              setMode("paste");
+              setUploadStatus(null);
+            }}
             className={`px-4 py-1.5 rounded-full font-medium transition ${
               mode === "paste"
                 ? "bg-white/15 border border-white/80 text-white shadow-sm"
@@ -288,7 +297,10 @@ export function NoteSummarizerInput({
           </button>
           <button
             type="button"
-            onClick={() => setMode("upload")}
+            onClick={() => {
+              setMode("upload");
+              setUploadStatus(null);
+            }}
             className={`px-4 py-1.5 rounded-full font-medium transition ${
               mode === "upload"
                 ? "bg-white/15 border border-white/80 text-white shadow-sm"
@@ -455,9 +467,49 @@ export function NoteSummarizerInput({
             accept=".txt,.pdf,.doc,.docx,.rtf,.md,.png,.jpg,.jpeg"
             onChange={(e) => {
               const file = e.target.files?.[0];
-              if (file) {
-                // For now we just acknowledge selection; parsing will be a future step.
-                console.log("Selected file for future parsing:", file.name);
+              e.target.value = "";
+
+              if (!file) return;
+
+              const isTextLike =
+                file.type.startsWith("text/") || /\.(md|rtf|txt)$/i.test(file.name);
+
+              if (isTextLike) {
+                const reader = new FileReader();
+                reader.onload = () => {
+                  const content = typeof reader.result === "string" ? reader.result : "";
+
+                  const newId = `upload-${Date.now()}`;
+                  setNotes((prev) => [
+                    ...prev,
+                    {
+                      id: newId,
+                      title: file.name,
+                      text: content,
+                      kind: "unknown",
+                    },
+                  ]);
+                  setMode("paste");
+                  setUploadStatus({
+                    kind: "success",
+                    message:
+                      "Loaded text from the uploaded file. Review and redact it above before processing.",
+                  });
+                  setActiveNoteId(newId);
+                };
+                reader.onerror = () => {
+                  setUploadStatus({
+                    kind: "error",
+                    message: "Could not read that file. Please try again or paste the text instead.",
+                  });
+                };
+                reader.readAsText(file);
+              } else {
+                setUploadStatus({
+                  kind: "warning",
+                  message:
+                    "This file type is not yet supported for automatic import. Please copy/paste the text into the editor.",
+                });
               }
             }}
           />
@@ -478,6 +530,20 @@ export function NoteSummarizerInput({
               Choose file…
             </button>
           </div>
+
+          {uploadStatus && (
+            <div
+              className={`rounded-xl border px-4 py-3 text-sm md:text-base ${
+                uploadStatus.kind === "success"
+                  ? "border-emerald-300/70 bg-emerald-900/30 text-emerald-50"
+                  : uploadStatus.kind === "warning"
+                    ? "border-amber-300/70 bg-amber-900/30 text-amber-50"
+                    : "border-red-300/70 bg-red-900/30 text-red-50"
+              }`}
+            >
+              {uploadStatus.message}
+            </div>
+          )}
 
           <div className="flex justify-end">
             <button
