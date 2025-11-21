@@ -483,44 +483,51 @@ export function NoteSummarizerInput({
       </div>
 
       {/* Note tabs */}
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-3">
         {notes.map((note) => (
-          <button
-            key={note.id}
-            type="button"
-            onClick={() => {
-              setActiveNoteId(note.id);
-              // When switching notes, keep whatever view mode the user last chose.
-            }}
-            className={`px-4 py-2 rounded-xl text-xs md:text-sm font-medium border transition
+          <div key={note.id} className="relative">
+            <button
+              type="button"
+              onClick={() => {
+                setActiveNoteId(note.id);
+                // When switching notes, keep whatever view mode the user last chose.
+              }}
+              className={`flex items-center gap-2 rounded-full border px-4 py-2 text-xs md:text-sm font-medium transition
               ${
                 activeNoteId === note.id
-                  ? "bg-white dark:bg-zinc-900 shadow-md border-pearl-400/60 dark:border-zinc-700 text-zinc-900 dark:text-zinc-50"
-                  : "bg-transparent border border-white/70 text-white/90 hover:bg-white/10"
+                  ? "bg-emerald-900/80 border-emerald-400 text-white shadow-[0_0_0_2px_rgba(255,255,255,0.08)]"
+                  : "bg-transparent border-white/70 text-white/85 hover:bg-white/5"
               }`}
-          >
-            <span>{note.title}</span>
-            {lastAddedNoteId === note.id && (
-              <span className="ml-2 inline-flex items-center rounded-full bg-emerald-600/90 px-2 py-0.5 text-[0.65rem] font-semibold text-white">
-                New
-              </span>
+            >
+              <span>{note.title}</span>
+              {lastAddedNoteId === note.id && (
+                <span className="ml-1 inline-flex items-center rounded-full bg-emerald-600/90 px-2 py-0.5 text-[0.65rem] font-semibold text-white">
+                  New
+                </span>
+              )}
+            </button>
+            {notes.length > 1 && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  deleteNote(note.id);
+                }}
+                className="absolute -right-2 -top-2 grid h-6 w-6 place-items-center rounded-full border border-white/50 bg-white/10 text-white transition hover:bg-white/20"
+                aria-label={`Delete ${note.title}`}
+              >
+                ×
+              </button>
             )}
-          </button>
+          </div>
         ))}
         <button
           type="button"
           onClick={addNote}
-          className="px-4 py-2 rounded-xl text-xs md:text-sm border border-dashed border-white/70 bg-transparent text-white/90 hover:bg-white/10"
+          className="flex items-center gap-2 rounded-full border border-dashed border-white/60 px-4 py-2 text-xs md:text-sm font-medium text-white/85 hover:bg-white/5"
         >
-          + Add note
-        </button>
-        <button
-          type="button"
-          onClick={() => deleteNote(activeNoteId)}
-          disabled={notes.length <= 1}
-          className="px-3 py-2 rounded-xl text-xs md:text-sm border border-white/40 bg-transparent text-white/80 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Delete note
+          <span className="text-base leading-none">＋</span>
+          <span>Add note</span>
         </button>
         <button
           type="button"
