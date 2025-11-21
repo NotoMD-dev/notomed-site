@@ -8,7 +8,11 @@ import SiteHeader from "@/components/SiteHeader";
 import { BackButton } from "@/components/BackButton";
 import { GlowCard } from "@/components/cards/GlowCard";
 import { SearchInput } from "@/components/SearchInput";
-import { toolsData, type ToolDefinition } from "@/config/tools-data";
+import {
+  toolsData,
+  type ToolDefinition,
+  type ToolTag,
+} from "@/config/tools-data";
 import {
   filterTools,
   formatToolUpdated,
@@ -125,6 +129,11 @@ function ToolCard({ tool }: { tool: ToolDefinition }) {
   const isLive = Boolean(livePath);
   const updatedLabel = formatToolUpdated(tool.lastUpdated);
   const isNew = isNewTool(tool.createdAt);
+  const displayTags: ToolTag[] = [...(tool.tags ?? [])];
+
+  if (isNew && !displayTags.includes("NEW")) {
+    displayTags.push("NEW");
+  }
 
   const card = (
     <GlowCard
@@ -135,12 +144,18 @@ function ToolCard({ tool }: { tool: ToolDefinition }) {
     >
       <div className="flex flex-1 flex-col gap-3">
         <div className="flex items-start justify-between gap-3">
-          <h2 className="text-lg font-semibold text-[var(--text-heading)] md:text-xl">{tool.name}</h2>
-          {isNew && (
-            <span className="chip-new shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide">
-              NEW
-            </span>
-          )}
+          <div className="flex flex-col gap-2">
+            {displayTags.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {displayTags.map((tag) => (
+                  <span key={tag} className={getTagClasses(tag)}>
+                    {getTagLabel(tag)}
+                  </span>
+                ))}
+              </div>
+            )}
+            <h2 className="text-lg font-semibold text-[var(--text-heading)] md:text-xl">{tool.name}</h2>
+          </div>
         </div>
         <p className="flex-1 text-sm leading-relaxed text-[var(--text-body)] md:text-[15px]">{tool.description}</p>
       </div>
@@ -177,4 +192,25 @@ function ToolCard({ tool }: { tool: ToolDefinition }) {
   }
 
   return card;
+}
+
+function getTagClasses(tag: ToolTag) {
+  const base =
+    "inline-flex items-center rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide";
+
+  switch (tag) {
+    case "FEATURED":
+      return `${base} border border-[var(--accent-hover)] bg-[var(--accent)] text-[var(--neutral-text)]`;
+    case "BETA":
+      return `${base} border border-[var(--accent-hover)] bg-[var(--accent)]/10 text-[var(--accent)]`;
+    case "COMING_SOON":
+      return `${base} pill-outline`;
+    case "NEW":
+    default:
+      return `${base} chip-new`;
+  }
+}
+
+function getTagLabel(tag: ToolTag) {
+  return tag.replace(/_/g, " ");
 }
