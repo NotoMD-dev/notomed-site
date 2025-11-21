@@ -7,7 +7,7 @@ import type {
   QARequestBody,
 } from "@/lib/note-summarizer/types";
 
-import { scrubNotes, scrubObject } from "@/lib/note-summarizer/phi";
+import { notesContainLikelyPHI } from "@/lib/note-summarizer/phi";
 import {
   summarizeNotesWithLLM,
   answerQuestionWithLLM,
@@ -58,8 +58,7 @@ export async function POST(req: NextRequest) {
 
   let bodyUnknown: unknown;
   try {
-    const raw = await req.json();
-    bodyUnknown = scrubObject(raw);
+    bodyUnknown = await req.json();
   } catch {
     return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
@@ -67,8 +66,17 @@ export async function POST(req: NextRequest) {
   /* ---------- SUMMARY ---------- */
   if (isSummaryBody(bodyUnknown)) {
     try {
-      const redactedNotes = scrubNotes(bodyUnknown.notes);
-      const summary = await summarizeNotesWithLLM(redactedNotes);
+      if (notesContainLikelyPHI(bodyUnknown.notes)) {
+        return NextResponse.json(
+          {
+            error:
+              "Request appears to contain patient identifiers. Please de-identify the note in your browser before submitting.",
+          },
+          { status: 400 },
+        );
+      }
+
+      const summary = await summarizeNotesWithLLM(bodyUnknown.notes);
       return NextResponse.json(summary, { status: 200 });
     } catch (error) {
       return NextResponse.json(
@@ -83,17 +91,25 @@ export async function POST(req: NextRequest) {
 
   /* ---------- Q&A ---------- */
   if (isQABody(bodyUnknown)) {
-    const body = bodyUnknown as QARequestBody & {
-      history?: { role: "user" | "assistant"; text: string }[];
-      activeSourceId?: string | null;
-    };
+      const body = bodyUnknown as QARequestBody & {
+        history?: { role: "user" | "assistant"; text: string }[];
+        activeSourceId?: string | null;
+      };
 
     try {
-      const redactedNotes = scrubNotes(body.notes);
+      if (notesContainLikelyPHI(body.notes)) {
+        return NextResponse.json(
+          {
+            error:
+              "Request appears to contain patient identifiers. Please de-identify the note in your browser before submitting.",
+          },
+          { status: 400 },
+        );
+      }
 
       const active =
         body.activeSourceId &&
-        redactedNotes.find((n) => n.id === body.activeSourceId);
+        body.notes.find((n) => n.id === body.activeSourceId);
 
       const scopeLabel = active ? active.title : undefined;
 
@@ -115,7 +131,7 @@ export async function POST(req: NextRequest) {
           : body.question;
 
       const qa = await answerQuestionWithLLM({
-        notes: active ? [active] : redactedNotes,
+        notes: active ? [active] : body.notes,
         question: enrichedQuestion,
         activeSourceLabel: scopeLabel,
       });
