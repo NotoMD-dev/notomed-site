@@ -24,6 +24,40 @@ const NOTE_KIND_OPTIONS: { value: NoteKind; label: string }[] = [
 type NoteInputMode = "paste" | "upload";
 type ViewMode = "original" | "redacted";
 
+const PDFJS_SRC =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
+const PDFJS_WORKER_SRC =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+const MAMMOTH_SRC =
+  "https://unpkg.com/mammoth@1.8.0/mammoth.browser.min.js";
+const TESSERACT_SRC = "https://unpkg.com/tesseract.js@5.1.0/dist/tesseract.min.js";
+
+declare global {
+  interface Window {
+    pdfjsLib?: unknown;
+    mammoth?: unknown;
+    Tesseract?: unknown;
+  }
+}
+
+type PdfjsTextItem = { str?: string };
+type PdfjsDocument = {
+  numPages: number;
+  getPage(pageNumber: number): Promise<{ getTextContent(): Promise<{ items: PdfjsTextItem[] }> }>;
+};
+type PdfjsLib = {
+  GlobalWorkerOptions: { workerSrc: string };
+  getDocument(options: { data: ArrayBuffer }): { promise: Promise<PdfjsDocument> };
+};
+
+type MammothBrowser = {
+  extractRawText(args: { arrayBuffer: ArrayBuffer }): Promise<{ value: string }>;
+};
+
+type TesseractWorker = {
+  recognize(file: File, lang: string): Promise<{ data?: { text?: string } }>;
+};
+
 interface NoteSummarizerInputProps {
   onSummaryReady: (args: {
     notes: NoteInput[];
@@ -58,8 +92,14 @@ export function NoteSummarizerInput({
   ]);
   const [activeNoteId, setActiveNoteId] = useState("note-1");
   const [mode, setMode] = useState<NoteInputMode>("paste");
+  const [inputSource, setInputSource] = useState<NoteInputMode | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [lastAddedNoteId, setLastAddedNoteId] = useState<string | null>(
+    "note-1",
+  );
 
   // Redaction + view state
   const [redactedById, setRedactedById] = useState<Record<string, string>>({});
@@ -69,6 +109,37 @@ export function NoteSummarizerInput({
 
   // Hidden file input for future upload parsing
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const noteCounterRef = useRef(1);
+
+  function changeMode(nextMode: NoteInputMode) {
+    if (nextMode === mode) return;
+    if (
+      inputSource &&
+      inputSource !== nextMode &&
+      notes.some((n) => n.text.trim().length > 0)
+    ) {
+      setError("You can either paste notes or upload files in one session. Reset to switch modes.");
+      return;
+    }
+    setMode(nextMode);
+    if (notes.some((n) => n.text.trim().length > 0)) {
+      setInputSource(nextMode);
+    }
+  }
+
+  function resetNotes() {
+    noteCounterRef.current = 1;
+    setNotes([{ id: "note-1", title: "Note 1", text: "", kind: "admission" }]);
+    setActiveNoteId("note-1");
+    setRedactedById({});
+    setViewMode("original");
+    setShowDiff(false);
+    setInputSource(null);
+    setMode("paste");
+    setError(null);
+    setUploadError(null);
+    setLastAddedNoteId("note-1");
+  }
 
   function updateNoteKind(id: string, kind: NoteKind) {
     setNotes((prev) => prev.map((n) => (n.id === id ? { ...n, kind } : n)));
@@ -78,6 +149,16 @@ export function NoteSummarizerInput({
     notes.find((n) => n.id === activeNoteId) ?? notes[0] ?? null;
 
   function updateNoteText(id: string, text: string) {
+    if (inputSource && inputSource !== mode) {
+      setError(
+        "You can only use one input method at a time. Clear notes to switch modes.",
+      );
+      return;
+    }
+    if (!inputSource) {
+      setInputSource(mode);
+    }
+
     setNotes((prev) => prev.map((n) => (n.id === id ? { ...n, text } : n)));
     // If the user edits the original note, any previous redaction for that
     // note is now stale; drop it so they can re-run auto-redact.
@@ -90,11 +171,194 @@ export function NoteSummarizerInput({
   }
 
   function addNote() {
+    noteCounterRef.current += 1;
+    const id = `note-${noteCounterRef.current}`;
     setNotes((prev) => {
-      const id = `note-${prev.length + 1}`;
-      return [...prev, { id, title: `Note ${prev.length + 1}`, text: "" }];
+      const next = [...prev, { id, title: `Note ${noteCounterRef.current}`, text: "" }];
+      return next.map((note, idx) => ({ ...note, title: `Note ${idx + 1}` }));
     });
+    setActiveNoteId(id);
+    setLastAddedNoteId(id);
     setViewMode("original");
+  }
+
+  async function loadRemoteScript(src: string, globalKey: keyof Window) {
+    if (typeof window === "undefined") return;
+    const globalObj = window as typeof window & Record<string, unknown>;
+    if (globalObj[globalKey as string]) return;
+
+    await new Promise<void>((resolve, reject) => {
+      const existing = document.querySelector(`script[src="${src}"]`);
+      if (existing) {
+        existing.addEventListener("load", () => resolve());
+        existing.addEventListener("error", () => reject(new Error(`Failed to load ${src}`)));
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = src;
+      script.async = true;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error(`Failed to load ${src}`));
+      document.body.appendChild(script);
+    });
+  }
+
+  async function extractTextFromFile(file: File): Promise<string> {
+    const extension = file.name.split(".").pop()?.toLowerCase();
+
+    if (!extension) {
+      throw new Error("Unsupported file type");
+    }
+
+    if (["txt", "md", "rtf"].includes(extension)) {
+      return file.text();
+    }
+
+    if (extension === "pdf") {
+      await loadRemoteScript(PDFJS_SRC, "pdfjsLib");
+      const pdfjsLib = window.pdfjsLib as PdfjsLib | undefined;
+      if (!pdfjsLib) throw new Error("PDF parser unavailable");
+      pdfjsLib.GlobalWorkerOptions.workerSrc = PDFJS_WORKER_SRC;
+
+      const arrayBuffer = await file.arrayBuffer();
+      const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+      let text = "";
+      for (let i = 1; i <= pdf.numPages; i += 1) {
+        const page = await pdf.getPage(i);
+        const content = await page.getTextContent();
+        const items = (content.items ?? []) as PdfjsTextItem[];
+        const pageText = items
+          .map((item) => (item && typeof item.str === "string" ? item.str : ""))
+          .join(" ");
+        text += pageText + "\n";
+      }
+      return text.trim();
+    }
+
+    if (extension === "docx" || extension === "doc") {
+      await loadRemoteScript(MAMMOTH_SRC, "mammoth");
+      const mammoth = window.mammoth as MammothBrowser | undefined;
+      if (!mammoth) throw new Error("DOCX parser unavailable");
+      const arrayBuffer = await file.arrayBuffer();
+      const result = await mammoth.extractRawText({ arrayBuffer });
+      return result.value as string;
+    }
+
+    if (["png", "jpg", "jpeg"].includes(extension)) {
+      await loadRemoteScript(TESSERACT_SRC, "Tesseract");
+      const Tesseract = window.Tesseract as TesseractWorker | undefined;
+      if (!Tesseract) throw new Error("Image OCR unavailable");
+      const { data } = await Tesseract.recognize(file, "eng");
+      return (data?.text as string | undefined)?.trim() ?? "";
+    }
+
+    throw new Error(`File type .${extension} is not supported.`);
+  }
+
+  async function handleFilesSelected(files: FileList | null) {
+    if (!files || files.length === 0) return;
+    if (
+      inputSource &&
+      inputSource !== "upload" &&
+      notes.some((n) => n.text.trim().length > 0)
+    ) {
+      setError("You can either paste notes or upload files. Clear notes to switch modes.");
+      return;
+    }
+
+    setUploading(true);
+    setError(null);
+    setUploadError(null);
+    setMode("upload");
+
+    const parsedNotes: NoteInput[] = [];
+    const existing = inputSource === "upload" ? notes.filter((n) => n.text.trim().length > 0) : [];
+
+    for (const file of Array.from(files)) {
+      try {
+        const extracted = await extractTextFromFile(file);
+        noteCounterRef.current += 1;
+        const id = `note-${noteCounterRef.current}`;
+        parsedNotes.push({
+          id,
+          title: `Note ${noteCounterRef.current}`,
+          text: extracted,
+          kind: "unknown",
+        });
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : "Unable to read file.";
+        setUploadError(msg);
+      }
+    }
+
+    if (parsedNotes.length > 0) {
+      setInputSource("upload");
+      setNotes((prev) => {
+        const retained = inputSource === "upload" ? prev.filter((n) => n.text.trim().length > 0) : [];
+        const merged = [...retained, ...parsedNotes];
+        return merged.map(
+          (note, idx): NoteInput => ({
+            ...note,
+            title: `Note ${idx + 1}`,
+            kind: note.kind ?? "unknown",
+          }),
+        );
+      });
+
+      const scrubbed = scrubNotesClientSide(parsedNotes);
+      setRedactedById((prev) => {
+        const next = { ...prev };
+        for (const note of scrubbed) {
+          if (note.text.trim().length > 0) {
+            next[note.id] = note.text;
+          }
+        }
+        return next;
+      });
+
+      const latestId = parsedNotes[parsedNotes.length - 1]?.id;
+      if (latestId) {
+        setActiveNoteId(latestId);
+        setLastAddedNoteId(latestId);
+        setViewMode("redacted");
+        setShowDiff(true);
+      }
+    }
+
+    if (fileInputRef.current) fileInputRef.current.value = "";
+    setUploading(false);
+  }
+
+  function deleteNote(id: string) {
+    setNotes((prev) => {
+      if (prev.length <= 1) return prev;
+      const filtered = prev.filter((n) => n.id !== id);
+      const retitled = filtered.map((note, idx) => ({
+        ...note,
+        title: `Note ${idx + 1}`,
+      }));
+      const nextActive =
+        retitled[
+          Math.max(
+            0,
+            Math.min(
+              retitled.length - 1,
+              retitled.findIndex((n) => n.id === activeNoteId),
+            ),
+          )
+        ] ?? retitled[retitled.length - 1];
+      setActiveNoteId(nextActive?.id ?? retitled[0]?.id ?? "note-1");
+      setLastAddedNoteId(nextActive?.id ?? retitled[0]?.id ?? null);
+      return retitled.length > 0 ? retitled : prev;
+    });
+
+    setRedactedById((prev) => {
+      if (!prev[id]) return prev;
+      const next = { ...prev };
+      delete next[id];
+      return next;
+    });
   }
 
   // Auto-redact: compute redacted versions but keep originals as the source of truth.
@@ -124,7 +388,9 @@ export function NoteSummarizerInput({
   async function handleProcess() {
     setError(null);
     if (!notes.some((n) => n.text.trim().length > 0)) {
-      setError("Please paste at least one de-identified note before continuing.");
+      setError(
+        "Please add at least one de-identified note by pasting or uploading before continuing.",
+      );
       return;
     }
     setLoading(true);
@@ -233,7 +499,12 @@ export function NoteSummarizerInput({
                   : "bg-transparent border border-white/70 text-white/90 hover:bg-white/10"
               }`}
           >
-            {note.title}
+            <span>{note.title}</span>
+            {lastAddedNoteId === note.id && (
+              <span className="ml-2 inline-flex items-center rounded-full bg-emerald-600/90 px-2 py-0.5 text-[0.65rem] font-semibold text-white">
+                New
+              </span>
+            )}
           </button>
         ))}
         <button
@@ -243,7 +514,31 @@ export function NoteSummarizerInput({
         >
           + Add note
         </button>
+        <button
+          type="button"
+          onClick={() => deleteNote(activeNoteId)}
+          disabled={notes.length <= 1}
+          className="px-3 py-2 rounded-xl text-xs md:text-sm border border-white/40 bg-transparent text-white/80 hover:bg-white/10 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Delete note
+        </button>
+        <button
+          type="button"
+          onClick={resetNotes}
+          className="px-3 py-2 rounded-xl text-xs md:text-sm border border-white/30 bg-white/5 text-white/80 hover:bg-white/10"
+        >
+          Reset all
+        </button>
       </div>
+
+      {activeNote && lastAddedNoteId === activeNote.id && (
+        <div className="flex items-center gap-2 rounded-xl border border-emerald-300/70 bg-emerald-900/30 px-3 py-2 text-xs md:text-sm text-emerald-50">
+          <span className="font-semibold">{activeNote.title} selected.</span>
+          <span>
+            Choose the correct note type and provide {mode === "upload" ? "an upload" : "pasted text"} for this note.
+          </span>
+        </div>
+      )}
 
       {/* Note type pill + mode toggle pill */}
       <div className="flex flex-wrap items-center gap-3 mt-2">
@@ -277,7 +572,7 @@ export function NoteSummarizerInput({
         <div className="inline-flex items-center rounded-full bg-white/5 p-1 text-xs md:text-sm">
           <button
             type="button"
-            onClick={() => setMode("paste")}
+            onClick={() => changeMode("paste")}
             className={`px-4 py-1.5 rounded-full font-medium transition ${
               mode === "paste"
                 ? "bg-white/15 border border-white/80 text-white shadow-sm"
@@ -288,7 +583,7 @@ export function NoteSummarizerInput({
           </button>
           <button
             type="button"
-            onClick={() => setMode("upload")}
+            onClick={() => changeMode("upload")}
             className={`px-4 py-1.5 rounded-full font-medium transition ${
               mode === "upload"
                 ? "bg-white/15 border border-white/80 text-white shadow-sm"
@@ -445,39 +740,82 @@ export function NoteSummarizerInput({
           </div>
         </div>
       ) : (
-        /* UPLOAD MODE (visual stub for now) */
+        /* UPLOAD MODE */
         <div className="space-y-4">
-          {/* hidden file input */}
           <input
             ref={fileInputRef}
             type="file"
             className="hidden"
+            multiple
             accept=".txt,.pdf,.doc,.docx,.rtf,.md,.png,.jpg,.jpeg"
-            onChange={(e) => {
-              const file = e.target.files?.[0];
-              if (file) {
-                // For now we just acknowledge selection; parsing will be a future step.
-                console.log("Selected file for future parsing:", file.name);
-              }
-            }}
+            onChange={(e) => handleFilesSelected(e.target.files)}
           />
-          <div className="h-64 md:h-72 rounded-2xl border border-dashed border-white/60 bg-black/20 flex flex-col items-center justify-center text-center px-6 text-white">
-            <p className="font-semibold text-sm md:text-base">
-              Upload a PDF, Word document, or image
-            </p>
-            <p className="text-xs md:text-sm mt-2 max-w-md text-white/80">
-              In a future version, files will be parsed locally with PHI removed
-              before any analysis. For now, after upload, please paste
-              de-identified text into the editor above to use the tool.
-            </p>
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="mt-4 px-4 py-2 rounded-xl text-xs md:text-sm border border-white/80 bg-white/10 text-white hover:bg-white/20"
-            >
-              Choose file…
-            </button>
+          <div className="rounded-2xl border border-dashed border-white/60 bg-black/20 p-4 md:p-6 text-white space-y-3">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="font-semibold text-sm md:text-base">
+                  Upload notes (PDF, Word, text, PNG/JPG)
+                </p>
+                <p className="text-xs md:text-sm mt-1 max-w-2xl text-white/80">
+                  Files are parsed in your browser and routed through the same PHI scrubber as pasted text. Uploading new files will highlight the latest note automatically.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="px-4 py-2 rounded-xl text-xs md:text-sm border border-white/80 bg-white/10 text-white hover:bg-white/20"
+              >
+                Choose files…
+              </button>
+            </div>
+            <div className="flex items-center gap-3 text-xs text-white/80">
+              <span className="inline-flex h-2 w-2 rounded-full bg-emerald-400" />
+              <span>Supported: PDF, DOC/DOCX, TXT/RTF/MD, JPEG, PNG.</span>
+            </div>
+            {uploading && (
+              <p className="text-xs text-amber-100">Reading files and applying PHI scrub…</p>
+            )}
+            {uploadError && (
+              <p className="text-xs text-red-100">{uploadError}</p>
+            )}
           </div>
+
+          {activeNote && (
+            <div className="space-y-2 rounded-2xl border border-zinc-300/80 dark:border-zinc-700 bg-white/90 dark:bg-zinc-950/85 p-3 md:p-4">
+              <div className="flex items-center justify-between">
+                <p className="text-sm md:text-base font-semibold text-zinc-900 dark:text-white">
+                  {activeNote.title} preview ({viewMode === "redacted" ? "PHI removed" : "Original"})
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={handleAutoRedact}
+                    disabled={isRedacting || !notes.some((n) => n.text.trim().length > 0)}
+                    className="px-3 py-1.5 rounded-lg text-xs border border-zinc-300 dark:border-zinc-600 bg-white/90 dark:bg-zinc-900/85 text-zinc-900 dark:text-zinc-50 disabled:opacity-60"
+                  >
+                    {isRedacting ? "Auto-redacting…" : "Re-run PHI scrub"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="px-3 py-1.5 rounded-lg text-xs border border-white/50 bg-white/10 text-white"
+                  >
+                    Upload more
+                  </button>
+                </div>
+              </div>
+              <textarea
+                value={displayText}
+                onChange={(e) => {
+                  if (!activeNote) return;
+                  updateNoteText(activeNote.id, e.target.value);
+                }}
+                readOnly={viewMode === "redacted" && !!activeRedacted}
+                className="note-textarea w-full h-64 md:h-72 bg-transparent outline-none resize-none font-mono text-xs md:text-sm text-zinc-900 dark:text-zinc-50 placeholder:text-zinc-500 dark:placeholder:text-zinc-400"
+                placeholder="Uploaded note text will appear here after processing."
+              />
+            </div>
+          )}
 
           <div className="flex justify-end">
             <button
