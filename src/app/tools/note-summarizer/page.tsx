@@ -1,70 +1,38 @@
-// src/app/tools/note-summarizer/page.tsx
-"use client";
+import type { Metadata } from "next";
 
-import { useState } from "react";
+import NoteSummarizerClientPage from "./client-page";
+import { absoluteUrl } from "@/lib/seo";
 
-import ToolPageShell from "@/components/ToolPageShell";
-import type {
-  NoteInput,
-  SummaryResult,
-} from "@/lib/note-summarizer/types";
-import { NoteSummarizerInput } from "@/components/note-summarizer/NoteSummarizerInput";
-import { NoteSummarizerWorkspace } from "@/components/note-summarizer/NoteSummarizerWorkspace";
-
-type Stage = "input" | "workspace";
+export const metadata: Metadata = {
+  title: {
+    absolute: "AI Note Summarizer for De-identified Clinical Notes",
+  },
+  description:
+    "Summarize de-identified inpatient notes into structured briefs, highlight key problems, and explore grounded answers for rounding and handoffs.",
+  keywords: [
+    "clinical note summarizer",
+    "AI clinical documentation",
+    "inpatient rounding tool",
+    "de-identified notes",
+    "medical note summary",
+    "note review assistant",
+  ],
+  alternates: {
+    canonical: absoluteUrl("/tools/note-summarizer"),
+  },
+  openGraph: {
+    title: "AI Note Summarizer for De-identified Clinical Notes",
+    description:
+      "Turn de-identified inpatient notes into structured summaries with key problems, timelines, and follow-ups to speed rounds.",
+    url: absoluteUrl("/tools/note-summarizer"),
+  },
+  twitter: {
+    title: "AI Note Summarizer for De-identified Clinical Notes",
+    description:
+      "Generate structured summaries from de-identified inpatient notes and ask grounded follow-up questions for faster reviews.",
+  },
+};
 
 export default function NoteSummarizerPage() {
-  const [stage, setStage] = useState<Stage>("input");
-  const [notes, setNotes] = useState<NoteInput[] | null>(null);
-  const [summary, setSummary] = useState<SummaryResult | null>(null);
-
-  function handleSummaryReady(args: {
-    notes: NoteInput[];
-    summary: SummaryResult;
-  }) {
-    setNotes(args.notes);
-    setSummary(args.summary);
-    setStage("workspace");
-  }
-
-  function handleReset() {
-    // Hard reset from the workspace: clear stored notes + summary, then go back
-    setNotes(null);
-    setSummary(null);
-    setStage("input");
-  }
-
-  const shouldShowInput = stage === "input" || !notes || !summary;
-
-  return (
-    <ToolPageShell
-      title="Note Summarizer"
-      eyebrow="AI-assisted reader for de-identified notes"
-      description={
-        <>
-          Paste one or more de-identified inpatient notes, then browse a structured
-          summary and ask grounded questions. Designed to support rounding and handoffs
-          while keeping identifiers out of the workflow.
-        </>
-      }
-      footnote={
-        <>
-          This tool is for documentation support only and does not replace clinical
-          expertise or review. Please make sure to verify all output against the original notes.
-        </>
-      }
-      backHref="/tools"
-      backLabel="Back to tools"
-    >
-      {shouldShowInput ? (
-        <NoteSummarizerInput onSummaryReady={handleSummaryReady} />
-      ) : (
-        <NoteSummarizerWorkspace
-          notes={notes}
-          summary={summary}
-          onReset={handleReset}
-        />
-      )}
-    </ToolPageShell>
-  );
+  return <NoteSummarizerClientPage />;
 }
