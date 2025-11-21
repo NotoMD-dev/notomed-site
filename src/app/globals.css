@@ -452,3 +452,70 @@ button.tool-module-header:hover {
 :root[data-theme="light"] .text-\[\#f4f1ea\] {
   color: var(--text-heading) !important;
 }
+
+.featured-card-glow {
+  overflow: visible;
+}
+
+.featured-card-glow::before,
+.featured-card-glow::after {
+  content: "";
+  position: absolute;
+  inset: -8px;
+  border-radius: 22px;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.featured-card-glow::before {
+  background: transparent;
+  box-shadow:
+    0 0 0 5px rgba(244, 241, 234, 0.55),
+    0 0 24px 12px rgba(201, 213, 200, 0.42),
+    0 0 48px 18px rgba(210, 126, 88, 0.25);
+  filter: blur(6px);
+  opacity: 0.85;
+  animation: featuredHaloSweep 5s ease-in-out infinite;
+}
+
+.featured-card-glow::after {
+  inset: -6px;
+  border-radius: 18px;
+  border: 1px solid rgba(201, 213, 200, 0.72);
+  box-shadow:
+    0 0 14px 5px rgba(244, 241, 234, 0.4),
+    0 0 36px 15px rgba(201, 213, 200, 0.46),
+    0 0 60px 24px rgba(210, 126, 88, 0.22);
+  background: transparent;
+  animation: featuredHaloFrame 6s ease-in-out infinite;
+}
+
+@keyframes featuredHaloSweep {
+  0% {
+    transform: scale(0.995);
+    opacity: 0.8;
+  }
+  35% {
+    transform: scale(1.01);
+    opacity: 0.92;
+  }
+  100% {
+    transform: scale(1.005);
+    opacity: 0.78;
+  }
+}
+
+@keyframes featuredHaloFrame {
+  0% {
+    transform: scale(0.992);
+    opacity: 0.7;
+  }
+  50% {
+    transform: scale(1.012);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(1.004);
+    opacity: 0.78;
+  }
+}

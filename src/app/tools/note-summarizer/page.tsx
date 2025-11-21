@@ -27,12 +27,6 @@ export default function NoteSummarizerPage() {
     setStage("workspace");
   }
 
-  function handleBackToInput() {
-    // Go back to the paste/upload step but keep the stored notes/summary
-    // (NoteSummarizerInput manages its own internal state)
-    setStage("input");
-  }
-
   function handleReset() {
     // Hard reset from the workspace: clear stored notes + summary, then go back
     setNotes(null);
@@ -68,7 +62,6 @@ export default function NoteSummarizerPage() {
         <NoteSummarizerWorkspace
           notes={notes}
           summary={summary}
-          onBackToInput={handleBackToInput}
           onReset={handleReset}
         />
       )}
