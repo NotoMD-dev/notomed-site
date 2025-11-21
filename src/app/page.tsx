@@ -183,8 +183,8 @@ export default function NotoMedLandingPage() {
                         </div>
                       )}
                     </div>
-                    <h3 className="mb-2 text-lg font-semibold text-heading">{tool.name}</h3>
-                    <p className="mb-6 text-sm text-body">{tool.description}</p>
+                    <h3 className="mb-2 text-xl font-semibold text-heading">{tool.name}</h3>
+                    <p className="mb-6 text-base text-body">{tool.description}</p>
                     <span className="inline-flex items-center gap-1 text-xs font-semibold uppercase tracking-[0.18em] text-accent transition-transform group-hover:translate-x-1">
                       Open Tool →
                     </span>
@@ -199,8 +199,8 @@ export default function NotoMedLandingPage() {
                   <p className="mb-2 text-[11px] font-medium uppercase tracking-[0.2em] text-muted-strong">
                     Directory
                   </p>
-                  <h3 className="mb-2 text-lg font-semibold text-heading">Browse all tools</h3>
-                  <p className="mb-6 text-sm text-body">
+                  <h3 className="mb-2 text-xl font-semibold text-heading">Browse all tools</h3>
+                  <p className="mb-6 text-base text-body">
                     See every workflow, including the AI pre-op risk stratifier and upcoming utilities.
                   </p>
                 </div>
@@ -215,8 +215,8 @@ export default function NotoMedLandingPage() {
               interactive
               className="flex flex-col items-center justify-center text-center"
             >
-              <h3 className="mb-2 text-lg font-semibold text-heading">Missing something?</h3>
-              <p className="mb-4 max-w-xs text-sm text-body">
+              <h3 className="mb-2 text-xl font-semibold text-heading">Missing something?</h3>
+              <p className="mb-4 max-w-xs text-base text-body">
                 Suggest a new workflow, calculator, or builder you wish existed on rounds.
               </p>
               <Link

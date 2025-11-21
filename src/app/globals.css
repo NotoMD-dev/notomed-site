@@ -468,9 +468,16 @@ button.tool-module-header:hover {
 }
 
 .featured-card-glow::before {
-  background: radial-gradient(circle at 50% 50%, rgba(210, 126, 88, 0.55), transparent 65%);
-  filter: blur(28px);
-  opacity: 0.9;
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(210, 126, 88, 0) 0%,
+    rgba(210, 126, 88, 0) 36%,
+    rgba(210, 126, 88, 0.4) 58%,
+    rgba(210, 126, 88, 0.08) 78%,
+    transparent 100%
+  );
+  filter: blur(26px);
+  opacity: 0.95;
   animation: featuredPulse 2.8s ease-in-out infinite;
 }
 
@@ -480,7 +487,14 @@ button.tool-module-header:hover {
     0 12px 50px rgba(0, 0, 0, 0.35),
     0 0 0 12px rgba(210, 126, 88, 0.08),
     0 0 45px rgba(210, 126, 88, 0.45);
-  background: radial-gradient(circle at 50% 50%, rgba(210, 126, 88, 0.25), rgba(210, 126, 88, 0.07));
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(210, 126, 88, 0) 0%,
+    rgba(210, 126, 88, 0.14) 60%,
+    rgba(210, 126, 88, 0.2) 72%,
+    rgba(210, 126, 88, 0.05) 90%,
+    transparent 100%
+  );
   animation: featuredHalo 4.2s ease-in-out infinite;
 }
 
