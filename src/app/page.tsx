@@ -160,11 +160,11 @@ export default function NotoMedLandingPage() {
 
               return (
                 <Link key={tool.id} href={tool.path} className="block focus-visible:outline-none">
-                    <GlowCard
+                  <GlowCard
                     className={cn(
                       "min-h-[230px]",
                       isFeatured &&
-                        "featured-card-glow border border-[var(--accent)]/85 shadow-[0_18px_60px_rgba(210,126,88,0.28)] ring-1 ring-[var(--accent)]/35 transition-transform duration-500 hover:-translate-y-2 hover:scale-[1.03]",
+                        "featured-card-glow border border-[var(--accent)]/70 shadow-[0_12px_38px_rgba(210,126,88,0.2)] ring-1 ring-[var(--accent)]/22 transition-transform duration-500 hover:-translate-y-2 hover:scale-[1.03]",
                     )}
                     contentClassName={isFeatured ? "relative z-[1]" : undefined}
                     aria-label={`Open ${tool.name}`}
