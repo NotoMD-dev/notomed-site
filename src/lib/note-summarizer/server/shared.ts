@@ -65,6 +65,8 @@ type ModelQAJson = {
 };
 
 export function parseSummaryText(raw: string): SummaryResult {
+  const lowerRaw = raw.toLowerCase();
+
   const sectionOrder: {
     id: SummaryResult["sections"][number]["id"];
     title: string;
@@ -85,8 +87,8 @@ export function parseSummaryText(raw: string): SummaryResult {
 
   for (let i = 0; i < sectionOrder.length; i++) {
     const { id, title } = sectionOrder[i];
-    const heading = `# ${title}`;
-    const start = raw.indexOf(heading);
+    const headingLower = `# ${title.toLowerCase()}`;
+    const start = lowerRaw.indexOf(headingLower);
     if (start === -1) {
       sections.push({
         id,
@@ -95,10 +97,13 @@ export function parseSummaryText(raw: string): SummaryResult {
       });
       continue;
     }
-    const afterHeading = start + heading.length;
+    const afterHeading = start + headingLower.length;
     const end =
       i + 1 < sectionOrder.length
-        ? raw.indexOf(`# ${sectionOrder[i + 1].title}`, afterHeading)
+        ? lowerRaw.indexOf(
+            `# ${sectionOrder[i + 1].title.toLowerCase()}`,
+            afterHeading,
+          )
         : raw.length;
     const content = raw
       .slice(afterHeading, end === -1 ? raw.length : end)
