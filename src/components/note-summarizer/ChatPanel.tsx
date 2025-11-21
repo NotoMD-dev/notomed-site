@@ -219,6 +219,7 @@ export function ChatPanel({
 
       setQuestion("");
     } catch (error) {
+      console.error(error);
       setMessages((prev) => [
         ...prev,
         {
