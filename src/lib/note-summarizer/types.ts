@@ -72,9 +72,7 @@ export interface SummaryResponseBody extends SummaryResult {
   rawText?: string;
 }
 
-export interface QAResponseBody extends QAResult {
-  // the model always answers “not documented” when unsure
-}
+export type QAResponseBody = QAResult;
 
 export type NoteSummarizerResponseBody =
   | SummaryResponseBody
