@@ -168,11 +168,10 @@ export function ChatPanel({
     }));
 
     try {
-      const resp = await fetch("/api/note-summarizer", {
+      const resp = await fetch("/api/note-summarizer/question", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          mode: "qa",
           notes,
           question: trimmed,
           activeSourceId,
@@ -184,12 +183,13 @@ export function ChatPanel({
         answer?: string;
         citations?: string[];
         snippet?: string | null;
+        error?: string;
       };
 
       const answerText =
-        typeof json.answer === "string"
+        resp.ok && typeof json.answer === "string"
           ? json.answer
-          : "Unable to generate answer from notes.";
+          : json.error || "Unable to generate answer from notes.";
 
       const rawCites =
         Array.isArray(json.citations) && json.citations.length > 0
@@ -218,7 +218,7 @@ export function ChatPanel({
       onSnippetChange(snippet);
 
       setQuestion("");
-    } catch (error) {
+    } catch {
       setMessages((prev) => [
         ...prev,
         {
