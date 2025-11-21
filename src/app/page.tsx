@@ -19,10 +19,17 @@ export default function NotoMedLandingPage() {
   const [supportLoading, setSupportLoading] = React.useState(false);
   const [searchTerm, setSearchTerm] = React.useState("");
 
-  const filteredTools = filterTools(LIVE_TOOLS, { query: searchTerm });
-  const displayedTools = searchTerm
-    ? filteredTools
-    : LIVE_TOOLS.slice(0, FEATURED_TOOL_LIMIT);
+  const featuredTools = LIVE_TOOLS.filter((tool) => tool.tags?.includes("FEATURED"));
+  const featuredNoteSummarizer = featuredTools.find(
+    (tool) => tool.id === "note-summarizer-tool",
+  );
+  const listForDisplay = searchTerm
+    ? filterTools(LIVE_TOOLS, { query: searchTerm })
+    : featuredTools.length > 0
+      ? featuredTools
+      : LIVE_TOOLS;
+  const displayedTools = listForDisplay.slice(0, FEATURED_TOOL_LIMIT);
+  const featuredCtaTarget = featuredNoteSummarizer ?? listForDisplay[0];
 
   const handleInternalFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -120,6 +127,29 @@ export default function NotoMedLandingPage() {
             Creating web applications that simplify workflow and decrease cognitive load.
           </p>
           <p className="text-xs text-muted-strong">All tools built by {CONFIG.creatorName}</p>
+
+          {featuredCtaTarget && (
+            <div className="mx-auto mt-10 max-w-3xl text-left">
+              <GlowCard className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div className="space-y-2 md:max-w-xl">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.26em] text-muted">
+                    Featured tool
+                  </p>
+                  <h2 className="text-xl font-semibold text-heading md:text-2xl">
+                    {featuredCtaTarget.name}
+                  </h2>
+                  <p className="text-sm text-body md:text-base">{featuredCtaTarget.description}</p>
+                </div>
+
+                <Link
+                  href={featuredCtaTarget.path}
+                  className="btn-primary inline-flex items-center justify-center rounded-full px-4 py-2 text-sm font-semibold transition-colors"
+                >
+                  Open {featuredCtaTarget.name}
+                </Link>
+              </GlowCard>
+            </div>
+          )}
 
           <div className="relative mx-auto mt-8 max-w-2xl px-2 sm:px-0">
             <SearchInput
