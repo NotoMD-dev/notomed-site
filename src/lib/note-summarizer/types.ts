@@ -56,6 +56,11 @@ export interface ChatHistoryMessage {
   text: string;
 }
 
+export interface ChatHistoryMessage {
+  role: "user" | "assistant";
+  text: string;
+}
+
 export interface SummaryRequestBody {
   mode: "summary";
   notes: NoteInput[];
